@@ -1,0 +1,6 @@
+td > label.switch-label {
+    margin-bottom: 0px;
+}
+.switch {
+    vertical-align: middle;
+}

@@ -1,0 +1,110 @@
+<button type="button" class="btn btn-sm btn-primary" >    <i class="fa fa-plus"></i> Add</button>
+<button type="button" class="btn btn-sm btn-primary" >    <i class="fa fa-pencil"></i> Edit</button>
+<div class="row">
+  <div class="col-sm-6">
+    <jqxGrid #migrid
+    (onRowselect)="Rowselect($event)"
+      [width]="'100%'"
+      [source]="dataAdapter"
+      [columns]="columns"
+      [height]="300"
+      [pageable]="true"
+      [rendergridrows]="rendergridrows"
+      [sortable]="true"
+      [showtoolbar]="true"
+      [rendertoolbar]="createButtonsContainers"
+      [filterable]="true"
+      [columnsresize]="true">
+    </jqxGrid>
+  </div>
+
+
+  <div bsModal #smallModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-sm" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">Busqueda</h4>
+        <button type="button" class="close" (click)="smallModal.hide()" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div>buscar que:</div>
+        <div style="margin-top: 5px">
+            <jqxInput #myInput [width]="194" [height]="23"></jqxInput>
+        </div>
+        <div style="margin-top: 7px; clear: both">Look in:</div>
+        <div style="margin-top: 5px">
+            <jqxDropDownList #myDropDownList
+                             [width]="200" [height]="23" [selectedIndex]="0"
+                             [source]="dropDownSource" [autoDropDownHeight]="true">
+            </jqxDropDownList>
+        </div>
+        <div>
+            <jqxButton style="margin-top: 15px; margin-left: 50px; float: left"
+                       (onClick)="findBtnOnClick()" [width]="70">
+                Find
+            </jqxButton>
+            <jqxButton style="margin-left: 5px; margin-top: 15px; float: left"
+                       (onClick)="clearBtnOnClick()" [width]="70">
+                Clear
+            </jqxButton>
+        </div>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+
+  <div class="col-sm-6">
+    <div class="card">
+      <div class="card-header">
+        <strong>Company</strong>
+        <small>Form</small>
+      </div>
+      <div class="card-body">
+        
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<div bsModal #myModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">{{accion_text}} Departamento</h4>
+        <button type="button" class="close" (click)="myModal.hide()" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form [formGroup]="formDep" (ngSubmit)="save(formDep)">
+          <div class="row">
+            <div class="form-group col-sm-12  ">
+              <label for="city">Nombre:</label>
+              <input type="text" class="form-control" formControlName="name" id="departamento" placeholder="nombre del departamento"/>
+            </div>
+            <div class="form-group col-sm-12">
+              <label for="postal-code">circunscripciones:</label>
+              <jqxDropDownList #myDropDownList2 [filterable]="true" [checkboxes]="true"
+                  [width]="'100%'" [height]="30" [source]="source2" [selectedIndex]="1" [autoOpen]="false">
+              </jqxDropDownList>
+            </div><!--/.row-->
+            <div class="form-group col-sm-12">
+              <button type="submit" class="btn btn-primary" id="guardar">Guardar</button>
+            </div>
+          </div>
+          </form>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div>
+
+<div id="notification1"></div>
+<jqxNotification #msgNotification [width]="250" [position]="'top-right'">
+            <div>
+                Welcome to our website.
+            </div>
+        </jqxNotification>

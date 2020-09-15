@@ -1,0 +1,22 @@
+<div style="font-size: 13px; font-family: Verdana;">
+  <jqxGrid #mitabla
+  (onPagesizechanged)="Pagesizechanged($event)"
+  (onSort)="Sort($event)"
+  (onPagechanged)="Pagechanged($event)"
+  (onRowselect)="Rowselect($event)"
+  (onFilter)="filtrado($event)"
+	[width]="800"
+    [source]="dataAdapter"
+    [columns]="columns"
+    [autoheight]="true"
+    [pageable]="true"
+    [rendergridrows]="rendergridrows"
+    [sortable]="true"
+    [filterable]="true"
+    [filtermode]="excel"
+		>
+	</jqxGrid>
+  </div>
+  <jqxButton #button [width]='120' [height]='40' (onClick)="next()">
+	Next
+</jqxButton>

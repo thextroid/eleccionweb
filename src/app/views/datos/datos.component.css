@@ -1,0 +1,7 @@
+div.jqx-menu-wrapper>div.jqx-grid-menu.jqx-popup-show{
+    height: auto !important;
+}
+.jqx-dropdownbutton-popup, .jqx-calendar-dark.jqx-popup, .jqx-listbox-dark.jqx-popup, .jqx-grid-menu.jqx-popup{
+    height: auto !important;
+
+}
