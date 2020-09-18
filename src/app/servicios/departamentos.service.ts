@@ -15,10 +15,9 @@ export class DepartamentosService {
     return this.http.get<Departamento[]>(api+"");
   }
   save(data){
-    return this.http.post(api,data);
+    return this.http.post(api,data); 
   }
   update(data){
-    let a=JSON.parse(JSON.stringify({name:data.name}) );
-  	return this.http.put(api+"/"+data.id,a);
+  	return this.http.put(api+"/"+data.id,data);
   }
 }

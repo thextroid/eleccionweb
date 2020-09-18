@@ -23,26 +23,26 @@
 	<div class="modal-dialog" role="document">
 		<div class="modal-content">
 			<div class="modal-header">
-				<h4 class="modal-title">{{accion_text}} Circunscripcion</h4>
+				<h4 class="modal-title">{{accion_text}} Provincia</h4>
 				<button type="button" class="close" (click)="myModal.hide()" aria-label="Close">
 					<span aria-hidden="true">&times;</span>
 				</button>
 			</div>
 			<div class="modal-body">
-				<form [formGroup]="formCir" (ngSubmit)="save(formCir)">
+				<form [formGroup]="formProv" (ngSubmit)="save(formProv)">
 					<div class="row">
 						<div class="form-group col-sm-12  ">
 							<label for="city">Nombre:</label>
-							<input type="text" class="form-control" formControlName="name" id="localidad" placeholder="nombre de la localidad"/>
+							<input type="text" class="form-control" formControlName="name" id="provincia" placeholder="nombre de la provincia"/>
 						</div>
 						<div class="form-group col-sm-12">
-							<label for="postal-code">Provincia:</label>
+							<label for="postal-code">Circunscripciones:</label>
 							<jqxDropDownList #myDropDownList2 [filterable]="true" [checkboxes]="true"
 									[width]="'100%'" [height]="30" [source]="source2" [selectedIndex]="1" [autoOpen]="false">
 							</jqxDropDownList>
 						</div><!--/.row-->
 						<div class="form-group col-sm-12">
-							<button type="submit" class="btn btn-primary" id="guardar"><i class="fa fa-save"></i>Guardar</button>
+							<button type="submit" class="btn btn-primary" id="guardar">Guardar</button>
 						</div>
 					</div>
 					</form>
@@ -54,6 +54,6 @@
 <div id="notification1"></div>
 <jqxNotification #msgNotification [width]="250" [position]="'top-right'">
 <div>
-    Seleccione una fila
+	Seleccione una fila
 </div>
 </jqxNotification>

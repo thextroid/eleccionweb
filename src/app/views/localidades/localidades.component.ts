@@ -7,15 +7,15 @@ import { jqxInputComponent } from 'jqwidgets-ng/jqxinput';
 import { jqxListBoxComponent } from 'jqwidgets-ng/jqxlistbox';
 import { jqxNotificationComponent } from 'jqwidgets-ng/jqxnotification';
 import { ModalDirective } from 'ngx-bootstrap/modal';
-import { CircunscripcionesService } from '../../servicios/circunscripciones.service';
-import { ProvinciasService } from '../../servicios/provincias.service';
+import { LocalidadesService } from '../../servicios/localidades.service';
+import { MunicipiosService } from '../../servicios/municipios.service';
 
 @Component({
-  selector: 'app-circunscripciones',
-  templateUrl: './circunscripciones.component.html',
-  styleUrls: ['./circunscripciones.component.css']
+  selector: 'app-localidades',
+  templateUrl: './localidades.component.html',
+  styleUrls: ['./localidades.component.css']
 })
-export class CircunscripcionesComponent implements OnInit {
+export class LocalidadesComponent implements OnInit {
 
   @ViewChild("migrid") migrid: jqxGridComponent;
 	@ViewChild('myModal') public myModal: ModalDirective;
@@ -26,27 +26,26 @@ export class CircunscripcionesComponent implements OnInit {
   @ViewChild('btnAdd') btnAdd: jqxButtonComponent;
   @ViewChild('btnEdit') btnEdit: jqxButtonComponent;
   @ViewChild('btnReload') btnReload: jqxButtonComponent;
-  
-	constructor(protected $prov: ProvinciasService, protected $cir: CircunscripcionesService) { }
-	public formCir: FormGroup = new FormGroup({
+	constructor(protected $loc: LocalidadesService, protected $mun: MunicipiosService) { }
+	public formMun: FormGroup = new FormGroup({
 		name: new FormControl('') 
 	})
-
   action_text = '';
-  modelCircunscripcion:{name:'',id:undefined,_id:'',provs:string[]};
+  modelMunicipio:{name:'',id:undefined,_id:'',circuns:string[]};
+  
   ngOnInit(){	}
   
   ngAfterViewInit(): void {	this.refresh();	}
   
 	refresh(){
-		this.$cir.all().subscribe(
+		this.$loc.all().subscribe(
 			(data=>{
 				let e='',list=[];
 				console.log(data[0]);
 				for(let i=0;i<data.length;i++){
 					e=JSON.stringify(data[i]);
-          e = e.substring(e.indexOf("_id")+6, e.indexOf("name")-3 );
-          list.push({_id:e,id:i+1,name:data[i].name});
+					e = e.substring(e.indexOf("_id")+6, e.indexOf("name")-3 );
+					list.push({_id:e,id:i+1,name:data[i].name});
 				}
 				this.migrid.addrow(null,list);
 				this.btnReload.setOptions({disabled:false});
@@ -86,7 +85,7 @@ export class CircunscripcionesComponent implements OnInit {
 	columns : any[]=[
 		{datafield:"_id",text:"ID",width:30,hidden:true},
 		{datafield:"id",text:"#",width:30},
-		{datafield:"name",text:"Circunscripciones",width:250}
+		{datafield:"name",text:"Localidad",width:250}
   ];
   
 	rendergridrows = (params: any): any =>{
@@ -94,24 +93,22 @@ export class CircunscripcionesComponent implements OnInit {
 	}
 	
 	Rowselect(event: any): void{
-  this.formCir.setValue({name:event.args.row.name});
-  console.log(this.formCir.get("name"));
+  this.formMun.setValue({name:event.args.row.name});
+  console.log(this.formMun.get("name"));
       console.log(event.args.row);
   }
 		
 	
     open(_action){
 
-      this.$prov.all().subscribe( (data)=>{
-        let list=[];
+      this.$mun.all().subscribe( (data)=>{
         for(let i=0;i<data.length;i++){
-          list.push({value:data[i].name, label:data[i].name});
+          this.myDropDownList2.addItem({value:data[i].name, label:data[i].name});
         }
-        this.myDropDownList2.source(list);
       })
       if(_action=="Adicionar"){
         this.action_text=_action;
-        this.formCir = new FormGroup({	name: new FormControl('')});
+        this.formMun = new FormGroup({	name: new FormControl('')});
         this.myModal.show();
       }
       else{
@@ -122,9 +119,9 @@ export class CircunscripcionesComponent implements OnInit {
           this.minoti.open();
         }
         else{
-        this.modelCircunscripcion = this.migrid.getrowdata(this.migrid.getselectedrowindex());
+        this.modelMunicipio = this.migrid.getrowdata(this.migrid.getselectedrowindex());
         // console.log(this.migrid.getrowdata(this.migrid.getselectedrowindex()));
-        this.formCir.setValue({name:this.modelCircunscripcion.name});
+        this.formMun.setValue({name:this.modelMunicipio.name});
         this.myModal.show();
         let rowscount = this.migrid.getdatainformation().rowscount;
         }
@@ -144,20 +141,20 @@ export class CircunscripcionesComponent implements OnInit {
 	save(form: FormGroup){
 		console.log(form.value);
 		if(this.action_text=="Adicionar"){
-			this.$prov.save(form.value).subscribe((response)=>{
+			this.$loc.save(form.value).subscribe((response)=>{
 				console.log(response);
 			});
 		}
 		else{
-			this.modelCircunscripcion.name=form.value.name;
-			let data={name:'',id:undefined,provs:[],nameold:''};
-			data.name=this.modelCircunscripcion.name;
-			data.id=this.modelCircunscripcion._id;
-			data.provs=[];
-			// this.modelCircunscripcion.provs = this.myDropDownList2.getCheckedItems();
+			this.modelMunicipio.name=form.value.name;
+			let data={name:'',id:undefined,circuns:[],nameold:''};
+			data.name=this.modelMunicipio.name;
+			data.id=this.modelMunicipio._id;
+			data.circuns=[];
+			// this.modelMunicipio.circuns = this.myDropDownList2.getCheckedItems();
 			let item = this.myDropDownList2.getSelectedItem();
-			data.provs.push(item.value);
-			this.$prov.update(data).subscribe((response)=>{
+			data.circuns.push(item.value);
+			this.$loc.update(data).subscribe((response)=>{
 				console.log(response);
 			},
 			(error)=>{

@@ -1,13 +1,13 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-import { CircunscripcionesComponent } from './circunscripciones.component';
+import { RecintosComponent } from './recintos.component';
 
 
 const routes: Routes = [{
   path:'',
-  component:CircunscripcionesComponent,
+  component:RecintosComponent,
   data:{
-    title:'Circunscripciones'
+    title:'Recintos'
   }
 }];
 
@@ -15,4 +15,4 @@ const routes: Routes = [{
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule]
 })
-export class CircunscripcionesRoutingModule { }
+export class RecintosRoutingModule { }

@@ -23,26 +23,26 @@
 	<div class="modal-dialog" role="document">
 		<div class="modal-content">
 			<div class="modal-header">
-				<h4 class="modal-title">{{accion_text}} Circunscripcion</h4>
+				<h4 class="modal-title">{{accion_text}} Localidad</h4>
 				<button type="button" class="close" (click)="myModal.hide()" aria-label="Close">
 					<span aria-hidden="true">&times;</span>
 				</button>
 			</div>
 			<div class="modal-body">
-				<form [formGroup]="formCir" (ngSubmit)="save(formCir)">
+				<form [formGroup]="formMun" (ngSubmit)="save(formMun)">
 					<div class="row">
 						<div class="form-group col-sm-12  ">
 							<label for="city">Nombre:</label>
 							<input type="text" class="form-control" formControlName="name" id="localidad" placeholder="nombre de la localidad"/>
 						</div>
 						<div class="form-group col-sm-12">
-							<label for="postal-code">Provincia:</label>
-							<jqxDropDownList #myDropDownList2 [filterable]="true" [checkboxes]="true"
+							<label for="postal-code">Municipio:</label>
+							<jqxDropDownList #myDropDownList2 [filterable]="true" 
 									[width]="'100%'" [height]="30" [source]="source2" [selectedIndex]="1" [autoOpen]="false">
 							</jqxDropDownList>
 						</div><!--/.row-->
 						<div class="form-group col-sm-12">
-							<button type="submit" class="btn btn-primary" id="guardar"><i class="fa fa-save"></i>Guardar</button>
+							<button type="submit" class="btn btn-primary" id="guardar">Guardar</button>
 						</div>
 					</div>
 					</form>

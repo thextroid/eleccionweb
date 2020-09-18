@@ -43,10 +43,9 @@ export class DepartamentosComponent implements OnInit {
 			(data=>{
 				let e='';
 				console.log(data[0]);
-				
 				for(let i=0;i<data.length;i++){
 					e=JSON.stringify(data[i]);
-					e = e.substring(e.indexOf("_id")+7, e.indexOf("name")-3 );
+					e = e.substring(e.indexOf("_id")+6, e.indexOf("name")-3 );
 					this.migrid.addrow(0,{
 						_id: e,
 						id:i+1,

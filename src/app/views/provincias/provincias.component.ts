@@ -7,15 +7,14 @@ import { jqxInputComponent } from 'jqwidgets-ng/jqxinput';
 import { jqxListBoxComponent } from 'jqwidgets-ng/jqxlistbox';
 import { jqxNotificationComponent } from 'jqwidgets-ng/jqxnotification';
 import { ModalDirective } from 'ngx-bootstrap/modal';
-import { CircunscripcionesService } from '../../servicios/circunscripciones.service';
 import { ProvinciasService } from '../../servicios/provincias.service';
 
 @Component({
-  selector: 'app-circunscripciones',
-  templateUrl: './circunscripciones.component.html',
-  styleUrls: ['./circunscripciones.component.css']
+  selector: 'app-provincias',
+  templateUrl: './provincias.component.html',
+  styleUrls: ['./provincias.component.css']
 })
-export class CircunscripcionesComponent implements OnInit {
+export class ProvinciasComponent implements OnInit {
 
   @ViewChild("migrid") migrid: jqxGridComponent;
 	@ViewChild('myModal') public myModal: ModalDirective;
@@ -26,36 +25,45 @@ export class CircunscripcionesComponent implements OnInit {
   @ViewChild('btnAdd') btnAdd: jqxButtonComponent;
   @ViewChild('btnEdit') btnEdit: jqxButtonComponent;
   @ViewChild('btnReload') btnReload: jqxButtonComponent;
-  
-	constructor(protected $prov: ProvinciasService, protected $cir: CircunscripcionesService) { }
-	public formCir: FormGroup = new FormGroup({
+	constructor(protected $prov: ProvinciasService) { }
+	public formProv: FormGroup = new FormGroup({
 		name: new FormControl('') 
 	})
-
   action_text = '';
-  modelCircunscripcion:{name:'',id:undefined,_id:'',provs:string[]};
+  modelProvincia:{name:'',id:undefined,_id:'',circuns:string[]};
+  
   ngOnInit(){	}
   
   ngAfterViewInit(): void {	this.refresh();	}
   
 	refresh(){
-		this.$cir.all().subscribe(
+		this.$prov.all().subscribe(
 			(data=>{
-				let e='',list=[];
+				let e='';
 				console.log(data[0]);
 				for(let i=0;i<data.length;i++){
 					e=JSON.stringify(data[i]);
-          e = e.substring(e.indexOf("_id")+6, e.indexOf("name")-3 );
-          list.push({_id:e,id:i+1,name:data[i].name});
+					e = e.substring(e.indexOf("_id")+6, e.indexOf("name")-3 );
+					this.migrid.addrow(0,{
+						_id: e,
+						id:i+1,
+						name:data[i].name
+					});
 				}
-				this.migrid.addrow(null,list);
 				this.btnReload.setOptions({disabled:false});
 			})
 		);
   }
   
   dropDownSource: string[] = ['id','name'];
-	source2: any[];
+	source2: any[] = 
+  [
+    {value:'1',label:'C-104'},
+    {value:'2',label:'C-40'},
+    {value:'3',label:'C-41'},
+    {value:'4',label:'C-42'},
+    {value:'5',label:'C-43'}
+  ];
 	source: any =	{
 		localdata:[],
 		datafields: [
@@ -86,7 +94,7 @@ export class CircunscripcionesComponent implements OnInit {
 	columns : any[]=[
 		{datafield:"_id",text:"ID",width:30,hidden:true},
 		{datafield:"id",text:"#",width:30},
-		{datafield:"name",text:"Circunscripciones",width:250}
+		{datafield:"name",text:"Provincias",width:250}
   ];
   
 	rendergridrows = (params: any): any =>{
@@ -94,53 +102,48 @@ export class CircunscripcionesComponent implements OnInit {
 	}
 	
 	Rowselect(event: any): void{
-  this.formCir.setValue({name:event.args.row.name});
-  console.log(this.formCir.get("name"));
+  this.formProv.setValue({name:event.args.row.name});
+  console.log(this.formProv.get("name"));
       console.log(event.args.row);
   }
 		
 	
-    open(_action){
+  open(_action){
+    if(_action=="Adicionar"){
+      this.action_text=_action;
+      this.formProv = new FormGroup({	name: new FormControl('')});
+      this.myModal.show();
 
-      this.$prov.all().subscribe( (data)=>{
-        let list=[];
-        for(let i=0;i<data.length;i++){
-          list.push({value:data[i].name, label:data[i].name});
-        }
-        this.myDropDownList2.source(list);
-      })
-      if(_action=="Adicionar"){
-        this.action_text=_action;
-        this.formCir = new FormGroup({	name: new FormControl('')});
-        this.myModal.show();
+    }
+    else{
+      this.action_text=_action;
+      let selectedrowindex = this.migrid.getselectedrowindex();
+      if(selectedrowindex==-1){
+        // let nt = jqwidgets.createInstance('#notification1','jqxNotification',{theme:'info',autoOpen:true});
+        this.minoti.open();
       }
       else{
-        this.action_text=_action;
-        let selectedrowindex = this.migrid.getselectedrowindex();
-        if(selectedrowindex==-1){
-          // let nt = jqwidgets.createInstance('#notification1','jqxNotification',{theme:'info',autoOpen:true});
-          this.minoti.open();
-        }
-        else{
-        this.modelCircunscripcion = this.migrid.getrowdata(this.migrid.getselectedrowindex());
-        // console.log(this.migrid.getrowdata(this.migrid.getselectedrowindex()));
-        this.formCir.setValue({name:this.modelCircunscripcion.name});
-        this.myModal.show();
-        let rowscount = this.migrid.getdatainformation().rowscount;
-        }
+      this.modelProvincia = this.migrid.getrowdata(this.migrid.getselectedrowindex());
+      // console.log(this.migrid.getrowdata(this.migrid.getselectedrowindex()));
+      this.formProv.setValue({name:this.modelProvincia.name});
+      this.myModal.show();
+      let rowscount = this.migrid.getdatainformation().rowscount;
       }
     }
-    
-    find(){
-      this.smallModal.show();
-    }
-    reload (event){
-      console.log(event);
-      this.btnReload.setOptions({disabled:true});
-      this.migrid.clear();
-      this.refresh();
-    }
-    
+  }
+  
+  find(){
+    this.smallModal.show();
+  }
+  reload (event){
+    console.log(event);
+    this.btnReload.setOptions({disabled:true});
+    this.migrid.clear();
+    this.refresh();
+  }
+  clearBtnOnClick(): void {
+      this.migrid.clearfilters();
+  }
 	save(form: FormGroup){
 		console.log(form.value);
 		if(this.action_text=="Adicionar"){
@@ -149,14 +152,16 @@ export class CircunscripcionesComponent implements OnInit {
 			});
 		}
 		else{
-			this.modelCircunscripcion.name=form.value.name;
-			let data={name:'',id:undefined,provs:[],nameold:''};
-			data.name=this.modelCircunscripcion.name;
-			data.id=this.modelCircunscripcion._id;
-			data.provs=[];
-			// this.modelCircunscripcion.provs = this.myDropDownList2.getCheckedItems();
-			let item = this.myDropDownList2.getSelectedItem();
-			data.provs.push(item.value);
+			this.modelProvincia.name=form.value.name;
+			let data={name:'',id:undefined,circuns:[],nameold:''};
+			data.name=this.modelProvincia.name;
+			data.id=this.modelProvincia._id;
+			data.circuns=[];
+			// this.modelProvincia.circuns = this.myDropDownList2.getCheckedItems();
+			let items = this.myDropDownList2.getCheckedItems();
+			for(let i=0;i<items.length;i++){
+				data.circuns.push(items[i].value);
+			}
 			this.$prov.update(data).subscribe((response)=>{
 				console.log(response);
 			},
@@ -166,5 +171,4 @@ export class CircunscripcionesComponent implements OnInit {
 		}
 		this.myModal.hide();
 	}
-
 }

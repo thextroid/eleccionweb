@@ -1,8 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
-import { CircunscripcionesRoutingModule } from './circunscripciones-routing.module';
-import { CircunscripcionesComponent } from './circunscripciones.component';
 import { ModalModule } from 'ngx-bootstrap/modal';
 import { HttpClientModule } from '@angular/common/http';
 import { jqxGridModule } from 'jqwidgets-ng/jqxgrid';
@@ -11,24 +9,26 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { jqxNotificationModule } from 'jqwidgets-ng/jqxnotification';
 import { jqxWindowModule } from 'jqwidgets-ng/jqxwindow';
 import { jqxDropDownListModule } from 'jqwidgets-ng/jqxdropdownlist';
-import { CircunscripcionesService } from '../../servicios/circunscripciones.service';
 import { jqxListBoxModule } from 'jqwidgets-ng/jqxlistbox';
 import { jqxInputModule } from 'jqwidgets-ng/jqxinput';
-import { MunicipiosModule } from '../municipios/municipios.module';
+import { MesasComponent } from './mesas.component';
+import { MesasRoutingModule } from './mesas-routing.module';
 import { MunicipiosService } from '../../servicios/municipios.service';
+import { LocalidadesService } from '../../servicios/localidades.service';
 import { ProvinciasService } from '../../servicios/provincias.service';
+import { RecintosService } from '../../servicios/recintos.service';
 
 
 @NgModule({
-  declarations: [CircunscripcionesComponent],
+  declarations: [MesasComponent],
   imports: [
     ModalModule.forRoot(),
     CommonModule,HttpClientModule,
-    CircunscripcionesRoutingModule,jqxGridModule,jqxButtonModule,ReactiveFormsModule,FormsModule,
+    MesasRoutingModule,jqxGridModule,jqxButtonModule,ReactiveFormsModule,FormsModule,
     jqxListBoxModule,jqxDropDownListModule,jqxNotificationModule
   ],
   providers:[
-    CircunscripcionesService,ProvinciasService
+    MunicipiosService, LocalidadesService,ProvinciasService,RecintosService
   ]
 })
-export class CircunscripcionesModule { }
+export class MesasModule { }

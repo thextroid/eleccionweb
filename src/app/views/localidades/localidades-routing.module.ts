@@ -1,13 +1,13 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-import { CircunscripcionesComponent } from './circunscripciones.component';
+import { LocalidadesComponent } from './localidades.component';
 
 
 const routes: Routes = [{
   path:'',
-  component:CircunscripcionesComponent,
+  component:LocalidadesComponent,
   data:{
-    title:'Circunscripciones'
+    title:'Localidades'
   }
 }];
 
@@ -15,4 +15,4 @@ const routes: Routes = [{
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule]
 })
-export class CircunscripcionesRoutingModule { }
+export class LocalidadesRoutingModule { }

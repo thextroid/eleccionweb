@@ -56,12 +56,32 @@ export const routes: Routes = [
 				loadChildren:()=> import('./views/users/users.module').then(m=> m.UsersModule)
 			},
 			{
-				path:'datos',
-				loadChildren:()=> import('./views/datos/datos.module').then(m=> m.DatosModule)
+				path:'circunscripciones',
+				loadChildren:()=> import('./views/circunscripciones/circunscripciones.module').then(m=> m.CircunscripcionesModule)
 			},
 			{
 				path:'departamentos',
 				loadChildren:()=> import('./views/departamentos/departamentos.module').then(m=> m.DepartamentosModule)
+			},
+			{
+				path:'provincias',
+				loadChildren:()=> import('./views/provincias/provincias.module').then(m=> m.ProvinciasModule)
+			},
+			{
+				path:'municipios',
+				loadChildren:()=> import('./views/municipios/municipios.module').then(m=> m.MunicipiosModule)
+			},
+			{
+				path:'localidades',
+				loadChildren:()=> import('./views/localidades/localidades.module').then(m=> m.LocalidadesModule)
+			},
+			{
+				path:'recintos',
+				loadChildren:()=> import('./views/recintos/recintos.module').then(m=> m.RecintosModule)
+			},
+			{
+				path:'mesas',
+				loadChildren:()=> import('./views/mesas/mesas.module').then(m=> m.MesasModule)
 			},
 			{
 				path: 'base',
