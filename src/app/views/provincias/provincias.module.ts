@@ -15,6 +15,7 @@ import { jqxListBoxModule } from 'jqwidgets-ng/jqxlistbox';
 import { HttpClientModule } from '@angular/common/http';
 import { ProvinciasService } from '../../servicios/provincias.service';
 import { SnotifyModule, SnotifyService, ToastDefaults } from 'ng-snotify';
+import { jqxValidatorModule } from 'jqwidgets-ng/jqxvalidator';
 
 
 @NgModule({
@@ -24,7 +25,7 @@ import { SnotifyModule, SnotifyService, ToastDefaults } from 'ng-snotify';
     CommonModule,HttpClientModule,
     ProvinciasRoutingModule,jqxGridModule,jqxButtonModule,ReactiveFormsModule,FormsModule,
     jqxListBoxModule,jqxDropDownListModule,jqxWindowModule,jqxInputModule,jqxNotificationModule,
-    SnotifyModule,jqxInputModule
+    SnotifyModule,jqxInputModule,jqxValidatorModule,jqxValidatorModule
   ],
   providers:[
     { provide: 'SnotifyToastConfig', useValue: ToastDefaults},

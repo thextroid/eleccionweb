@@ -14,6 +14,8 @@ import { DepartamentosService } from '../../servicios/departamentos.service';
 import { HttpClientModule } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ModalModule } from 'ngx-bootstrap/modal';
+import { jqxValidatorModule } from 'jqwidgets-ng/jqxvalidator';
+import { SnotifyModule, SnotifyService, ToastDefaults } from 'ng-snotify';
 
 @NgModule({
   declarations: [DepartamentosComponent],
@@ -21,8 +23,14 @@ import { ModalModule } from 'ngx-bootstrap/modal';
     ModalModule.forRoot(),
     CommonModule,HttpClientModule,
     DepartamentosRoutingModule,jqxGridModule,jqxButtonModule,ReactiveFormsModule,FormsModule,
-    jqxListBoxModule,jqxDropDownListModule,jqxWindowModule,jqxInputModule,jqxNotificationModule
+    jqxListBoxModule,jqxDropDownListModule,jqxWindowModule,jqxInputModule,jqxNotificationModule,
+    jqxValidatorModule,SnotifyModule
   ],
-  providers:[DepartamentosService]
+  providers:[
+    
+    { provide: 'SnotifyToastConfig', useValue: ToastDefaults},
+    SnotifyService,
+    DepartamentosService
+  ]
 })
 export class DepartamentosModule { }

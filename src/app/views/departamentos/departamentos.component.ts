@@ -5,7 +5,9 @@ import { jqxGridComponent } from 'jqwidgets-ng/jqxgrid';
 import { jqxInputComponent } from 'jqwidgets-ng/jqxinput';
 import { jqxListBoxComponent } from 'jqwidgets-ng/jqxlistbox';
 import { jqxNotificationComponent } from 'jqwidgets-ng/jqxnotification'; 
+import { jqxValidatorComponent } from 'jqwidgets-ng/jqxvalidator';
 import { jqxWindowComponent } from 'jqwidgets-ng/jqxwindow';
+import { SnotifyPosition, SnotifyService } from 'ng-snotify';
 import { ModalDirective } from 'ngx-bootstrap/modal';
 import { Departamento } from '../../models/departamento';
 import { DepartamentosService } from '../../servicios/departamentos.service';
@@ -25,7 +27,9 @@ export class DepartamentosComponent implements OnInit {
 	@ViewChild('myDropDownList2', { static: false }) myDropDownList2: jqxDropDownListComponent;
 	@ViewChild('myInput', { static: false }) myInput: jqxInputComponent;
 	@ViewChild('smallModal') public smallModal: ModalDirective;
-	constructor(protected $dep: DepartamentosService) { }
+	@ViewChild('inputNombre', { static: false }) inputNombre: jqxInputComponent;
+	@ViewChild('myValidator', { static: false }) myValidator: jqxValidatorComponent;
+	constructor(protected $dep: DepartamentosService,protected $notifier:SnotifyService) { }
 	public formDep: FormGroup = new FormGroup({
 		name: new FormControl('')
 	})
@@ -90,7 +94,6 @@ export class DepartamentosComponent implements OnInit {
 		datatype: 'array',
 		root: 'Rows',
 		beforeprocessing: (data: any) => {
-			console.log(this.source.localdata);
 			this.source.totalrecords = data.TotalRows;
 		}
 	};
@@ -109,8 +112,6 @@ export class DepartamentosComponent implements OnInit {
 	Rowselect(event: any): void 
     {
 		this.formDep.setValue({name:event.args.row.name});
-		console.log(this.formDep.get("name"));
-        console.log(event.args.row);
     }
 		
 	
@@ -120,19 +121,15 @@ export class DepartamentosComponent implements OnInit {
         let addButtonContainer = document.createElement('div');
         let deleteButtonContainer = document.createElement('div');
         let reloadButtonContainer = document.createElement('div');
-        let searchButtonContainer = document.createElement('div');
         addButtonContainer.id = 'addButton';
         deleteButtonContainer.id = 'deleteButton';
         reloadButtonContainer.id = 'reloadButton';
-        searchButtonContainer.id = 'searchButton';
         addButtonContainer.style.cssText = 'float: left; margin-left: 5px;';
         deleteButtonContainer.style.cssText = 'float: left; margin-left: 5px;';
         reloadButtonContainer.style.cssText = 'float: left; margin-left: 5px;';
-        searchButtonContainer.style.cssText = 'float: left; margin-left: 5px;';
         buttonsContainer.appendChild(addButtonContainer);
         buttonsContainer.appendChild(deleteButtonContainer);
         buttonsContainer.appendChild(reloadButtonContainer);
-        buttonsContainer.appendChild(searchButtonContainer);
         statusbar[0].appendChild(buttonsContainer);
     }
     createButtons(): void {
@@ -151,7 +148,6 @@ export class DepartamentosComponent implements OnInit {
         let searchButtonOptions = {
 			width: 80, height: 25, value: '<i class="fa fa-search"></i>'
         }
-        let searchButton = jqwidgets.createInstance('#searchButton', 'jqxButton', searchButtonOptions);
         // add new row.
         addButton.addEventHandler('click', (event: any): void => {
 			this.action_text="Adicionar";
@@ -175,79 +171,83 @@ export class DepartamentosComponent implements OnInit {
 			// console.log(this.migrid.getrowdata(this.migrid.getselectedrowindex()));
 			this.formDep.setValue({name:this.modelDepartamento.name});
 			this.myModal.show();
-            let rowscount = this.migrid.getdatainformation().rowscount;
-				
 			}
-            // let id = this.migrid.getrowid(selectedrowindex);
-            // this.migrid.deleterow(id);
         });
-        // reload grid data.
         reloadButton.addEventHandler('click', (event: any): void => {
 			this.migrid.clear();
 			reloadButton.setOptions({disabled:true});
 			this.refresh(reloadButton,0);
         });
-        // search for a record.
-        searchButton.addEventHandler('click', (event: any): void => {
-            this.smallModal.show();
-        });
     }
-    findBtnOnClick(): void {
-        this.migrid.clearfilters();
-        let searchColumnIndex = this.myDropDownList.selectedIndex();
-        let datafield = '';
-        switch (searchColumnIndex) {
-            case 0:
-                datafield = 'id';
-                break;
-            case 1:
-                datafield = 'name';
-                break;
-        }
-        let searchText = this.myInput.val();
-        let filtergroup = new jqx.filter();
-        let filter_or_operator = 1;
-        let filtervalue = searchText;
-        let filtercondition = 'contains';
-        let filter = filtergroup.createfilter('stringfilter', filtervalue, filtercondition);
-        filtergroup.addfilter(filter_or_operator, filter);
-        this.migrid.addfilter(datafield, filtergroup);
-        // apply the filters.
-		this.migrid.applyfilters();
-		this.smallModal.hide();
-    }
+    
     clearBtnOnClick(): void {
         this.migrid.clearfilters();
     }
-	save(form: FormGroup){
-		console.log(form.value);
+	invalidValidation(){
+		this.mensaje('Algunos datos fueron llenados incorrectamente','Formulario',3);
+	}
+	checkValidation(){
+		this.myValidator.validate();
+	}
+	successValidation(){
+		let data= {
+			name:this.inputNombre.val()
+		}
 		if(this.action_text=="Adicionar"){
-			this.$dep.save(form.value).subscribe((response)=>{
-				console.log(response);
+			this.$dep.save(data).subscribe((response)=>{
+				let rowcount	=	this.migrid.getdatainformation().rowscount;
+				this.migrid.addrow(rowcount,{
+					_id:response._id,
+					id:rowcount+1,
+					name:response.name
+				});
+				this.mensaje('Se adiciono satisfactoriamente','Localidad',0);
 			});
 		}
 		else{
-			this.modelDepartamento.name=form.value.name;
-			let data={name:'',id:undefined,circuns:[],nameold:''};
-			data.name=this.modelDepartamento.name;
-			data.nameold=this.modelDepartamento.nameold;
-			data.id=this.modelDepartamento._id;
-			data.circuns=[];
-			// this.modelDepartamento.circuns = this.myDropDownList2.getCheckedItems();
-			let items = this.myDropDownList2.getCheckedItems();
-			for(let i=0;i<items.length;i++){
-				data.circuns.push(items[i].value);
-			}
-			this.$dep.update(data).subscribe((response)=>{
-				console.log(response);
+			let rowindex	=	this.migrid.getselectedrowindex();
+			let rowdata	=	this.migrid.getrowdata(rowindex);
+			this.$dep.update(rowdata._id,data).subscribe((response)=>{
+				this.migrid.updaterow(rowindex,{
+					_id:response._id,
+					id:rowdata.id,
+					name:response.name
+				});
+				this.mensaje('Se actualizó satisfactoriamente!','Localidad',0);
 			},
 			(error)=>{
+				this.mensaje('No se pudo Actualizar, recargue o intente de nuevo!','Localidad',3);
 				console.log(error);
 			});
 		}
 		this.myModal.hide();
 	}
-	update(form:FormGroup){
-
+	mensaje(content:string,title:string,tipo){
+		var op={
+			timeout: 2000,
+			titleMaxLength:22,
+			showProgressBar: false,
+			closeOnClick: true,
+			pauseOnHover: true,
+			position:SnotifyPosition.rightTop
+		};
+		if(tipo==0)
+		this.$notifier.success(content,title, op);
+		if(tipo==1)
+		this.$notifier.warning(content,title, op);
+		if(tipo==2)
+		this.$notifier.info(content,title, op);
+		if(tipo==3)
+		this.$notifier.error(content,title, op);
 	}
+	reset(){
+		this.inputNombre.val('');
+		this.myValidator.hide();
+	}
+
+
+	rules=[
+		{ 	input: '.inNombre', message: 'Nombre es requerida!', action: 'keyup, blur', rule: 'required' },
+		{ 	input: '.inNombre', message: 'Caracteres permitidos: (3 a 255)', action: 'keyup, blur', rule: 'length=3,255' }
+	];
 }

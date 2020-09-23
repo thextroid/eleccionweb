@@ -13,6 +13,7 @@ import * as _ from 'lodash';
 import { DepartamentosService } from '../../servicios/departamentos.service';
 import { $ } from 'protractor';
 import {  SnotifyPosition, SnotifyService, SnotifyStyle, SnotifyToast } from 'ng-snotify';
+import { jqxValidatorComponent } from 'jqwidgets-ng/jqxvalidator';
 @Component({
   selector: 'app-circunscripciones',
   templateUrl: './circunscripciones.component.html',
@@ -32,6 +33,7 @@ export class CircunscripcionesComponent implements OnInit {
   @ViewChild('btnAdd') btnAdd: jqxButtonComponent;
   @ViewChild('btnEdit') btnEdit: jqxButtonComponent;
   @ViewChild('btnReload') btnReload: jqxButtonComponent;
+  @ViewChild('myValidator', { static: false }) myValidator: jqxValidatorComponent;
   
 	constructor(protected $prov: ProvinciasService, protected $cir: CircunscripcionesService,
 		protected $dep:DepartamentosService,protected $notifier:SnotifyService) { }
@@ -206,8 +208,13 @@ export class CircunscripcionesComponent implements OnInit {
 		this.refresh();
 	}
 
-	save(form: FormGroup){
-		console.log(form.value);
+	invalidValidation(){
+		this.mensaje('Algunos datos fueron llenados incorrectamente','Formulario',3);
+	}
+	checkValidation(){
+		this.myValidator.validate();
+	}
+	successValidation(){
 		let inName	=	this.inputNombre.val();
 		let inDep		=	this.dropDep.getSelectedItem().value;
 		let inProvs	=	_.map(this.dropProv.getCheckedItems(),'value');
@@ -248,37 +255,25 @@ export class CircunscripcionesComponent implements OnInit {
 		this.dropProv.uncheckAll()
 	}
 	mensaje(content:string,title:string,tipo){
+		var op={
+			timeout: 2000,
+			titleMaxLength:22,
+			showProgressBar: false,
+			closeOnClick: true,
+			pauseOnHover: true,
+			position:SnotifyPosition.rightTop
+		};
 		if(tipo==0)
-		this.$notifier.success(title,content, {
-			timeout: 2000,
-			showProgressBar: false,
-			closeOnClick: true,
-			pauseOnHover: true,
-			position:SnotifyPosition.rightTop
-		});
+		this.$notifier.success(content,title, op);
 		if(tipo==1)
-		this.$notifier.warning(title,content, {
-			timeout: 2000,
-			showProgressBar: false,
-			closeOnClick: true,
-			pauseOnHover: true,
-			position:SnotifyPosition.rightTop
-		});
+		this.$notifier.warning(content,title, op);
 		if(tipo==2)
-		this.$notifier.info(title,content, {
-			timeout: 2000,
-			showProgressBar: false,
-			closeOnClick: true,
-			pauseOnHover: true,
-			position:SnotifyPosition.rightTop
-		});
+		this.$notifier.info(content,title, op);
 		if(tipo==3)
-		this.$notifier.error(title,content, {
-			timeout: 2000,
-			showProgressBar: false,
-			closeOnClick: true,
-			pauseOnHover: true,
-			position:SnotifyPosition.rightTop
-		});
+		this.$notifier.error(content,title, op);
 	}
+
+	rules=[
+		{ 	input: '.', message: 'Nombre es requerida!', action: 'keyup, blur', rule: 'required' }
+	];
 }

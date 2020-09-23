@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { FormControl, FormGroup } from '@angular/forms';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { jqxButtonComponent } from 'jqwidgets-ng/jqxbuttons';
 import { jqxDropDownListComponent } from 'jqwidgets-ng/jqxdropdownlist';
 import { jqxGridComponent } from 'jqwidgets-ng/jqxgrid';
@@ -50,7 +50,7 @@ export class RecintosComponent implements OnInit {
 	
 	ngOnInit(){ 	}
 	
-	ngAfterViewInit(): void {	this.refresh();	}
+	ngAfterViewInit(): void {	this.refresh();	this.reset();}
 	lista:any[];
 	refresh(){
 		this.$rec.all().subscribe(
@@ -224,9 +224,16 @@ export class RecintosComponent implements OnInit {
 		this.migrid.clear();
 		this.refresh();
 	} 
-	save(form: FormGroup){
-		let valLong = 	this.inputLong.val();
-		let valLat	= 	this.inputLat.val();
+	invalidValidation(){
+		this.mensaje('Algunos datos fueron llenados incorrectamente','Formulario',3);
+	}
+	checkValidation(){
+		this.myValidator.validate();
+	}
+	successValidation(){
+		let Localization	= 	[];
+		if(this.inputLat.val()!=0 && this.inputLong.val()!=0)
+			Localization = [this.inputLat.val(),this.inputLong.val()];
 		let valInst = 	this.inputRecinto.value();
 		let valMesa = 	this.inputMesa.val();
 		let idMun 	= 	this.dropdownMunicipio.getSelectedItem().value;
@@ -243,7 +250,7 @@ export class RecintosComponent implements OnInit {
 			numeroMesas:valMesa,
 			municipioId:idMun,
 			localidadId:idLoc,
-			localizacion:[valLat,valLong],
+			localizacion:Localization,
 			tipo:this.modelRecinto.tipo
 		};
 		console.log(data)
@@ -269,10 +276,11 @@ export class RecintosComponent implements OnInit {
 		}
 		else{
 			let id=this.migrid.getselectedrowindex();
-			this.$rec.update(this.migrid.getrowdata(id)._id,data).subscribe((response)=>{
+			let rowdata=this.migrid.getrowdata(id);
+			this.$rec.update(rowdata._id,data).subscribe((response)=>{
 				this.migrid.updaterow(id,{
 					_id:response._id,
-					id:id,
+					id:rowdata.id,
 					institucion:response.institucion,
 					tipo:response.tipo,
 					municipio:response.municipio.name,
@@ -317,8 +325,49 @@ export class RecintosComponent implements OnInit {
 		if(tipo==3)
 		this.$notifier.error(content,title, op);
 	}
+	prueba(){
+		this.myValidator.validateInput('.inMun');
+		this.myValidator.validateInput('.inLocal');
+		this.myValidator.validateInput('.inTipo');
+	}
 	rules=[
-		{ input: '.inInstitucion', message: 'Institucipon es requerida!', action: 'keyup, blur', rule: 'required' },
-		{ input: '.inInstitucion', message: '3 caracteres como mínimo!', action: 'keyup, blur', rule: 'minLength=3' }
+		{ 	input: '.inInstitucion', message: 'Institución es requerida!', action: 'keyup, blur', rule: 'required' },
+		{ 	input: '.inInstitucion', message: '4 caracteres como mínimo!', action: 'keyup, blur', rule: 'minLength=4' },
+		{ 	input: '.inInstitucion', message: '255 caracteres como mínimo!', action: 'keyup, blur', rule: 'maxLength=255' },
+		{ 	input: '.inLat', message: 'Latitud incorrecta!', action: 'keyup, blur', 
+			rule: (input:any, commit:any):boolean=>{
+				var lat = this.inputLat.val();
+				var a=/^(\+|-)?(?:90(?:(?:\.0{1,6})?)|(?:[0-9]|[1-8][0-9])(?:(?:\.[0-9]{1,6})?))$/;
+				return a.test(lat);
+			} 
+		},
+		{ 	input: '.inLong', message: 'Longitud incorrecta!', action: 'keyup, blur', 
+			rule: (input:any, commit:any):boolean=>{
+				var long = this.inputLong.val();
+				var a=/^(\+|-)?(?:90(?:(?:\.0{1,6})?)|(?:[0-9]|[1-8][0-9])(?:(?:\.[0-9]{1,6})?))$/;
+				return a.test(long);
+			} 
+		},
+		{ 	input: '.inLocal', message: 'Se requiere una localidad!', action: '', 
+			rule: (input:any, commit:any):boolean=>{
+				 return this.dropdownLocalidad.getSelectedIndex()!=-1;
+			} 
+		},
+		{ 	input: '.inMun', message: 'Se requiere un Municipio!', action: '', 
+			rule: (input:any, commit:any):boolean=>{
+				 return this.dropdownMunicipio.getSelectedIndex()!=-1;
+			} 
+		},
+		{ 	input: '.inTipo', message: 'Se requiere al menos un Tipo', action: '', 
+			rule: (input:any, commit:any):boolean=>{
+
+				 return this.dropdownTipo.getCheckedItems().length>0;
+			} 
+		},
+		{ 	input: '.inMesa', message: 'entre (1 y 250)', action: 'keyup, blur', 
+			rule: (input:any, commit:any):boolean=>{
+				return this.inputMesa.val()>=1 && this.inputMesa.val()<=250;
+			} 
+		}
 	]
 }

@@ -1,6 +1,6 @@
 <jqxButton #btnAdd [width]='120' [height]='40' [template]="'success'" (onClick)="open('Adicionar')"><i class="fa fa-plus"></i> Adicionar</jqxButton>
 <jqxButton #btnEdit [width]='120' [height]='40' [template]="'warning'" (onClick)="open('Editar')"><i class="fa fa-pencil"></i> Editar</jqxButton>
-<jqxButton #btnReload [width]='120' [height]='40' [template]="'primary'" (onClick)="reload()"><i class="fa fa-refresh"></i> Refrescar</jqxButton>
+<jqxButton #btnReload [width]='120' [height]='40' [template]="'primary'" (onClick)="reload($event)"><i class="fa fa-refresh"></i> Refrescar</jqxButton>
 <div class="row">
 	<div class="col-sm-6">
 		<jqxGrid #migrid
@@ -23,31 +23,34 @@
 	<div class="modal-dialog" role="document">
 		<div class="modal-content">
 			<div class="modal-header">
-				<h4 class="modal-title">{{accion_text}} Municipio</h4>
+				<h4 class="modal-title">{{action_text}} Municipio</h4>
 				<button type="button" class="close" (click)="myModal.hide()" aria-label="Close">
 					<span aria-hidden="true">&times;</span>
 				</button>
 			</div>
 			<div class="modal-body">
-				<form [formGroup]="formMun" (ngSubmit)="save(formMun)">
-					<div class="row">
-						<div class="form-group col-sm-12  ">
-							<label for="city">Nombre:</label>
-							<jqxInput #inputMunicipio
-								[width]="'100%'">
-							</jqxInput>
+				<jqxValidator #myValidator [rules]="rules" [animationDuration]="0" (onValidationError)="invalidValidation()" (onValidationSuccess)="successValidation()" [hintType]="'label'">
+
+					<form [formGroup]="formMun" (ngSubmit)="checkValidation()">
+						<div class="row">
+							<div class="form-group col-sm-12  ">
+								<label for="city">Nombre:</label>
+								<jqxInput #inputMunicipio class="inNombre"
+									[width]="'100%'">
+								</jqxInput>
+							</div>
+							<div class="form-group col-sm-12">
+								<label for="postal-code">Provincia:</label>
+								<jqxDropDownList #myDropDownList2  class="inProv" [filterable]="true" [filterPlaceHolder]="'buscar...'"
+										[width]="'100%'" [height]="30" [source]="source2" [autoOpen]="false" (onChange)="prueba()">
+								</jqxDropDownList>
+							</div><!--/.row-->
+							<div class="form-group col-sm-12">
+								<button type="submit" class="btn btn-primary" id="guardar">Guardar</button>
+							</div>
 						</div>
-						<div class="form-group col-sm-12">
-							<label for="postal-code">Provincia:</label>
-							<jqxDropDownList #myDropDownList2 [filterable]="true" 
-									[width]="'100%'" [height]="30" [source]="source2" [autoOpen]="false">
-							</jqxDropDownList>
-						</div><!--/.row-->
-						<div class="form-group col-sm-12">
-							<button type="submit" class="btn btn-primary" id="guardar">Guardar</button>
-						</div>
-					</div>
-					</form>
+						</form>
+				</jqxValidator>
 			</div>
 		</div><!-- /.modal-content -->
 	</div><!-- /.modal-dialog -->
