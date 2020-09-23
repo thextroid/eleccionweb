@@ -2,7 +2,7 @@
 	<div class="col-sm-5">
 	<jqxButton #btnAdd class="col-sm-4" [height]='40' [template]="'success'" (onClick)="open('Adicionar')"><i class="fa fa-plus"></i> Adicionar</jqxButton>
 	<jqxButton #btnEdit class="col-sm-4" [height]='40' [template]="'warning'" (onClick)="open('Editar')"><i class="fa fa-pencil"></i> Editar</jqxButton>
-	<jqxButton #btnReload class="col-sm-3" [height]='40' [template]="'primary'" (onClick)="reload()"><i class="fa fa-refresh"></i> Refrescar</jqxButton>
+	<jqxButton #btnReload class="col-sm-3" [height]='40' [template]="'primary'" (onClick)="reload($event)"><i class="fa fa-refresh"></i> Refrescar</jqxButton>
 	</div>
 </div>
 <div class="row">

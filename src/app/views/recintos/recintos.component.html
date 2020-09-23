@@ -1,6 +1,6 @@
 <jqxButton #btnAdd [width]='120' [height]='40' [template]="'success'" (onClick)="open('Adicionar')"><i class="fa fa-plus"></i> Adicionar</jqxButton>
 <jqxButton #btnEdit [width]='120' [height]='40' [template]="'warning'" (onClick)="open('Editar')"><i class="fa fa-pencil"></i> Editar</jqxButton>
-<jqxButton #btnReload [width]='120' [height]='40' [template]="'primary'" (onClick)="reload()"><i class="fa fa-refresh"></i> Refrescar</jqxButton>
+<jqxButton #btnReload [width]='120' [height]='40' [template]="'primary'" (onClick)="reload($event)"><i class="fa fa-refresh"></i> Refrescar</jqxButton>
 <div class="row">
 	<div class="col-sm-12">
 		<jqxGrid #migrid class="migrid"
