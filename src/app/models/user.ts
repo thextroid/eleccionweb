@@ -1,4 +1,5 @@
 export interface User{
+_id:Number;
 name: string;
 fullName: string;
 telefono:number;
