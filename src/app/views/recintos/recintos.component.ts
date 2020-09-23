@@ -10,7 +10,7 @@ import { ModalDirective } from 'ngx-bootstrap/modal';
 import { RecintosService } from '../../servicios/recintos.service';
 import { MunicipiosService } from '../../servicios/municipios.service';
 import { LocalidadesService } from '../../servicios/localidades.service';
-import { Recinto } from '../../models/recinto';
+import { Recinto } from '../../models/Recinto';
 import { jqxNumberInputComponent } from 'jqwidgets-ng/jqxnumberinput';
 import { jqxValidatorComponent } from 'jqwidgets-ng/jqxvalidator';
 import { SnotifyComponent, SnotifyPosition, SnotifyService } from 'ng-snotify';
