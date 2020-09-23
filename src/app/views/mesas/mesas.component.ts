@@ -12,6 +12,9 @@ import { LocalidadesService } from '../../servicios/localidades.service';
 import { Recinto } from '../../models/recinto';
 import { RecintosService } from '../../servicios/recintos.service';
 import { ProvinciasService } from '../../servicios/provincias.service';
+import { CircunscripcionesComponent } from '../circunscripciones/circunscripciones.component';
+import { CircunscripcionesService } from '../../servicios/circunscripciones.service';
+import { jqxValidatorComponent } from 'jqwidgets-ng/jqxvalidator';
 
 @Component({
 	selector: 'app-mesas',
@@ -31,8 +34,10 @@ export class MesasComponent implements OnInit {
 	@ViewChild('btnAdd') btnAdd: jqxButtonComponent;
 	@ViewChild('btnEdit') btnEdit: jqxButtonComponent;
 	@ViewChild('btnReload') btnReload: jqxButtonComponent;
+
   constructor(protected $rec: RecintosService,protected $mun: MunicipiosService,
-    protected $local: LocalidadesService,protected $prov: ProvinciasService) { }
+		protected $local: LocalidadesService,protected $prov: ProvinciasService,
+		protected $cir: CircunscripcionesService) { }
     
 	formRec: FormGroup = new FormGroup({
 		institucion: new FormControl('') 
@@ -43,21 +48,22 @@ export class MesasComponent implements OnInit {
 	
   ngOnInit(){	
     // this.dropMun.disabled(true);
-    // this.dropProv.disabled(true);
+		// this.dropProv.disabled(true);
+		
 }
 	
 	ngAfterViewInit(): void { this.refresh();}
-	lista:any[];
+
 	refresh(){
-    this.$prov.all().subscribe((data)=>{
-      // let list:any[]=[];
-      // for(let i=0;i<data.length;i++){
-      //   list.push({value:data[i].name});
-      // }
-      // this.dropProv.source(list);
-    },(error)=>{
-      console.log(error);
-    })
+		this.$cir.all().subscribe((data)=>{
+		let list:any[]=[];
+		for(let i=0;i<data.length;i++){
+			list.push({value:data[i]._id,label:data[i].name});
+		}
+		this.dropCir.source(list);
+		},(error)=>{
+		console.log(error);
+		})
 		// this.$rec.all().subscribe(
 		// 	(data=>{
 		// 		let e='',temp=[];
@@ -91,13 +97,7 @@ export class MesasComponent implements OnInit {
     };
     dataAdapterMun: any = new jqx.dataAdapter(this.sourceMunicipios);
 	sourceLocalidades: any[];
-	sourceCir: any[]=[
-		'C-104',
-		'c-40',
-		'c-41',
-		'c-42',
-		'c-43'
-	];
+
 	source: any =	{
 		localdata:[],
 		datafields: [
@@ -196,33 +196,39 @@ export class MesasComponent implements OnInit {
 
    ]
   cirCambiando(event:any):void{
-    
-    if(event.args.index==0)
-    this.dropProv.source(this.a.slice(0,1));
-    if(event.args.index==1)
-    this.dropProv.source(this.a.slice(1,2));
-    if(event.args.index==2)
-    this.dropProv.source(this.a.slice(2,3));
-    if(event.args.index==3)
-    this.dropProv.source(this.a.slice(3,4));
-    if(event.args.index==4)
-    this.dropProv.source(this.a.slice(4,6));
-    this.dropProv.setOptions({disabled:false});
+    this.dropProv.clearSelection();
+    this.dropMun.clearSelection();
+		var idcir	=	this.dropCir.getSelectedItem().value;
+		this.$cir.get(idcir).subscribe(
+			(res)=>{
+				var ops=res.provincias,list=[];
+				for (let i = 0; i < ops.length; i++)
+					list.push({value:ops[i]._id, label:ops[i].name});
+				this.dropProv.source(list);
+				this.dropProv.setOptions({disabled:false});
+			}
+		)
   }
   provCambiando(event:any):void{
-    if(event.args.index==0)
-    this.dropMun.source(this.a.slice(0,2));
-    if(event.args.index==1)
-    this.dropMun.source(this.a.slice(2,5));
-    if(event.args.index==2)
-    this.dropMun.source(this.a.slice(5,6));
-    if(event.args.index==3)
-    this.dropMun.source(this.a.slice(6,7));
-    if(event.args.index==4)
-    this.dropMun.source(this.a.slice(7,8));
-    if(event.args.index==5)
-    this.dropMun.source(this.a.slice(8,10));
+    this.dropMun.clearSelection();
+		var idprov	=	this.dropProv.getSelectedItem().value;
+		console.log("idprov: "+idprov);
+		this.$mun.all().subscribe(
+			(res)=>{
+				console.log(res);
+				var list=[];
+				for (let i = 0; i < res.length; i++){
+					if('provincia' in res[i] && res[i].provincia._id==idprov){
+						list.push({value:res[i]._id,label:res[i].name});
+					}
+				}
 
-    this.dropMun.setOptions({disabled:false});
-  }
+				this.dropMun.source(list);
+				this.dropMun.setOptions({disabled:false});
+			}
+		);
+
+	}
+	
+
 }

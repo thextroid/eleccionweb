@@ -18,9 +18,9 @@ export class MunicipiosService {
     return this.http.get<Municipio>(api+"/"+id);
   }
   save(data){
-    return this.http.post(api,{name:data.name}); 
+    return this.http.post<Municipio>(api,data); 
   }
-  update(data){
-  	return this.http.put(api+"/"+data.id,{name:data.name});
+  update(id,data){
+  	return this.http.put<Municipio>(api+"/"+id,data);
   }
 }

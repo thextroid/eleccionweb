@@ -96,9 +96,11 @@
               "node_modules/font-awesome/css/font-awesome.css",
               "node_modules/simple-line-icons/css/simple-line-icons.css",
               "src/scss/style.scss",
+              "../node_modules/ng-snotify/styles/material.scss",
               "./node_modules/jqwidgets-ng/jqwidgets/styles/jqx.base.css",
               "./node_modules/jqwidgets-ng/jqwidgets/styles/jqx.dark.css"
             ],
+          
             "stylePreprocessorOptions": {
               "includePaths": [
                 "./node_modules"

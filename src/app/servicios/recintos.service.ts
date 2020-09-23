@@ -18,9 +18,9 @@ export class RecintosService {
     return this.http.get<Recinto>(api+"/"+id);
   }
   save(data){
-    return this.http.post(api,data); 
+    return this.http.post<Recinto>(api,data); 
   }
-  update(data){
-  	return this.http.put(api+"/"+data.id,{institucion:data.institucion, tipo:data.tipo})  ;
+  update(id,data){
+  	return this.http.put<Recinto>(api+"/"+id,data)  ;
   }
 }

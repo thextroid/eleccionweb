@@ -9,6 +9,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { jqxNotificationModule } from 'jqwidgets-ng/jqxnotification';
 import { jqxWindowModule } from 'jqwidgets-ng/jqxwindow';
 import { jqxDropDownListModule } from 'jqwidgets-ng/jqxdropdownlist';
+import { jqxSwitchButtonModule } from 'jqwidgets-ng/jqxswitchbutton';
 import { jqxListBoxModule } from 'jqwidgets-ng/jqxlistbox';
 import { jqxInputModule } from 'jqwidgets-ng/jqxinput';
 import { MesasComponent } from './mesas.component';
@@ -17,6 +18,7 @@ import { MunicipiosService } from '../../servicios/municipios.service';
 import { LocalidadesService } from '../../servicios/localidades.service';
 import { ProvinciasService } from '../../servicios/provincias.service';
 import { RecintosService } from '../../servicios/recintos.service';
+import { CircunscripcionesService } from '../../servicios/circunscripciones.service';
 
 
 @NgModule({
@@ -25,10 +27,10 @@ import { RecintosService } from '../../servicios/recintos.service';
     ModalModule.forRoot(),
     CommonModule,HttpClientModule,
     MesasRoutingModule,jqxGridModule,jqxButtonModule,ReactiveFormsModule,FormsModule,
-    jqxListBoxModule,jqxDropDownListModule,jqxNotificationModule
+    jqxListBoxModule,jqxDropDownListModule,jqxNotificationModule,jqxSwitchButtonModule
   ],
   providers:[
-    MunicipiosService, LocalidadesService,ProvinciasService,RecintosService
+    MunicipiosService, LocalidadesService,ProvinciasService,RecintosService,CircunscripcionesService
   ]
 })
 export class MesasModule { }

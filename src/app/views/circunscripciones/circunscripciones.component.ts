@@ -9,7 +9,10 @@ import { jqxNotificationComponent } from 'jqwidgets-ng/jqxnotification';
 import { ModalDirective } from 'ngx-bootstrap/modal';
 import { CircunscripcionesService } from '../../servicios/circunscripciones.service';
 import { ProvinciasService } from '../../servicios/provincias.service';
-
+import * as _ from 'lodash';
+import { DepartamentosService } from '../../servicios/departamentos.service';
+import { $ } from 'protractor';
+import {  SnotifyPosition, SnotifyService, SnotifyStyle, SnotifyToast } from 'ng-snotify';
 @Component({
   selector: 'app-circunscripciones',
   templateUrl: './circunscripciones.component.html',
@@ -18,44 +21,81 @@ import { ProvinciasService } from '../../servicios/provincias.service';
 export class CircunscripcionesComponent implements OnInit {
 
   @ViewChild("migrid") migrid: jqxGridComponent;
+  @ViewChild("gridProv") gridProv: jqxGridComponent;
 	@ViewChild('myModal') public myModal: ModalDirective;
 	@ViewChild('mdDepUpdate') public mdDepUpdate: ModalDirective;
 	@ViewChild('msgNotification') minoti: jqxNotificationComponent;
-	@ViewChild('myDropDownList2', { static: false }) myDropDownList2: jqxDropDownListComponent;
+	@ViewChild('myDropDownList2', { static: false }) dropProv: jqxDropDownListComponent;
+	@ViewChild('inputNombre', { static: false }) inputNombre: jqxInputComponent;
+	@ViewChild('dropDep', { static: false }) dropDep: jqxDropDownListComponent;
   @ViewChild('smallModal') public smallModal: ModalDirective;
   @ViewChild('btnAdd') btnAdd: jqxButtonComponent;
   @ViewChild('btnEdit') btnEdit: jqxButtonComponent;
   @ViewChild('btnReload') btnReload: jqxButtonComponent;
   
-	constructor(protected $prov: ProvinciasService, protected $cir: CircunscripcionesService) { }
+	constructor(protected $prov: ProvinciasService, protected $cir: CircunscripcionesService,
+		protected $dep:DepartamentosService,protected $notifier:SnotifyService) { }
 	public formCir: FormGroup = new FormGroup({
 		name: new FormControl('') 
 	})
 
   action_text = '';
-  modelCircunscripcion:{name:'',id:undefined,_id:'',provs:string[]};
-  ngOnInit(){	}
+  modelCircunscripcion:{name:string,id:undefined,_id:string,provincias:string[],departamentoId:string};
+  ngOnInit(){	
+	}
   
-  ngAfterViewInit(): void {	this.refresh();	}
+	
+  ngAfterViewInit(): void {	
+		this.$dep.all().subscribe((data)=>{
+			var keymap = {
+				_id:'value',
+				name:'label'
+			};
+			this.dropDep.source(data.map(function(obj){
+				return _.mapKeys(obj,function(value,key){
+					return keymap[key];
+				})
+			}));
+		})
+		this.refresh(); this.refreshProvincias();	
+	}
   
 	refresh(){
 		this.$cir.all().subscribe(
 			(data=>{
-				let e='',list=[];
-				console.log(data[0]);
+				let list=[];
 				for(let i=0;i<data.length;i++){
-					e=JSON.stringify(data[i]);
-          e = e.substring(e.indexOf("_id")+6, e.indexOf("name")-3 );
-          list.push({_id:e,id:i+1,name:data[i].name});
+					list.push({_id:data[i]._id,id:i+1,name:data[i].name,provincias:_.map(data[i].provincias,'_id')});
 				}
 				this.migrid.addrow(null,list);
 				this.btnReload.setOptions({disabled:false});
+				this.mensaje('','Se actualizo los datos!',2);
 			})
-		);
-  }
-  
-  dropDownSource: string[] = ['id','name'];
-	source2: any[];
+		);			
+	}
+	
+	refreshProvincias(){
+		this.$prov.all().subscribe( (data)=>{
+			var keymap={
+				_id:'iid',
+				name:'name',
+				circunscripcions:'circunscripcions'
+			}
+			var temp=	data.map( function(obj){
+				return _.mapKeys(obj,function(value,key){
+					return keymap[key];
+				});
+			})
+			let list=[];
+			console.log(temp);
+			for(let i=0;i<temp.length;i++){
+				list.push({value:temp[i].iid,label:temp[i].name});
+			}
+			this.dropProv.source(list);
+		})
+	}
+	dropDownSource: string[] = ['id','name'];
+	sourceDep: any[];
 	source: any =	{
 		localdata:[],
 		datafields: [
@@ -71,22 +111,53 @@ export class CircunscripcionesComponent implements OnInit {
 				name: 'name',
 				map: 'name',
 				type:'string'
+			}, 
+			{
+				name: 'provincias',
+				map: 'provincias',
+				type:'array'
+			}, 
+			{
+				name: 'accion',
+				map: 'accion',
+				type:'string'
 			}
 		],
-		datatype: 'array',
-		root: 'Rows',
 		beforeprocessing: (data: any) => {
-			console.log(this.source.localdata);
 			this.source.totalrecords = data.TotalRows;
+		}
+	};
+	sourceProv: any =	{
+		datafields: [{name: 'name'}	],
+		beforeprocessing: (data: any) => {
+			this.sourceProv.totalrecords = data.TotalRows;
 		}
 	};
 
 	dataAdapter:any = new jqx.dataAdapter(this.source);
-
+	dataAdapterProv:any = new jqx.dataAdapter(this.sourceProv);
+	columns2 : any[]=[
+		{datafield:"name",text:"Provincia"}
+	]
 	columns : any[]=[
 		{datafield:"_id",text:"ID",width:30,hidden:true},
 		{datafield:"id",text:"#",width:30},
-		{datafield:"name",text:"Circunscripciones",width:250}
+		{datafield:"name",text:"Circunscripcion",width:250},
+		{datafield:"provincias",hidden:true},
+		{datafield:"accion",text:"Ver",width:120,columntype:'button',
+			cellsrenderer:():string=>{
+				return "Ver Provincias";
+			},
+			buttonclick:(row:number):void=>{
+				this.gridProv.clear();
+				var temp=this.migrid.getrowdata(row).provincias,list=[];
+				console.log(temp);
+				for (let i = 0; i < temp.length; i++){
+					list.push({name:this.dropProv.getItemByValue(temp[i]).label});
+				}
+				this.gridProv.addrow(null,list);
+			}
+		}
   ];
   
 	rendergridrows = (params: any): any =>{
@@ -94,77 +165,120 @@ export class CircunscripcionesComponent implements OnInit {
 	}
 	
 	Rowselect(event: any): void{
-  this.formCir.setValue({name:event.args.row.name});
-  console.log(this.formCir.get("name"));
-      console.log(event.args.row);
+		console.log(event);
   }
-		
-	
-    open(_action){
+	open(_action){
+		this.inputNombre.value('');
+		this.action_text=_action;
+		if(_action=="Adicionar"){
+			this.myModal.show();
+		}
+		else{
+			let selectedrowindex = this.migrid.getselectedrowindex();
+			if(selectedrowindex==-1){
+				// let nt = jqwidgets.createInstance('#notification1','jqxNotification',{theme:'info',autoOpen:true});
+				this.mensaje('','Seleccione una fila',2);
+			}
+			else{
+				let data=this.migrid.getrowdata(this.migrid.getselectedrowindex());
+				this.$cir.get(data._id).subscribe((res)=>{
+					var departs = (this.dropDep.getItems());
+					for(let i=0;res.departamento!=null && i<departs.length;i++)
+						if(departs[i].value==res.departamento._id){
+							this.dropDep.selectIndex(i);
+							break;
+						}
+					console.log('provincias en cache: ',res.provincias);
+					for(let i=0;i<res.provincias.length;i++)
+						this.dropProv.checkItem(res.provincias[i]._id);
+					// this.modelCircunscripcion._id=res._id;
+					this.inputNombre.value(res.name);
+					this.myModal.show();
+				});
+			}
+		}
+	}
 
-      this.$prov.all().subscribe( (data)=>{
-        let list=[];
-        for(let i=0;i<data.length;i++){
-          list.push({value:data[i].name, label:data[i].name});
-        }
-        this.myDropDownList2.source(list);
-      })
-      if(_action=="Adicionar"){
-        this.action_text=_action;
-        this.formCir = new FormGroup({	name: new FormControl('')});
-        this.myModal.show();
-      }
-      else{
-        this.action_text=_action;
-        let selectedrowindex = this.migrid.getselectedrowindex();
-        if(selectedrowindex==-1){
-          // let nt = jqwidgets.createInstance('#notification1','jqxNotification',{theme:'info',autoOpen:true});
-          this.minoti.open();
-        }
-        else{
-        this.modelCircunscripcion = this.migrid.getrowdata(this.migrid.getselectedrowindex());
-        // console.log(this.migrid.getrowdata(this.migrid.getselectedrowindex()));
-        this.formCir.setValue({name:this.modelCircunscripcion.name});
-        this.myModal.show();
-        let rowscount = this.migrid.getdatainformation().rowscount;
-        }
-      }
-    }
-    
-    find(){
-      this.smallModal.show();
-    }
-    reload (event){
-      console.log(event);
-      this.btnReload.setOptions({disabled:true});
-      this.migrid.clear();
-      this.refresh();
-    }
-    
+	reload (event){
+		
+		this.btnReload.setOptions({disabled:true});
+		this.migrid.clear();
+		this.refresh();
+	}
+
 	save(form: FormGroup){
 		console.log(form.value);
+		let inName	=	this.inputNombre.val();
+		let inDep		=	this.dropDep.getSelectedItem().value;
+		let inProvs	=	_.map(this.dropProv.getCheckedItems(),'value');
+		let data = {	name:inName, departamentoId:inDep, provincias:inProvs		};
 		if(this.action_text=="Adicionar"){
-			this.$prov.save(form.value).subscribe((response)=>{
-				console.log(response);
+			this.$cir.save(data).subscribe((response)=>{
+				this.mensaje("Adicionar","Se adiciono correctamente la circunscripcion!",0)
+			},(error)=>{
+				this.mensaje("Error","No se pudo adicionar!",3)
 			});
 		}
 		else{
-			this.modelCircunscripcion.name=form.value.name;
-			let data={name:'',id:undefined,provs:[],nameold:''};
-			data.name=this.modelCircunscripcion.name;
-			data.id=this.modelCircunscripcion._id;
-			data.provs=[];
-			// this.modelCircunscripcion.provs = this.myDropDownList2.getCheckedItems();
-			let item = this.myDropDownList2.getSelectedItem();
-			data.provs.push(item.value);
-			this.$prov.update(data).subscribe((response)=>{
+			let rowindex = this.migrid.getselectedrowindex();
+			let row = this.migrid.getrowdata(rowindex);
+			
+			console.log(this.modelCircunscripcion);
+			this.$cir.update(row._id,data).subscribe((response)=>{
 				console.log(response);
+				this.migrid.updaterow(
+					rowindex,{
+						iid:response._id,
+						id:row.id,
+						name:response.name,
+						provincias:response.provincias
+					}
+				);
+				this.mensaje("Actualización","Se actualizo satisfactoriamente!",0)
 			},
 			(error)=>{
-				console.log(error);
+				this.mensaje("Actualización","Se actualizo satisfactoriamente!",3)
 			});
 		}
 		this.myModal.hide();
 	}
-
+	resetForm(){
+		this.inputNombre.value('');
+		this.dropDep.clearSelection();
+		this.dropProv.uncheckAll()
+	}
+	mensaje(content:string,title:string,tipo){
+		if(tipo==0)
+		this.$notifier.success(title,content, {
+			timeout: 2000,
+			showProgressBar: false,
+			closeOnClick: true,
+			pauseOnHover: true,
+			position:SnotifyPosition.rightTop
+		});
+		if(tipo==1)
+		this.$notifier.warning(title,content, {
+			timeout: 2000,
+			showProgressBar: false,
+			closeOnClick: true,
+			pauseOnHover: true,
+			position:SnotifyPosition.rightTop
+		});
+		if(tipo==2)
+		this.$notifier.info(title,content, {
+			timeout: 2000,
+			showProgressBar: false,
+			closeOnClick: true,
+			pauseOnHover: true,
+			position:SnotifyPosition.rightTop
+		});
+		if(tipo==3)
+		this.$notifier.error(title,content, {
+			timeout: 2000,
+			showProgressBar: false,
+			closeOnClick: true,
+			pauseOnHover: true,
+			position:SnotifyPosition.rightTop
+		});
+	}
 }

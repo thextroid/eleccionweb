@@ -18,9 +18,9 @@ export class ProvinciasService {
     return this.http.get<Provincia>(api+"/"+id);
   }
   save(data){
-    return this.http.post(api,{name:data.name}); 
+    return this.http.post<Provincia>(api,{name:data.name}); 
   }
-  update(data){
-  	return this.http.put(api+"/"+data.id,{name:data.name});
+  update(id,data){
+  	return this.http.put<Provincia>(api+"/"+id,{name:data.name});
   }
 }

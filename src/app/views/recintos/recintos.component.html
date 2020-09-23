@@ -2,8 +2,8 @@
 <jqxButton #btnEdit [width]='120' [height]='40' [template]="'warning'" (onClick)="open('Editar')"><i class="fa fa-pencil"></i> Editar</jqxButton>
 <jqxButton #btnReload [width]='120' [height]='40' [template]="'primary'" (onClick)="reload()"><i class="fa fa-refresh"></i> Refrescar</jqxButton>
 <div class="row">
-	<div class="col-sm-6">
-		<jqxGrid #migrid
+	<div class="col-sm-12">
+		<jqxGrid #migrid class="migrid"
 		(onRowselect)="Rowselect($event)"
 			[width]="'100%'"
 			[source]="dataAdapter"
@@ -20,45 +20,73 @@
 	</div>
 </div>
 
-<div bsModal #myModal="bs-modal" (onHidden)="hideModal()"class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+<div bsModal #myModal="bs-modal" (onHidden)="reset()"class="modal fade" backdrop="false" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 	<div class="modal-dialog" role="document">
 		<div class="modal-content">
 			<div class="modal-header">
-				<h4 class="modal-title">{{accion_text}} Recinto</h4>
+				<h4 class="modal-title">{{action_text}} Recinto</h4>
 				<button type="button" class="close" (click)="myModal.hide()" aria-label="Close">
 					<span aria-hidden="true">&times;</span>
 				</button>
 			</div>
 			<div class="modal-body">
-				<form [formGroup]="formRec" (ngSubmit)="save(formRec)">
+				<jqxValidator #myValidator [rules]="rules" [animationDuration]="0" [hintType]="'label'">
+				<form [formGroup]="formRec" id="form" (ngSubmit)="save(formRec)">
 					<div class="row">
-						<div class="form-group col-sm-12  ">
+						<div class="form-group col-sm-12">
 							<label for="city">Nombre:</label>
-							<input type="text" class="form-control" formControlName="institucion" id="tipo" placeholder="nombre del recinto..."/>
+							<jqxInput #inputRecinto class="inInstitucion text-input form-control"></jqxInput>
+						</div>
+						<div class="form-group col-sm-6">
+							<label for="mesa">Latitud°:</label>
+							<jqxNumberInput #inputLat class="inLat"
+								[width]="'100%'"
+								[digits]="3"
+								[decimalDigits]="6">
+							</jqxNumberInput>
+						</div>
+						<div class="form-group col-sm-6">
+							<label for="mesa">Longitud°:</label>
+							<jqxNumberInput #inputLong class="inLong"
+								[width]="'100%'"
+								[digits]="3"
+								[decimalDigits]="6">
+							</jqxNumberInput>
 						</div>
 						<div class="form-group col-sm-12">
 							<label for="postal-code">Municipio de:</label>
-							<jqxDropDownList #dropdownMunicipio [filterable]="true" 
-									[width]="'100%'" [height]="30" [source]="sourceMunicipiosMun" [selectedIndex]="1" [autoOpen]="false">
-							</jqxDropDownList>
+							<jqxDropDownList #dropdownMunicipio [filterable]="true" class="inMun"
+							[width]="'100%'" [height]="30" [source]="sourceMunicipiosMun"  [autoOpen]="false">
+						</jqxDropDownList>
 						</div><!--/.row-->
 						<div class="form-group col-sm-12">
 							<label for="postal-code">Localidad de:</label>
-							<jqxDropDownList #dropdownLocalidad [filterable]="true" 
-									[width]="'100%'" [height]="30" [source]="sourceLocalidades" [selectedIndex]="1" [autoOpen]="false">
-							</jqxDropDownList>
+							<jqxDropDownList #dropdownLocalidad [filterable]="true"  class="inLocal"
+									[width]="'100%'" [height]="30" [source]="sourceLocalidades" [autoOpen]="false">
+								</jqxDropDownList>
 						</div><!--/.row-->
-						<div class="form-group col-sm-12">
+						<div class="form-group col-sm-8">
 							<label for="postal-code">Tipo:</label>
-							<jqxDropDownList #dropdownTipo  [checkboxes]="true"
-									[width]="'100%'" [height]="30" [source]="sourceTipo" [selectedIndex]="1" [autoOpen]="false">
+							<jqxDropDownList #dropdownTipo  [checkboxes]="true" class="inTipo"
+							[width]="'100%'" [height]="30" [source]="sourceTipo" [autoOpen]="false">
 							</jqxDropDownList>
 						</div><!--/.row-->
+						<div class="form-group col-sm-4">
+							<label for="mesa">N° Mesa:</label>
+							<jqxNumberInput #inputMesa class="inMesa"
+								[spinButtons]="true"
+								[min]="1" [max]="200"
+								[width]="'100%'"
+								[digits]="2"
+								[decimalDigits]="0">
+							</jqxNumberInput>
+						</div>
 						<div class="form-group col-sm-12">
 							<button type="submit" class="btn btn-primary" id="guardar"><i class="fa fa-save"></i> Guardar</button>
 						</div>
 					</div>
 					</form>
+				</jqxValidator>
 			</div>
 		</div><!-- /.modal-content -->
 	</div><!-- /.modal-dialog -->
@@ -73,3 +101,4 @@
 <!-- <ul>
 	<li *ngFor="let item of  lista;let i=index">{{i}}.- {{item.institucion}}</li>
 </ul> -->
+<ng-snotify></ng-snotify>

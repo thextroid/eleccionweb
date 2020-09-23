@@ -1,9 +1,10 @@
 <div class="row">
+  
     <div class="col-sm-2">
         <div class="form-group">
             <label for="name">Circunscripcion:</label>
             <jqxDropDownList #dropCir [filterable]="true" (onChange)="cirCambiando($event)" 
-            [width]="'100%'" [height]="30" [source]="sourceCir" [selectedIndex]="1" [autoOpen]="false">
+            [width]="'100%'" [height]="30"  [selectedIndex]="1" [autoOpen]="false">
         </jqxDropDownList>
         </div>
     </div>
@@ -26,7 +27,7 @@
     <div class="col-sm-3">
       <div class="form-group">
         <label for="name">OFF:</label>
-        <jqxButton #btnReload [width]='120' [height]='40' [template]="'primary'" (onClick)="reload()"><i class="fa fa-refresh"></i> Refrescar</jqxButton>
+        <jqxSwitchButton [width]="'50%'" ></jqxSwitchButton>
       </div>
     </div>
     <div class="col-sm-3">
@@ -35,6 +36,7 @@
         <input type="text" class="form-control">
       </div>
     </div>
+  
 </div>
 <div class="row">
 	<div class="col-sm-12">
