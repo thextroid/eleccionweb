@@ -1,6 +1,8 @@
-export class User{
-ci: string;
-login: string;
+export interface User{
+name: string;
+fullName: string;
+telefono:number;
 password: string;
-estado: boolean = false;
+estado: boolean;
+rol: string;
 }

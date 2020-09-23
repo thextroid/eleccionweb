@@ -1,6 +1,6 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
-import { LocationStrategy, HashLocationStrategy } from '@angular/common';
+import { LocationStrategy, HashLocationStrategy, CommonModule } from '@angular/common';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 // jqxGRID
 import { jqxGridModule, jqxGridComponent} from 'jqwidgets-ng/jqxgrid';
@@ -45,11 +45,14 @@ import { SwitchesComponent } from './views/base/switches.component';
 import { DatosComponent } from './views/datos/datos.component';
 import { DatosModule } from './views/datos/datos.module';
 import { FormsModule } from '@angular/forms';
+import { UserService } from './servicios/user.service';
+import { HttpClientModule } from '@angular/common/http';
+import { BsModalService } from 'ngx-bootstrap/modal';
 
 
 @NgModule({
   imports: [
-    BrowserModule,
+    BrowserModule,    
     BrowserAnimationsModule,
     AppRoutingModule,
     AppAsideModule,
@@ -62,7 +65,9 @@ import { FormsModule } from '@angular/forms';
     TabsModule.forRoot(),
     FormsModule,
     ChartsModule,
-    jqxGridModule
+    jqxGridModule,
+    CommonModule,
+    HttpClientModule
   ],
   declarations: [
     AppComponent,
@@ -74,8 +79,11 @@ import { FormsModule } from '@angular/forms';
   ],
   providers: [{
     provide: LocationStrategy,
-    useClass: HashLocationStrategy
-  }],
+    useClass: HashLocationStrategy,        
+  },
+  BsModalService,
+  UserService
+],
   bootstrap: [ AppComponent ]
 })
 export class AppModule { }
