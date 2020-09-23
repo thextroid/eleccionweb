@@ -98,11 +98,7 @@ export class LocalidadesComponent implements OnInit {
 	open(_action){
 
 	this.action_text=_action;
-      this.$mun.all().subscribe( (data)=>{
-        for(let i=0;i<data.length;i++){
-          this.myDropDownList2.addItem({value:data[i].name, label:data[i].name});
-        }
-      })
+      
       if(_action=="Adicionar"){
         this.inputNombre.val('');
         this.myModal.show();
@@ -190,7 +186,8 @@ export class LocalidadesComponent implements OnInit {
 		if(tipo==3)
 		this.$notifier.error(content,title, op);
 	}
-	reset(){this.inputNombre.val('');}
+	reset(){this.inputNombre.val('');
+this.myValidator.hide()}
 
 	rules=[
 		{ 	input: '.inNombre', message: 'Nombre es requerida!', action: 'keyup, blur', rule: 'required' },

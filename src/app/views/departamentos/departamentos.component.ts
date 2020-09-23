@@ -163,13 +163,11 @@ export class DepartamentosComponent implements OnInit {
 			let selectedrowindex = this.migrid.getselectedrowindex();
 			if(selectedrowindex==-1){
 				// let nt = jqwidgets.createInstance('#notification1','jqxNotification',{theme:'info',autoOpen:true});
-				this.minoti.open();
+				this.mensaje('para Editar seleccione una Fila','Departamento',2);
 			}
 			else{
-			this.modelDepartamento = this.migrid.getrowdata(this.migrid.getselectedrowindex());
-			this.modelDepartamento.nameold = this.modelDepartamento.name;
-			// console.log(this.migrid.getrowdata(this.migrid.getselectedrowindex()));
-			this.formDep.setValue({name:this.modelDepartamento.name});
+			var rowdata = this.migrid.getrowdata(this.migrid.getselectedrowindex());
+			this.inputNombre.val(rowdata.name);
 			this.myModal.show();
 			}
         });
@@ -248,6 +246,7 @@ export class DepartamentosComponent implements OnInit {
 
 	rules=[
 		{ 	input: '.inNombre', message: 'Nombre es requerida!', action: 'keyup, blur', rule: 'required' },
-		{ 	input: '.inNombre', message: 'Caracteres permitidos: (3 a 255)', action: 'keyup, blur', rule: 'length=3,255' }
+		{ 	input: '.inNombre', message: 'Mínimo de caracteres permitidos: 4', action: 'keyup, blur', rule: 'minLength=4' },
+		{ 	input: '.inNombre', message: 'Mínimo de caracteres permitidos: 255', action: 'keyup, blur', rule: 'maxLength=255' }
 	];
 }

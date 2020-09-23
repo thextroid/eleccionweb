@@ -306,6 +306,10 @@ export class RecintosComponent implements OnInit {
 		this.dropdownMunicipio.clearFilter();
 		this.dropdownLocalidad.clearSelection();
 		this.dropdownLocalidad.clearFilter();
+		this.myValidator.hide();
+		this.myValidator.hideHint('inMun');
+		this.myValidator.hideHint('inLocal');
+		this.myValidator.hideHint('inTipo');
 	}
 	mensaje(content:string,title:string,tipo){
 		var op={
