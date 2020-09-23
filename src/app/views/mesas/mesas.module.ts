@@ -19,6 +19,7 @@ import { LocalidadesService } from '../../servicios/localidades.service';
 import { ProvinciasService } from '../../servicios/provincias.service';
 import { RecintosService } from '../../servicios/recintos.service';
 import { CircunscripcionesService } from '../../servicios/circunscripciones.service';
+import { jqxValidatorModule } from 'jqwidgets-ng/jqxvalidator';
 
 
 @NgModule({
@@ -27,7 +28,8 @@ import { CircunscripcionesService } from '../../servicios/circunscripciones.serv
     ModalModule.forRoot(),
     CommonModule,HttpClientModule,
     MesasRoutingModule,jqxGridModule,jqxButtonModule,ReactiveFormsModule,FormsModule,
-    jqxListBoxModule,jqxDropDownListModule,jqxNotificationModule,jqxSwitchButtonModule
+    jqxListBoxModule,jqxDropDownListModule,jqxNotificationModule,jqxSwitchButtonModule,
+    jqxValidatorModule
   ],
   providers:[
     MunicipiosService, LocalidadesService,ProvinciasService,RecintosService,CircunscripcionesService

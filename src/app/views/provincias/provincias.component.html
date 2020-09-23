@@ -19,28 +19,31 @@
 	</div>
 </div>
 
-<div bsModal #myModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+<div bsModal #myModal="bs-modal" (onHidden)="reset()" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 	<div class="modal-dialog" role="document">
 		<div class="modal-content">
 			<div class="modal-header">
-				<h4 class="modal-title">{{accion_text}} Provincia</h4>
+				<h4 class="modal-title">{{action_text}} Provincia</h4>
 				<button type="button" class="close" (click)="myModal.hide()" aria-label="Close">
 					<span aria-hidden="true">&times;</span>
 				</button>
 			</div>
 			<div class="modal-body">
-				<form [formGroup]="formProv" (ngSubmit)="save(formProv)">
-					<div class="row">
-						<div class="form-group col-sm-12  ">
-							<label for="provincia">Nombre:</label>
-							<jqxInput #inputNombre  class="inNombre text-input form-control"></jqxInput>
+				<jqxValidator #myValidator [rules]="rules" [animationDuration]="0" (onValidationError)="invalidValidation()" (onValidationSuccess)="successValidation()" [hintType]="'label'">
+
+					<form [formGroup]="formProv" (ngSubmit)="checkValidation()">
+						<div class="row">
+							<div class="form-group col-sm-12  ">
+								<label for="provincia">Nombre:</label>
+								<jqxInput #inputNombre  class="inNombre text-input form-control"></jqxInput>
+							</div>
+							
+							<div class="form-group col-sm-12">
+								<button type="submit" class="btn btn-primary" id="guardar">Guardar</button>
+							</div>
 						</div>
-						
-						<div class="form-group col-sm-12">
-							<button type="submit" class="btn btn-primary" id="guardar">Guardar</button>
-						</div>
-					</div>
 					</form>
+				</jqxValidator>
 			</div>
 		</div><!-- /.modal-content -->
 	</div><!-- /.modal-dialog -->

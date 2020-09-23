@@ -229,6 +229,10 @@ export class MesasComponent implements OnInit {
 		);
 
 	}
+
+	rules=[
+		{ 	input: '.', message: 'Nombre es requerida!', action: 'keyup, blur', rule: 'required' }
+	];
 	
 
 }
