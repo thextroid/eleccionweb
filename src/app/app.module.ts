@@ -42,8 +42,6 @@ import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
 import { TabsModule } from 'ngx-bootstrap/tabs';
 import { ChartsModule } from 'ng2-charts';
 import { SwitchesComponent } from './views/base/switches.component';
-import { DatosComponent } from './views/datos/datos.component';
-import { DatosModule } from './views/datos/datos.module';
 import { FormsModule } from '@angular/forms';
 
 
