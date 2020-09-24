@@ -134,7 +134,6 @@ export class LocalidadesComponent implements OnInit {
 		}
 		if(this.action_text=="Adicionar"){
 			this.$loc.save(data).subscribe((response)=>{
-				console.log(response);
 				let rowcount	=	this.migrid.getdatainformation().rowscount;
 				this.migrid.addrow(rowcount,{
 					_id:response._id,

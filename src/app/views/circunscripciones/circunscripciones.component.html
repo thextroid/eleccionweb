@@ -6,7 +6,7 @@
 	</div>
 </div>
 <div class="row">
-	<div class="col-sm-5">
+	<div class="col-sm-8">
 		<jqxGrid #migrid
 		(onRowselect)="Rowselect($event)"
 			[width]="'100%'"
@@ -20,7 +20,7 @@
 			[columnsresize]="true">
 		</jqxGrid>
 	</div>
-	<div class="col-sm-5">
+	<div class="col-sm-4">
 		<jqxGrid #gridProv
 			[width]="'100%'"
 			[source]="dataAdapterProv"
@@ -32,7 +32,6 @@
 		</jqxGrid>
 	</div>
 </div>
-
 <div bsModal #myModal="bs-modal" class="modal fade" (onHidden)="resetForm()" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
 	<div class="modal-dialog" role="document">
 		<div class="modal-content">
@@ -44,7 +43,6 @@
 			</div>
 			<div class="modal-body">
 				<jqxValidator #myValidator [rules]="rules" [animationDuration]="0" (onValidationError)="invalidValidation()" (onValidationSuccess)="successValidation()" [hintType]="'label'">
-
 					<form [formGroup]="formCir" (ngSubmit)="checkValidation()">
 						<div class="row">
 							<div class="form-group col-sm-12  ">
@@ -53,14 +51,14 @@
 							</div>
 							<div class="form-group col-sm-12">
 								<label for="postal-code">Departamento:</label>
-								<jqxDropDownList #dropDep [filterable]="true"
+								<jqxDropDownList #dropDep [filterable]="true" class="inDep" (onChange)="prueba()"a
 										[width]="'100%'" [height]="30" [source]="sourceDep" [autoOpen]="false">
 								</jqxDropDownList>
 							</div><!--/.row-->
 							<div class="form-group col-sm-12">
-								<label for="postal-code">Provincia:</label>
-								<jqxDropDownList #myDropDownList2 [filterable]="true" [checkboxes]="true"
-										[width]="'100%'" [height]="30" [selectedIndex]="1" [autoOpen]="false">
+								<label for="postal-code">Provincias:</label>
+								<jqxDropDownList #myDropDownList2 [filterable]="true" (onChange)="prueba()" [checkboxes]="true" class="inProv"
+										[width]="'100%'" [height]="30" [autoOpen]="false">
 								</jqxDropDownList>
 							</div><!--/.row-->
 							<div class="form-group col-sm-12">

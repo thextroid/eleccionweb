@@ -56,7 +56,6 @@ export class RecintosComponent implements OnInit {
 		this.$rec.all().subscribe(
 			(data=>{
 				let temp=[];
-				console.log(data);
 				this.lista=data;
 				for(let i=0;i<data.length;i++){
 					
@@ -143,7 +142,6 @@ export class RecintosComponent implements OnInit {
 		datatype: 'array',
 		root: 'Rows',
 		beforeprocessing: (data: any) => {
-			console.log(this.source.localdata);
 			this.source.totalrecords = data.TotalRows;
 		}
 	};
@@ -164,11 +162,7 @@ export class RecintosComponent implements OnInit {
 		return params.data;
 	}
 	
-	Rowselect(event: any): void{
-		this.formRec.setValue({institucion:event.args.row.institucion});
-		console.log(this.formRec.get("institucion"));
-		console.log(event.args.row);
-	}
+	Rowselect(event: any): void{	}
 	
 	open(_action){
 		this.action_text=_action;
@@ -178,7 +172,6 @@ export class RecintosComponent implements OnInit {
 		}
 		else{
 			let selectedrowindex = this.migrid.getselectedrowindex();
-			console.log(selectedrowindex);
 			if(selectedrowindex==-1){
 				// let nt = jqwidgets.createInstance('#notification1','jqxNotification',{theme:'info',autoOpen:true});
 				this.mensaje('Seleccione una fila para editar','',1);
@@ -187,7 +180,6 @@ export class RecintosComponent implements OnInit {
 				let rowdata= this.migrid.getrowdata(selectedrowindex) ;
 				let items = this.dropdownMunicipio.getItems();
 				
-				console.log(items);
 				if( 'localizacion' in rowdata.recinto){
 					this.inputLat.value(rowdata.recinto.localizacion[0]);
 					this.inputLong.value(rowdata.recinto.localizacion[1]);
@@ -202,7 +194,6 @@ export class RecintosComponent implements OnInit {
 					}
 				}
 				items = this.dropdownLocalidad.getItems();
-				// console.log(items);
 				if( 'localidad' in rowdata.recinto ){
 					for (let j = 0; j < items.length; j++) {
 						if(items[j].value==rowdata.recinto.localidad._id)
@@ -212,14 +203,12 @@ export class RecintosComponent implements OnInit {
 				this.inputRecinto.value(rowdata.institucion);
 				for (let index = 0; index < rowdata.tipo.length; index++)
 					this.dropdownTipo.checkIndex(rowdata.tipo[index]=='Uninominal'?0:1);
-				console.log(rowdata);
 				this.myModal.show();
 			}
 		}
 	}
 	
 	reload (event){
-		console.log(event);
 		this.btnReload.setOptions({disabled:true});
 		this.migrid.clear();
 		this.refresh();
@@ -253,7 +242,6 @@ export class RecintosComponent implements OnInit {
 			localizacion:Localization,
 			tipo:this.modelRecinto.tipo
 		};
-		console.log(data)
 		if(this.action_text=="Adicionar"){
 			this.$rec.save(data).subscribe((response)=>{
 				var rowcount=parseInt(this.migrid.getdatainformation().rowscount);
@@ -267,7 +255,6 @@ export class RecintosComponent implements OnInit {
 					recinto:response
 				});
 				this.mensaje('Se adicionó satisfactoriamente','Recinto',0);
-				console.log(response);
 			},
 			(error)=>{
 				this.mensaje('No se pudo adicionar!','Recinto',1);

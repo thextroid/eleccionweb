@@ -16,7 +16,7 @@
   <meta name="author" content="Łukasz Holeczek">
   <meta name="keyword" content="Bootstrap,Admin,Template,Free,Angular,Dashboard,Typescript">
 	<link rel="shortcut icon" href="assets/favicon.ico">
-	<title>CoreUI - Free Angular Admin Template</title>
+	<title>Ctrl</title>
   <!-- Global site tag (gtag.js) - Google Analytics -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=UA-118965717-3"></script>
   <script>
@@ -56,6 +56,19 @@
   .jqx-scrollbar-thumbs-state-normal{
     z-index: 1050 !important;
 
+  }
+  @media(max-width:575.98px){
+    .sidebar-show .main::before, .aside-menu-show .main::before{
+      z-index:1051 !important;
+    }
+  }
+  @media(max-width:991.98px){
+    .sidebar{
+      z-index:1052 !important;
+    }
+  }
+  .navbar-toggler:nth-last-child(){
+    display: none !important;
   }
   .modal{
     z-index: 1999 !important;

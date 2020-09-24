@@ -134,7 +134,6 @@ export class MesasComponent implements OnInit {
 		datatype: 'array',
 		root: 'Rows',
 		beforeprocessing: (data: any) => {
-			console.log(this.source.localdata);
 			this.source.totalrecords = data.TotalRows;
 		}
 	};
@@ -155,14 +154,9 @@ export class MesasComponent implements OnInit {
 		return params.data;
 	}
 	
-	Rowselect(event: any): void{
-	this.formRec.setValue({institucion:event.args.row.institucion});
-	console.log(this.formRec.get("institucion"));
-			console.log(event.args.row);
-	}
+	Rowselect(event: any): void{	}
 	
 	reload (event){
-		console.log(event);
 		this.btnReload.setOptions({disabled:true});
 		this.migrid.clear();
 		this.refresh();
@@ -212,10 +206,8 @@ export class MesasComponent implements OnInit {
   provCambiando(event:any):void{
     this.dropMun.clearSelection();
 		var idprov	=	this.dropProv.getSelectedItem().value;
-		console.log("idprov: "+idprov);
 		this.$mun.all().subscribe(
 			(res)=>{
-				console.log(res);
 				var list=[];
 				for (let i = 0; i < res.length; i++){
 					if('provincia' in res[i] && res[i].provincia._id==idprov){
