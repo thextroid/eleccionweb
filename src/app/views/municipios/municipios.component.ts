@@ -183,7 +183,6 @@ export class MunicipiosComponent implements OnInit {
 			name:this.inputMun.val(),
 			provinciaId:this.dropProv.getSelectedItem().value
 		}
-		console.log(data);
 		if(this.action_text=="Adicionar"){
 			var rowindex = this.migrid.getselectedrowindex();
 			var rowdata = this.migrid.getrowdata(rowindex);

@@ -121,7 +121,6 @@ export class ProvinciasComponent implements OnInit {
 			}
 			else{
 				let rowdata = this.migrid.getrowdata(this.migrid.getselectedrowindex());
-				// console.log(this.migrid.getrowdata(this.migrid.getselectedrowindex()));
 				this.inputNombre.value(rowdata.name);
 				this.myModal.show();
 			}
@@ -143,7 +142,6 @@ export class ProvinciasComponent implements OnInit {
 		let data = {name:this.inputNombre.val()};
 		if(this.action_text=="Adicionar"){
 			this.$prov.save(data).subscribe((response)=>{
-				console.log(response);
 				let rowtotal= this.migrid.getdatainformation().rowscount;
 				this.migrid.addrow(rowtotal,{
 					id:rowtotal+1,

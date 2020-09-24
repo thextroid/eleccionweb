@@ -28,7 +28,7 @@ import { jqxValidatorModule } from 'jqwidgets-ng/jqxvalidator';
     ModalModule.forRoot(),
     CommonModule,HttpClientModule,
     CircunscripcionesRoutingModule,jqxGridModule,jqxButtonModule,ReactiveFormsModule,FormsModule,
-    jqxListBoxModule,jqxDropDownListModule,jqxNotificationModule,SnotifyModule,jqxInputModule,
+    jqxListBoxModule,jqxDropDownListModule,SnotifyModule,jqxInputModule,
     jqxValidatorModule
   ],
   providers:[

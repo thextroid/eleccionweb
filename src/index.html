@@ -57,9 +57,36 @@
     z-index: 1050 !important;
 
   }
+  @media(max-width:575.98px){
+    .sidebar-show .main::before, .aside-menu-show .main::before{
+      z-index:1051 !important;
+    }
+  }
+  @media(max-width:991.98px){
+    .sidebar{
+      z-index:1052 !important;
+    }
+  }
+  .navbar-toggler:nth-last-child(){
+    display: none !important;
+  }
   .modal{
     z-index: 1999 !important;
 }
+.app-header{
+    border-bottom: 1px solid #b55c1c !important;
+}
+@media (max-width:991.98px){
+    .app-header{
+        background-color: chocolate !important;
+    }
+}
+@media (min-width:992px){
+    .app-header{
+        background-color: chocolate !important;
+    }
+}
+
   </style>
   
   

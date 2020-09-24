@@ -1,10 +1,10 @@
+import { listLazyRoutes } from '@angular/compiler/src/aot/lazy_routes';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { jqxDropDownListComponent } from 'jqwidgets-ng/jqxdropdownlist';
 import { jqxGridComponent } from 'jqwidgets-ng/jqxgrid';
 import { jqxInputComponent } from 'jqwidgets-ng/jqxinput';
 import { jqxListBoxComponent } from 'jqwidgets-ng/jqxlistbox';
-import { jqxNotificationComponent } from 'jqwidgets-ng/jqxnotification'; 
 import { jqxValidatorComponent } from 'jqwidgets-ng/jqxvalidator';
 import { jqxWindowComponent } from 'jqwidgets-ng/jqxwindow';
 import { SnotifyPosition, SnotifyService } from 'ng-snotify';
@@ -23,7 +23,6 @@ export class DepartamentosComponent implements OnInit {
 	@ViewChild('myModal') public myModal: ModalDirective;
 	@ViewChild('mdDepUpdate') public mdDepUpdate: ModalDirective;
 	@ViewChild('myDropDownList', { static: false }) myDropDownList: jqxDropDownListComponent;
-	@ViewChild('msgNotification') minoti: jqxNotificationComponent;
 	@ViewChild('myDropDownList2', { static: false }) myDropDownList2: jqxDropDownListComponent;
 	@ViewChild('myInput', { static: false }) myInput: jqxInputComponent;
 	@ViewChild('smallModal') public smallModal: ModalDirective;
@@ -45,17 +44,15 @@ export class DepartamentosComponent implements OnInit {
 	refresh(btn?,flag?){
 		this.$dep.all().subscribe(
 			(data=>{
-				let e='';
-				console.log(data[0]);
+				let e=[];
 				for(let i=0;i<data.length;i++){
-					e=JSON.stringify(data[i]);
-					e = e.substring(e.indexOf("_id")+6, e.indexOf("name")-3 );
-					this.migrid.addrow(0,{
-						_id: e,
+					e.push({
+						_id: data[i]._id,
 						id:i+1,
 						name:data[i].name
 					});
 				}
+				this.migrid.addrow(null,e);
 				if(flag!=undefined)
 					btn.setOptions({disabled:false});
 			})

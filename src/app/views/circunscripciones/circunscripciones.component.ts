@@ -39,14 +39,11 @@ export class CircunscripcionesComponent implements OnInit {
 		protected $dep:DepartamentosService,protected $notifier:SnotifyService) { }
 	public formCir: FormGroup = new FormGroup({
 		name: new FormControl('') 
-	})
+	});
 
   action_text = '';
   modelCircunscripcion:{name:string,id:undefined,_id:string,provincias:string[],departamentoId:string};
-  ngOnInit(){	
-	}
-  
-	
+  ngOnInit(){	}
   ngAfterViewInit(): void {	
 		this.$dep.all().subscribe((data)=>{
 			var keymap = {
@@ -89,7 +86,6 @@ export class CircunscripcionesComponent implements OnInit {
 				});
 			})
 			let list=[];
-			console.log(temp);
 			for(let i=0;i<temp.length;i++){
 				list.push({value:temp[i].iid,label:temp[i].name});
 			}
@@ -153,7 +149,6 @@ export class CircunscripcionesComponent implements OnInit {
 			buttonclick:(row:number):void=>{
 				this.gridProv.clear();
 				var temp=this.migrid.getrowdata(row).provincias,list=[];
-				console.log(temp);
 				for (let i = 0; i < temp.length; i++){
 					list.push({name:this.dropProv.getItemByValue(temp[i]).label});
 				}
@@ -167,7 +162,6 @@ export class CircunscripcionesComponent implements OnInit {
 	}
 	
 	Rowselect(event: any): void{
-		console.log(event);
   }
 	open(_action){
 		this.inputNombre.value('');
@@ -190,12 +184,15 @@ export class CircunscripcionesComponent implements OnInit {
 							this.dropDep.selectIndex(i);
 							break;
 						}
-					console.log('provincias en cache: ',res.provincias);
 					for(let i=0;i<res.provincias.length;i++)
 						this.dropProv.checkItem(res.provincias[i]._id);
 					// this.modelCircunscripcion._id=res._id;
 					this.inputNombre.value(res.name);
 					this.myModal.show();
+				},
+				(error)=>{
+					this.mensaje('No se pudo cargar','Circunscripcion:',3);
+					console.log(error);
 				});
 			}
 		}
@@ -230,9 +227,7 @@ export class CircunscripcionesComponent implements OnInit {
 			let rowindex = this.migrid.getselectedrowindex();
 			let row = this.migrid.getrowdata(rowindex);
 			
-			console.log(this.modelCircunscripcion);
 			this.$cir.update(row._id,data).subscribe((response)=>{
-				console.log(response);
 				this.migrid.updaterow(
 					rowindex,{
 						iid:response._id,
@@ -245,6 +240,7 @@ export class CircunscripcionesComponent implements OnInit {
 			},
 			(error)=>{
 				this.mensaje("Actualización","Se actualizo satisfactoriamente!",3)
+				console.log(error);
 			});
 		}
 		this.myModal.hide();
@@ -253,6 +249,9 @@ export class CircunscripcionesComponent implements OnInit {
 		this.inputNombre.value('');
 		this.dropDep.clearSelection();
 		this.dropProv.uncheckAll()
+		this.myValidator.hide();
+		this.myValidator.hideHint('inDep');
+		this.myValidator.hideHint('inProv');
 	}
 	mensaje(content:string,title:string,tipo){
 		var op={
@@ -272,8 +271,26 @@ export class CircunscripcionesComponent implements OnInit {
 		if(tipo==3)
 		this.$notifier.error(content,title, op);
 	}
+	prueba(){
+		this.myValidator.validateInput('inDep');
+		this.myValidator.validateInput('inProv');
+	}
 
 	rules=[
-		{ 	input: '.inInstitucion', message: 'Nombre es requerida!', action: 'keyup, blur', rule: 'required' }
+		{ 	input: '.inInstitucion', message: 'Nombre es requerido!', action: 'keyup, blur', rule: 'required' },
+		{ 	input: '.inInstitucion', message: 'Mínimo de caracteres permitidos: 4', action: 'keyup, blur', rule: 'minLength=4' },
+		{ 	input: '.inInstitucion', message: 'Máximo de caracteres permitidos: 255', action: 'keyup, blur', rule: 'maxLength=255' },
+		{ 	input: '.inDep', message: 'Seleccione un Departamento', action: 'keyup, blur', 
+			rule: (input:any, commit:any):boolean=>{
+				return this.dropDep.getSelectedIndex()!=-1;
+			   }
+		},
+		
+		{ 	input: '.inProv', message: 'Seleccione al menos una provincia', action: 'keyup, blur', 
+			rule: (input:any, commit:any):boolean=>{
+				return this.dropProv.getCheckedItems().length>0;
+			}
+		}
+
 	];
 }
