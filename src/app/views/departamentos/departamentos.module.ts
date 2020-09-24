@@ -23,7 +23,7 @@ import { SnotifyModule, SnotifyService, ToastDefaults } from 'ng-snotify';
     ModalModule.forRoot(),
     CommonModule,HttpClientModule,
     DepartamentosRoutingModule,jqxGridModule,jqxButtonModule,ReactiveFormsModule,FormsModule,
-    jqxListBoxModule,jqxDropDownListModule,jqxWindowModule,jqxInputModule,jqxNotificationModule,
+    jqxListBoxModule,jqxDropDownListModule,jqxWindowModule,jqxInputModule,
     jqxValidatorModule,SnotifyModule
   ],
   providers:[
