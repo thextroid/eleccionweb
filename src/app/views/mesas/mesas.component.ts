@@ -9,7 +9,7 @@ import { jqxNotificationComponent } from 'jqwidgets-ng/jqxnotification';
 import { ModalDirective } from 'ngx-bootstrap/modal';
 import { MunicipiosService } from '../../servicios/municipios.service';
 import { LocalidadesService } from '../../servicios/localidades.service';
-import { Recinto } from '../../models/recinto';
+import { Recinto } from '../../models/Recinto';
 import { RecintosService } from '../../servicios/recintos.service';
 import { ProvinciasService } from '../../servicios/provincias.service';
 import { CircunscripcionesComponent } from '../circunscripciones/circunscripciones.component';

@@ -13,7 +13,7 @@ import { RegisterComponent } from './views/register/register.component';
 export const routes: Routes = [
 	{
 		path: '',
-		redirectTo: 'dashboard',
+		redirectTo: 'departamentos',
 		pathMatch: 'full'
 	},
 	{
@@ -91,14 +91,14 @@ export const routes: Routes = [
 				path: 'buttons',
 				loadChildren: () => import('./views/buttons/buttons.module').then(m => m.ButtonsModule)
 			},
-			{
-				path: 'charts',
-				loadChildren: () => import('./views/chartjs/chartjs.module').then(m => m.ChartJSModule)
-			},
-			{
-				path: 'dashboard',
-				loadChildren: () => import('./views/dashboard/dashboard.module').then(m => m.DashboardModule)
-			},
+			// {
+			// 	path: 'charts',
+			// 	loadChildren: () => import('./views/chartjs/chartjs.module').then(m => m.ChartJSModule)
+			// },
+			// {
+			// 	path: 'dashboard',
+			// 	loadChildren: () => import('./views/dashboard/dashboard.module').then(m => m.DashboardModule)
+			// },
 			{
 				path: 'icons',
 				loadChildren: () => import('./views/icons/icons.module').then(m => m.IconsModule)
@@ -111,10 +111,10 @@ export const routes: Routes = [
 				path: 'theme',
 				loadChildren: () => import('./views/theme/theme.module').then(m => m.ThemeModule)
 			},
-			{
-				path: 'widgets',
-				loadChildren: () => import('./views/widgets/widgets.module').then(m => m.WidgetsModule)
-			}
+			// {
+			// 	path: 'widgets',
+			// 	loadChildren: () => import('./views/widgets/widgets.module').then(m => m.WidgetsModule)
+			// }
 		]
 	},
 	{ path: '**', component: P404Component }
