@@ -274,6 +274,6 @@ export class CircunscripcionesComponent implements OnInit {
 	}
 
 	rules=[
-		{ 	input: '.', message: 'Nombre es requerida!', action: 'keyup, blur', rule: 'required' }
+		{ 	input: '.inInstitucion', message: 'Nombre es requerida!', action: 'keyup, blur', rule: 'required' }
 	];
 }
