@@ -3,7 +3,7 @@ import { HttpClient} from '@angular/common/http'
 import { User } from '../models/user';
 import { Observable } from 'rxjs';
 
-const API = 'http://localhost:4600/api/users/'
+const API = 'http://localhost:3000/api/users/'
 @Injectable({
   providedIn: 'root'
 })
@@ -21,7 +21,7 @@ export class UserService {
   save(user):Observable<User>{    
     return this.http.post<User>(`${API}`,user);
   }
-  edit(user):Observable<User>{
+  update(user):Observable<User>{
     return this.http.put<User>(`${API}`+user.ci,user);
   }
 }

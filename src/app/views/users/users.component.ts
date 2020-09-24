@@ -29,6 +29,14 @@ export class UsersComponent implements OnInit {
     dataAdapter: any = new jqx.dataAdapter(this.source);
 
     columns: any[] = [
+        {
+            text: '#', sortable: false, filterable: false, editable: false,
+            groupable: false, draggable: false, resizable: false,
+            datafield: '', columntype: 'number', width: 50,
+            cellsrenderer: function (row, column, value) {
+                return "<div style='margin:4px;'>" + (value + 1) + "</div>";
+            }
+        },
         { text: 'Usuario', datafield: 'name', width: 250 },
         { text: 'Nombre Completo', datafield: 'fullName', width: 250 },
         { text: 'Telefono', datafield: 'telefono', width: 120 },
@@ -46,7 +54,6 @@ export class UsersComponent implements OnInit {
     this.loadData();
   }
   
-
   loadData(){
     this.userService.getAll()
       .subscribe((data)=>{
@@ -76,14 +83,14 @@ export class UsersComponent implements OnInit {
     this.resetSelectedUser();
   }
 
-  saveUser(user){      
+  saveUser(user){
     console.log(user);
       if(this.selectedUser._id){
 
       }else{
         this.userService.save(user.value)
-          .subscribe(result=> this.refeshCourses());         
-          this.modal.hide();
+          .subscribe(result=> this.refeshCourses());
+          this.modalRef.hide();
       }
   }
   selectUser(event){
