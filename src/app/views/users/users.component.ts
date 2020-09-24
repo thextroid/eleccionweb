@@ -77,8 +77,9 @@ export class UsersComponent implements OnInit {
   }
 
   saveUser(user){      
+    console.log(user);
       if(this.selectedUser._id){
-        
+
       }else{
         this.userService.save(user.value)
           .subscribe(result=> this.refeshCourses());         

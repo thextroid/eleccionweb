@@ -6,7 +6,7 @@ import { DefaultLayoutComponent } from './containers';
 
 import { P404Component } from './views/error/404.component';
 import { P500Component } from './views/error/500.component';
-import { LoginComponent } from './views/login/login.component';
+import { LoginComponent } from './auth/login/login.component';
 import { RegisterComponent } from './views/register/register.component';
 
 
