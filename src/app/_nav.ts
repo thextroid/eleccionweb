@@ -20,28 +20,48 @@ export const navItems: INavData[] = [
     icon:'icon-user'
   },
   {
-    name:'Datos',
-    url:'/datos',
-    icon:'icon-data'
+    name:'Circunscripciones',
+    url:'/circunscripciones',
+    icon:'icon-folder'
   },
   {
     name:'Departamentos',
     url:'/departamentos',
-    icon:'icon-data'
+    icon:'icon-folder'
   },
   {
-    name:'recinto',
-    url:'/recinto',
+    name:'Provincias',
+    url:'/provincias',
+    icon:'icon-folder'
+  },
+  {
+    name:'Municipios',
+    url:'/municipios',
+    icon:'icon-folder'
+  },
+  {
+    name:'Localidades',
+    url:'/localidades',
+    icon:'icon-folder'
+  },
+  {
+    name:'Recintos',
+    url:'/recintos',
+    icon:'icon-folder'
+  },
+  {
+    name:'Mesas',
+    url:'/mesas',
     icon:'icon-folder'
   },
 
   {
-    name: 'Colors',
+    name: 'Temas',
     url: '/theme/colors',
     icon: 'icon-drop'
   },
   {
-    name: 'Typography',
+    name: 'Tipografia',
     url: '/theme/typography',
     icon: 'icon-pencil'
   },
@@ -118,7 +138,7 @@ export const navItems: INavData[] = [
     ]
   },
   {
-    name: 'Buttons',
+    name: 'Acciones',
     url: '/buttons',
     icon: 'icon-cursor',
     children: [
@@ -140,7 +160,7 @@ export const navItems: INavData[] = [
     ]
   },
   {
-    name: 'Charts',
+    name: 'Reportes',
     url: '/charts',
     icon: 'icon-pie-chart'
   },
@@ -180,7 +200,7 @@ export const navItems: INavData[] = [
     ]
   },
   {
-    name: 'Notifications',
+    name: 'Notificaciones',
     url: '/notifications',
     icon: 'icon-bell',
     children: [
@@ -218,7 +238,7 @@ export const navItems: INavData[] = [
     name: 'Extras',
   },
   {
-    name: 'Pages',
+    name: 'Login',
     url: '/pages',
     icon: 'icon-star',
     children: [
@@ -244,29 +264,5 @@ export const navItems: INavData[] = [
       }
     ]
   },
-  {
-    name: 'Disabled',
-    url: '/dashboard',
-    icon: 'icon-ban',
-    badge: {
-      variant: 'secondary',
-      text: 'NEW'
-    },
-    attributes: { disabled: true },
-  },
-  {
-    name: 'Download CoreUI',
-    url: 'http://coreui.io/angular/',
-    icon: 'icon-cloud-download',
-    class: 'mt-auto',
-    variant: 'success',
-    attributes: { target: '_blank', rel: 'noopener' }
-  },
-  {
-    name: 'Try CoreUI PRO',
-    url: 'http://coreui.io/pro/angular/',
-    icon: 'icon-layers',
-    variant: 'danger',
-    attributes: { target: '_blank', rel: 'noopener' }
-  }
+  
 ];

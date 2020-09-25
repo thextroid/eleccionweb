@@ -40,10 +40,8 @@ import { AppRoutingModule } from './app.routing';
 // Import 3rd party components
 import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
 import { TabsModule } from 'ngx-bootstrap/tabs';
-import { ChartsModule } from 'ng2-charts';
+//import { ChartsModule } from 'ng2-charts';
 import { SwitchesComponent } from './views/base/switches.component';
-import { DatosComponent } from './views/datos/datos.component';
-import { DatosModule } from './views/datos/datos.module';
 import { FormsModule } from '@angular/forms';
 
 
@@ -61,7 +59,7 @@ import { FormsModule } from '@angular/forms';
     BsDropdownModule.forRoot(),
     TabsModule.forRoot(),
     FormsModule,
-    ChartsModule,
+    //ChartsModule,
     jqxGridModule
   ],
   declarations: [

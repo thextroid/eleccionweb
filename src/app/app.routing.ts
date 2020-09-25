@@ -13,7 +13,7 @@ import { RegisterComponent } from './views/register/register.component';
 export const routes: Routes = [
 	{
 		path: '',
-		redirectTo: 'dashboard',
+		redirectTo: 'departamentos',
 		pathMatch: 'full'
 	},
 	{
@@ -56,12 +56,32 @@ export const routes: Routes = [
 				loadChildren:()=> import('./views/users/users.module').then(m=> m.UsersModule)
 			},
 			{
-				path:'datos',
-				loadChildren:()=> import('./views/datos/datos.module').then(m=> m.DatosModule)
+				path:'circunscripciones',
+				loadChildren:()=> import('./views/circunscripciones/circunscripciones.module').then(m=> m.CircunscripcionesModule)
 			},
 			{
 				path:'departamentos',
 				loadChildren:()=> import('./views/departamentos/departamentos.module').then(m=> m.DepartamentosModule)
+			},
+			{
+				path:'provincias',
+				loadChildren:()=> import('./views/provincias/provincias.module').then(m=> m.ProvinciasModule)
+			},
+			{
+				path:'municipios',
+				loadChildren:()=> import('./views/municipios/municipios.module').then(m=> m.MunicipiosModule)
+			},
+			{
+				path:'localidades',
+				loadChildren:()=> import('./views/localidades/localidades.module').then(m=> m.LocalidadesModule)
+			},
+			{
+				path:'recintos',
+				loadChildren:()=> import('./views/recintos/recintos.module').then(m=> m.RecintosModule)
+			},
+			{
+				path:'mesas',
+				loadChildren:()=> import('./views/mesas/mesas.module').then(m=> m.MesasModule)
 			},
 			{
 				path: 'base',
@@ -71,14 +91,14 @@ export const routes: Routes = [
 				path: 'buttons',
 				loadChildren: () => import('./views/buttons/buttons.module').then(m => m.ButtonsModule)
 			},
-			{
-				path: 'charts',
-				loadChildren: () => import('./views/chartjs/chartjs.module').then(m => m.ChartJSModule)
-			},
-			{
-				path: 'dashboard',
-				loadChildren: () => import('./views/dashboard/dashboard.module').then(m => m.DashboardModule)
-			},
+			// {
+			// 	path: 'charts',
+			// 	loadChildren: () => import('./views/chartjs/chartjs.module').then(m => m.ChartJSModule)
+			// },
+			// {
+			// 	path: 'dashboard',
+			// 	loadChildren: () => import('./views/dashboard/dashboard.module').then(m => m.DashboardModule)
+			// },
 			{
 				path: 'icons',
 				loadChildren: () => import('./views/icons/icons.module').then(m => m.IconsModule)
@@ -91,10 +111,10 @@ export const routes: Routes = [
 				path: 'theme',
 				loadChildren: () => import('./views/theme/theme.module').then(m => m.ThemeModule)
 			},
-			{
-				path: 'widgets',
-				loadChildren: () => import('./views/widgets/widgets.module').then(m => m.WidgetsModule)
-			}
+			// {
+			// 	path: 'widgets',
+			// 	loadChildren: () => import('./views/widgets/widgets.module').then(m => m.WidgetsModule)
+			// }
 		]
 	},
 	{ path: '**', component: P404Component }
