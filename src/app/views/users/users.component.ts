@@ -1,102 +1,126 @@
-import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
-import { jqxGridComponent } from 'jqwidgets-ng/jqxgrid';
-import { BsModalRef, BsModalService, ModalDirective } from 'ngx-bootstrap/modal';
-import { User } from '../../models/user';
-import { UserService } from '../../servicios/user.service';
-import _ from 'lodash';
-import { HttpClientModule } from '@angular/common/http';
+import { Component, OnInit, TemplateRef, ViewChild } from "@angular/core";
+import { jqxGridComponent } from "jqwidgets-ng/jqxgrid";
+import {
+  BsModalRef,
+  BsModalService,
+  ModalDirective,
+} from "ngx-bootstrap/modal";
+import { User } from "../../models/user";
+import { UserService } from "../../servicios/user.service";
+import _ from "lodash";
+import { HttpClientModule } from "@angular/common/http";
 @Component({
-  templateUrl: './users.component.html',
-  styleUrls:['./users.component.css']
+  templateUrl: "./users.component.html",
+  styleUrls: ["./users.component.css"],
 })
 export class UsersComponent implements OnInit {
-
   @ViewChild("myGrid") myGrid: jqxGridComponent;
-  @ViewChild('modal') modal: ModalDirective;
+  @ViewChild("modal") modal: ModalDirective;
   source: any = {
     localdata: null,
     datafields: [
-        { name: '_id', type: 'string' },
-        { name: 'name', type: 'string' },
-        { name: 'fullName', type: 'string' },
-        { name: 'telefono', type: 'int' },
-        { name: 'rol', type: 'string' },
-        { name: 'state', type: 'bool' }
+      { name: "_id", type: "string" },
+      { name: "name", type: "string" },
+      { name: "fullName", type: "string" },
+      { name: "telefono", type: "int" },
+      { name: "rol", type: "string" },
+      { name: "state", type: "bool" },
     ],
-    datatype: 'json'
-    };
+    datatype: "json",
+  };
 
-    dataAdapter: any = new jqx.dataAdapter(this.source);
+  dataAdapter: any = new jqx.dataAdapter(this.source);
 
-    columns: any[] = [
-        {
-            text: '#', sortable: false, filterable: false, editable: false,
-            groupable: false, draggable: false, resizable: false,
-            datafield: '', columntype: 'number', width: 50,
-            cellsrenderer: function (row, column, value) {
-                return "<div style='margin:4px;'>" + (value + 1) + "</div>";
-            }
-        },
-        { text: 'Usuario', datafield: 'name', width: 250 },
-        { text: 'Nombre Completo', datafield: 'fullName', width: 250 },
-        { text: 'Telefono', datafield: 'telefono', width: 120 },
-        { text: 'Rol', datafield: 'rol', width: 80 },
-        { text: 'Estado', datafield: 'state', minwidth: 60 , columntype:'checkbox'}
-    ];
+  columns: any[] = [
+    {
+      text: "#",
+      sortable: false,
+      filterable: false,
+      editable: false,
+      groupable: false,
+      draggable: false,
+      resizable: false,
+      datafield: "",
+      columntype: "number",
+      width: 50,
+      cellsrenderer: function (row, column, value) {
+        return "<div style='margin:4px;'>" + (value + 1) + "</div>";
+      },
+    },
+    { text: "Usuario", datafield: "name", width: 250 },
+    { text: "Nombre Completo", datafield: "fullName", width: 250 },
+    { text: "Telefono", datafield: "telefono", width: 120 },
+    { text: "Rol", datafield: "rol", width: 80 },
+    {
+      text: "Estado",
+      datafield: "state",
+      minwidth: 60,
+      columntype: "checkbox",
+    },
+  ];
 
   modalRef: BsModalRef;
-  selectedUser=null;
-  constructor(private userService:UserService,
-      private modalService: BsModalService) { }
+  selectedUser = null;
+  constructor(
+    private userService: UserService,
+    private modalService: BsModalService
+  ) {}
 
   ngOnInit(): void {
     this.resetSelectedUser();
     this.loadData();
   }
-  
-  loadData(){
-    this.userService.getAll()
-      .subscribe((data)=>{
-          this.source.localdata =  data;
-          this.myGrid.updatebounddata();
-      })
+
+  loadData() {
+    this.userService.getAll().subscribe((data) => {
+      this.source.localdata = data;
+      this.myGrid.updatebounddata();
+      console.log("data...");
+    });
   }
 
-  resetSelectedUser(){
-      const emptyUser={
-        _id:null,
-        name:'',
-        fullName:'',
-        telefono:null,
-        rol:'',
-        state:false
-      }
-      this.selectedUser = emptyUser;      
+  resetSelectedUser() {
+    const emptyUser = {
+      _id: null,
+      name: "",
+      fullName: "",
+      telefono: null,
+      rol: "",
+      state: false,
+    };
+    this.selectedUser = emptyUser;
   }
 
-  refeshCourses(){
+  refeshCourses() {
     this.resetSelectedUser();
     this.loadData();
   }
-  openModal(template:TemplateRef<any>){
+  openModal(template: TemplateRef<any>) {
     this.modalRef = this.modalService.show(template);
     this.resetSelectedUser();
   }
 
-  saveUser(user){
+  saveUser(user) {
     console.log(user);
-      if(this.selectedUser._id){
-
-      }else{
-        this.userService.save(user.value)
-          .subscribe(result=> this.refeshCourses());
-          this.modalRef.hide();
-      }
+    if (this.selectedUser._id) {
+    } else {
+      this.userService
+        .save(user.value)
+        .subscribe((result) => this.refeshCourses());
+      this.modalRef.hide();
+    }
   }
-  selectUser(event){
-    this.selectedUser = _.pick(event.args.row,['_id','fullName','name','telefono','rol','state']);
+  selectUser(event) {
+    this.selectedUser = _.pick(event.args.row, [
+      "_id",
+      "fullName",
+      "name",
+      "telefono",
+      "rol",
+      "state",
+    ]);
   }
-  cancel(){
+  cancel() {
     this.resetSelectedUser();
   }
 }
