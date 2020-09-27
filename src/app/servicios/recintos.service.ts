@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { Recinto } from '../models/Recinto';
+import { Recinto } from '../models/recinto';
 const api="http://192.81.217.7/api/recintos";
 @Injectable({
   providedIn: 'root'
