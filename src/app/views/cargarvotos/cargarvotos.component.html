@@ -1,0 +1,152 @@
+<ng-wizard [config]="config" (stepChanged)="stepChanged($event)">
+  <ng-wizard-step [title]="'Paso 1'" [description]="'Recinto'">
+    <form id="form" (ngSubmit)="checkValidation()">
+      <div class="row">
+        <div class="form-group col-sm-6">
+          <label for="postal-code">Circunscripcion:</label>
+          <jqxDropDownList
+            #dropCir
+            [filterable]="true"
+            class="inCir"
+            (onChange)="cambiarProvs()"
+            [width]="'100%'"
+            [height]="30"
+            [autoOpen]="false"
+          >
+          </jqxDropDownList>
+        </div>
+        <div class="form-group col-sm-6">
+          <label for="postal-code">Provincia:</label>
+          <jqxDropDownList
+            #dropProv
+            [filterable]="true"
+            class="inProv"
+            (onChange)="cambiarMuns()"
+            [width]="'100%'"
+            [height]="30"
+            [autoOpen]="false"
+          >
+          </jqxDropDownList>
+        </div>
+        <div class="form-group col-sm-6">
+          <label for="postal-code">Municipio:</label>
+          <jqxDropDownList
+            #dropMun
+            class="inMun"
+            (onChange)="cambiarRecs()"
+            [width]="'100%'"
+            [height]="30"
+            [autoOpen]="false"
+          >
+          </jqxDropDownList>
+        </div>
+        <div class="form-group col-sm-6">
+          <label for="postal-code">Recinto:</label>
+          <jqxDropDownList
+            #dropRec
+            [filterable]="true"
+            (onChange)="generarMesas()"
+            class="inRec"
+            [width]="'100%'"
+            [height]="30"
+            [autoOpen]="false"
+          >
+          </jqxDropDownList>
+        </div>
+      </div>
+    </form>
+  </ng-wizard-step>
+
+  <ng-wizard-step [title]="'Paso 2'" [description]="'mesas'">
+    <div class="container">
+      <div class="row">
+        <div *ngFor="let i of mess; let row = index" class="col-md-3">
+          <button
+            class="btn btn-primary"
+            (click)="cargar(row + 1)"
+            style="width: 100%; margin: 4px"
+          >
+            Mesa {{ row + 1 }}
+          </button>
+        </div>
+      </div>
+    </div>
+  </ng-wizard-step>
+
+  <ng-wizard-step [title]="'Paso 3'" [description]="'Votos'">
+    <jqxGrid
+      #migrid
+      [width]="'100%'"
+      [source]="dataAdapter"
+      [columns]="columns"
+      [height]="300"
+      [editable]="true"
+      [columnsresize]="true"
+    >
+    </jqxGrid>
+    <!-- (onRowselect)="Rowselect($event)" -->
+  </ng-wizard-step>
+
+  <ng-wizard-step [title]="'Paso 4'" [description]="'Acta'">
+    <div class="col-md-6-offset-3">
+      <div class="row">
+        <div class="form-group col-sm-12">
+          <label for="city">Codigo Mesa:</label>
+          <jqxInput
+            #inputNumeroMesa
+            class="idmesa text-input form-control"
+          ></jqxInput>
+        </div>
+        <div class="form-group col-sm-12">
+          <label for="postal-code"># Habilitados:</label>
+          <jqxInput
+            #inputEmp
+            class="idempadronados text-input form-control"
+          ></jqxInput>
+        </div>
+        <!--/.row-->
+        <div class="form-group col-sm-12">
+          <label for="postal-code">Hora de Apertura:</label>
+          <jqxDateTimeInput
+            #inputApertura
+            [formatString]="'T'"
+            [showTimeButton]="true"
+            [showCalendarButton]="false"
+            class="inApertura text-input form-control"
+          ></jqxDateTimeInput>
+        </div>
+        <!--/.row-->
+        <div class="form-group col-sm-12">
+          <label for="postal-code">Hora de Cierre:</label>
+          <jqxDateTimeInput
+            #inputCierre
+            [showTimeButton]="true"
+            [showCalendarButton]="false"
+            class="inCierre text-input form-control"
+            [formatString]="'T'"
+          ></jqxDateTimeInput>
+        </div>
+        <!--/.row-->
+
+        <div class="form-group col-sm-12">
+          <label for="postal-code">Foto:</label>
+          <jqxFileUpload
+            #inputFoto
+            class="inFoto text-input form-control"
+          ></jqxFileUpload>
+        </div>
+        <div class="form-group col-sm-12">
+          <button
+            type="submit"
+            class="btn btn-primary"
+            id="guardar"
+            (click)="enviar()"
+          >
+            <i class="fa fa-save"></i>Enviar
+          </button>
+        </div>
+        <!--/.row-->
+      </div>
+    </div>
+  </ng-wizard-step>
+</ng-wizard>
