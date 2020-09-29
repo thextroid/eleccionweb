@@ -5,13 +5,17 @@ import { jqxDropDownListComponent } from "jqwidgets-ng/jqxdropdownlist";
 import { jqxFileUploadComponent } from "jqwidgets-ng/jqxfileupload";
 import { jqxGridComponent } from "jqwidgets-ng/jqxgrid";
 import { jqxInputComponent } from "jqwidgets-ng/jqxinput";
+import { jqxTextAreaComponent } from 'jqwidgets-ng/jqxtextarea';
+import { jqxValidatorComponent } from 'jqwidgets-ng/jqxvalidator';
+import { SnotifyPosition, SnotifyService } from 'ng-snotify';
 
 import {
-  NgWizardConfig,
-  THEME,
-  StepChangedArgs,
-  NgWizardService,
+	NgWizardConfig,
+	THEME,
+	StepChangedArgs,
+	NgWizardService,
 } from "ng-wizard";
+import { ImageCroppedEvent } from 'ngx-image-cropper';
 import { Circunscripcion } from "../../models/circunscripcion";
 import { Municipio } from "../../models/municipio";
 import { Provincia } from "../../models/provincia";
@@ -21,419 +25,575 @@ import { MunicipiosService } from "../../servicios/municipios.service";
 import { ProvinciasService } from "../../servicios/provincias.service";
 import { RecintosService } from "../../servicios/recintos.service";
 import { VotacionService } from "../../servicios/votacion.service";
+import { ThemeModule } from '../theme/theme.module';
 
 @Component({
-  selector: "app-cargarvotos",
-  templateUrl: "./cargarvotos.component.html",
-  styleUrls: ["./cargarvotos.component.css"],
+	selector: "app-cargarvotos",
+	templateUrl: "./cargarvotos.component.html",
+	styleUrls: ["./cargarvotos.component.css"],
 })
 export class CargarvotosComponent implements OnInit {
-  @ViewChild("dropCir", { static: false }) dropCir: jqxDropDownListComponent;
-  @ViewChild("dropProv", { static: false }) dropProv: jqxDropDownListComponent;
-  @ViewChild("dropMun", { static: false }) dropMun: jqxDropDownListComponent;
-  @ViewChild("dropRec", { static: false }) dropRec: jqxDropDownListComponent;
-  @ViewChild("migrid", { static: false }) migrid: jqxGridComponent;
-  @ViewChild("inputNumeroMesa", { static: false })
-  numberMesa: jqxInputComponent;
-  @ViewChild("inputEmp", { static: false }) empadronados: jqxInputComponent;
-  @ViewChild("inputApertura", { static: false })
-  apertura: jqxDateTimeInputComponent;
-  @ViewChild("inputCierre", { static: false })
-  cierre: jqxDateTimeInputComponent;
-  @ViewChild("inputFoto", { static: false }) foto: jqxFileUploadComponent;
-  listPartidos = [
-    { name: "Creemos", sigla: "CREEMOS" },
-    {
-      name:
-        "MOVIMIENTO AL SOCIALISMO INSTRUMENTO POLITICO POR LA SOBERANIA DE LOS PUEBLOS",
-      sigla: "MAS-IPSP",
-    },
-    {
-      name: "Comunidad Ciudadana",
-      sigla: "CC",
-    },
-    {
-      name: "Libertad y Democracia",
-      sigla: "LIBRE21",
-    },
-    {
-      name: "Frente Para la Victoria",
-      sigla: "FPV",
-    },
-    {
-      name: "Partido de Accion Nacional Boliviano",
-      sigla: "PANBOL",
-    },
-    {
-      name: "Partido de Accion Nacional Boliviano",
-      sigla: "PANBOL",
-    },
-    {
-      name: "Accion Democratica Nacionalista",
-      sigla: "ADN",
-    },
-  ];
-  datafields: any[] = [
-    {
-      name: "candidatura",
-      map: "candidatura",
-      type: "string",
-    },
-    {
-      name: "CREEMOS",
-      map: "CREEMOS",
-      type: "number",
-    },
-    {
-      name: "ADN",
-      map: "ADN",
-      type: "number",
-    },
-    {
-      name: "MAS",
-      map: "MAS",
-      type: "number",
-    },
-    {
-      name: "FPV",
-      map: "FPV",
-      type: "number",
-    },
-    {
-      name: "PANBOL",
-      map: "PANBOL",
-      type: "number",
-    },
-    {
-      name: "LIBRE21",
-      map: "LIBRE21",
-      type: "number",
-    },
-    {
-      name: "CC",
-      map: "CC",
-      type: "number",
-    },
-    {
-      name: "blancos",
-      map: "blancos",
-      type: "number",
-    },
-    {
-      name: "nulos",
-      map: "nulos",
-      type: "number",
-    },
-  ];
-  source: any = {
-    datafields: this.datafields,
-    localdata: [
-      {
-        candidatura: "Presidencial",
-        CREEMOS: 0,
-        ADN: 0,
-        MAS: 0,
-        FPV: 0,
-        PANBOL: 0,
-        LIBRE21: 0,
-        CC: 0,
-        blancos: 0,
-        nulos: 0,
-      },
-      {
-        candidatura: "Diputado Uninominal",
-        CREEMOS: 0,
-        ADN: 0,
-        MAS: 0,
-        FPV: 0,
-        PANBOL: 0,
-        LIBRE21: 0,
-        CC: 0,
-        blancos: 0,
-        nulos: 0,
-      },
-      {
-        candidatura: "Diputado Especial",
-        CREEMOS: 0,
-        ADN: 0,
-        MAS: 0,
-        FPV: 0,
-        PANBOL: 0,
-        LIBRE21: 0,
-        CC: 0,
-        blancos: 0,
-        nulos: 0,
-      },
-    ],
-    beforeprocessing: (data: any) => {
-      this.source.totalrecords = data.TotalRows;
-    },
-  };
+	@ViewChild("dropCir", { static: false }) dropCir: jqxDropDownListComponent;
+	@ViewChild("dropProv", { static: false }) dropProv: jqxDropDownListComponent;
+	@ViewChild("dropMun", { static: false }) dropMun: jqxDropDownListComponent;
+	@ViewChild("dropRec", { static: false }) dropRec: jqxDropDownListComponent;
+	@ViewChild("migrid", { static: false }) migrid: jqxGridComponent;
+	@ViewChild("inputNumeroMesa", { static: false })	numberMesa: jqxInputComponent;
+	@ViewChild("inputEmp", { static: false }) empadronados: jqxInputComponent;
+	@ViewChild("inputApertura", { static: false })	apertura: jqxDateTimeInputComponent;
+	@ViewChild("inputCierre", { static: false })	cierre: jqxDateTimeInputComponent;
+	@ViewChild("inputFoto", { static: false }) foto: jqxFileUploadComponent;
+	@ViewChild('myValidator', { static: false }) myValidator: jqxValidatorComponent;
+	@ViewChild('valacta', { static: false }) validatorActa: jqxValidatorComponent;
+	@ViewChild('myTextArea') obser: jqxTextAreaComponent; 
+ 
+	imageChangedEvent: any = '';
+    croppedImage: any = '';
 
-  columns: any[] = [
-    { datafield: "candidatura", text: "", width: "19%" },
-    { datafield: "CREEMOS", text: "CREEMOS", width: "9%" },
-    { datafield: "ADN", text: "ADN", width: "9%" },
-    { datafield: "MAS", text: "MAS-IPSP", width: "9%" },
-    { datafield: "FPV", text: "FPV", width: "9%" },
-    { datafield: "PANBOL", text: "PANBOL", width: "9%" },
-    { datafield: "LIBRE21", text: "LIBRE21", width: "9%" },
-    { datafield: "CC", text: "CC", width: "9%" },
-    { datafield: "blancos", text: "Blancos", width: "9%" },
-    { datafield: "nulos", text: "Nulos", width: "9%" },
-  ];
-  dataAdapter: any = new jqx.dataAdapter(this.source);
-  numberrenderer = (row: number, column: any, value: any): string => {
-    return (
-      '<div style="text-align:center;margin-top;5px;"' + (1 + value) + "</div>"
-    );
-  };
-  buildGrid() {}
-
-  config: NgWizardConfig = {
-    selected: 0,
-    theme: THEME.arrows,
-    toolbarSettings: {
-      toolbarExtraButtons: [
-        {
-          text: "Finish",
-          class: "btn btn-info",
-          event: () => {
-            alert("Finished!!!");
-          },
-        },
-      ],
-    },
-  };
-
-  constructor(
-    private ngWizardService: NgWizardService,
-    private $vot: VotacionService,
-    private $cir: CircunscripcionesService,
-    private $prov: ProvinciasService,
-    private $mun: MunicipiosService,
-    private $rec: RecintosService
-  ) {}
-  circuns: Circunscripcion[] = [];
-  provs: Provincia[] = [];
-  muns: Municipio[] = [];
-  recs: Recinto[] = [];
-  ngOnInit() {}
-  ngAfterViewInit() {
-    this.$cir.all().subscribe(
-      (res) => {
-        this.circuns = res;
-        let list = [];
-        for (let i = 0; i < res.length; i++) {
-          list.push({ value: res[i]._id, label: res[i].name });
-        }
-        this.dropCir.source(list);
-      },
-      (error) => {
-        console.log(error);
-      }
-    );
-    this.$prov.all().subscribe(
-      (res) => {
-        this.provs = res;
-      },
-      (error) => {
-        console.log(error);
-      }
-    );
-    this.$mun.all().subscribe(
-      (res) => {
-        this.muns = res;
-      },
-      (error) => {
-        console.log(error);
-      }
-    );
-    this.$rec.all().subscribe(
-      (res) => {
-        this.recs = res;
-      },
-      (error) => {
-        console.log(error);
-      }
-    );
-  }
-
-  showPreviousStep(event?: Event) {
-    this.ngWizardService.previous();
-  }
-
-  showNextStep(event?: Event) {
-    this.ngWizardService.next();
-  }
-
-  resetWizard(event?: Event) {
-    this.ngWizardService.reset();
-  }
-
-  setTheme(theme: THEME) {
-    this.ngWizardService.theme(theme);
-  }
-
-  stepChanged(args: StepChangedArgs) {
-    console.log(args.step);
-  }
-  cambiarProvs() {
-    this.dropProv.clearFilter();
-    this.dropProv.clearSelection();
-    const cirSelect = this.dropCir.getSelectedItem();
-
-    let list = [];
-    for (let i = 0; i < this.circuns.length; i++) {
-      if (this.circuns[i]._id === cirSelect.value) {
-        for (let j = 0; j < this.circuns[i].provincias.length; j++) {
-          list.push({
-            value: this.circuns[i].provincias[j]._id,
-            label: this.circuns[i].provincias[j].name,
-          });
-        }
-        break;
-      }
+    fileChangeEvent(event: any): void {
+				this.imageChangedEvent = event;
+				console.log(event);
     }
-    console.log(this.circuns);
+    imageCropped(event: ImageCroppedEvent) {
+				this.croppedImage = event.base64;
+    }
+    imageLoaded() {     }
+    cropperReady() {    }
+    loadImageFailed() {    }
+	listPartidos = [
+		{ name: "Creemos", sigla: "CREEMOS" },
+		{
+			name:
+				"MOVIMIENTO AL SOCIALISMO INSTRUMENTO POLITICO POR LA SOBERANIA DE LOS PUEBLOS",
+			sigla: "MAS-IPSP",
+		},
+		{
+			name: "Comunidad Ciudadana",
+			sigla: "CC",
+		},
+		{
+			name: "Libertad y Democracia",
+			sigla: "LIBRE21",
+		},
+		{
+			name: "Frente Para la Victoria",
+			sigla: "FPV",
+		},
+		{
+			name: "Partido de Accion Nacional Boliviano",
+			sigla: "PANBOL",
+		},
+		{
+			name: "Partido de Accion Nacional Boliviano",
+			sigla: "PANBOL",
+		},
+		{
+			name: "Accion Democratica Nacionalista",
+			sigla: "ADN",
+		},
+	];
+	datafields: any[] = [
+		{
+			name: "candidatura",
+			map: "candidatura",
+			type: "string",
+		},
+		{
+			name: "CREEMOS",
+			map: "CREEMOS",
+			type: "number",
+		},
+		{
+			name: "ADN",
+			map: "ADN",
+			type: "number",
+		},
+		{
+			name: "MAS",
+			map: "MAS",
+			type: "number",
+		},
+		{
+			name: "FPV",
+			map: "FPV",
+			type: "number",
+		},
+		{
+			name: "PANBOL",
+			map: "PANBOL",
+			type: "number",
+		},
+		{
+			name: "LIBRE21",
+			map: "LIBRE21",
+			type: "number",
+		},
+		{
+			name: "CC",
+			map: "CC",
+			type: "number",
+		},
+		{
+			name: "blancos",
+			map: "blancos",
+			type: "number",
+		},
+		{
+			name: "nulos",
+			map: "nulos",
+			type: "number",
+		},
+	];
+	source: any = {
+		datafields: this.datafields,
+		localdata: [
+			{
+				candidatura: "Presidencial",
+				CREEMOS: 0,
+				ADN: 0,
+				MAS: 0,
+				FPV: 0,
+				PANBOL: 0,
+				LIBRE21: 0,
+				CC: 0,
+				blancos: 0,
+				nulos: 0,
+			},
+			{
+				candidatura: "Diputado Uninominal",
+				CREEMOS: 0,
+				ADN: 0,
+				MAS: 0,
+				FPV: 0,
+				PANBOL: 0,
+				LIBRE21: 0,
+				CC: 0,
+				blancos: 0,
+				nulos: 0,
+			},
+			{
+				candidatura: "Diputado Especial",
+				CREEMOS: 0,
+				ADN: 0,
+				MAS: 0,
+				FPV: 0,
+				PANBOL: 0,
+				LIBRE21: 0,
+				CC: 0,
+				blancos: 0,
+				nulos: 0,
+			},
+		],
+		beforeprocessing: (data: any) => {
+			this.source.totalrecords = data.TotalRows;
+		},
+	};
 
-    this.dropProv.source(list);
-  }
-  cambiarMuns() {
-    this.dropMun.clearFilter();
-    this.dropMun.clearSelection();
-    const provSelect = this.dropProv.getSelectedItem();
-    let list = [];
-    for (let i = 0; i < this.muns.length; i++) {
-      if (this.muns[i].provincia._id === provSelect.value) {
-        list.push({
-          value: this.muns[i]._id,
-          label: this.muns[i].name,
-        });
-      }
-    }
+	columns: any[] = [
+		{ datafield: "candidatura", text: "", width: "19%" ,editable:false},
+		{ datafield: "CREEMOS", text: "CREEMOS", width: "9%" ,editable:true},
+		{ datafield: "ADN", text: "ADN", width: "9%" ,editable:true},
+		{ datafield: "MAS", text: "MAS-IPSP", width: "9%" ,editable:true},
+		{ datafield: "FPV", text: "FPV", width: "9%" ,editable:true},
+		{ datafield: "PANBOL", text: "PANBOL", width: "9%" ,editable:true},
+		{ datafield: "LIBRE21", text: "LIBRE21", width: "9%" ,editable:true},
+		{ datafield: "CC", text: "CC", width: "9%" ,editable:true},
+		{ datafield: "blancos", text: "Blancos", width: "9%" ,editable:true},
+		{ datafield: "nulos", text: "Nulos", width: "9%" ,editable:true},
+	];
+	dataAdapter: any = new jqx.dataAdapter(this.source);
+	numberrenderer = (row: number, column: any, value: any): string => {
+		return (
+			'<div style="text-align:center;margin-top;5px;"' + (1 + value) + "</div>"
+		);
+	};
+	buildGrid() {}
+	checkmesa:any=-1;
+	$ev :StepChangedArgs;
+	config: NgWizardConfig = {
+		selected:0,
+		theme: THEME.dots,
+		lang:{
+			next:'Continuar',
+			previous:'Volver'
+		},
+		keyNavigation:false,
+		toolbarSettings: {
+			showNextButton: false, showPreviousButton: false,
+		}
+	};
 
-    this.dropMun.source(list);
-  }
-  modelRec: Recinto = new Recinto();
-  mess: any[] = [];
-  cambiarRecs() {
-    this.dropRec.clearFilter();
-    this.dropRec.clearSelection();
-    const munSelect = this.dropMun.getSelectedItem();
-    let list = [];
-    for (let i = 0; i < this.recs.length; i++) {
-      if (
-        "municipio" in this.recs[i] &&
-        this.recs[i].municipio._id === munSelect.value
-      ) {
-        list.push({
-          value: this.recs[i]._id,
-          label: this.recs[i].institucion,
-        });
-      }
-    }
-    this.dropRec.source(list);
-  }
-  generarMesas() {
-    const recSelect = this.dropRec.getSelectedItem();
-    for (let i = 0; i < this.recs.length; i++) {
-      if (this.recs[i]._id === recSelect.value) {
-        this.modelRec = this.recs[i];
-        break;
-      }
-    }
-    for (let i = 0; i < this.modelRec.numeroMesas; i++) {
-      this.mess.push(i + 1);
-    }
-  }
-  Mesa: any;
-  cargar(mesa) {
-    this.Mesa = "Mesa " + mesa;
-    console.log(this.modelRec, "numero de mesa: " + mesa);
-  }
-  enviar() {
-    const cir = this.dropCir.getSelectedItem().value;
-    const pro = this.dropProv.getSelectedItem().value;
-    const mun = this.dropMun.getSelectedItem().value;
-    const rec = this.dropRec.getSelectedItem().value;
-    const tab = this.migrid.getdisplayrows();
-    console.log(this.foto);
-    let votos = [];
+	constructor(
+		private ngWizardService: NgWizardService,
+		private $vot: VotacionService,
+		private $cir: CircunscripcionesService,
+		private $prov: ProvinciasService,
+		private $mun: MunicipiosService,
+		private $rec: RecintosService,
+		private $notifier: SnotifyService
+	) {}
+	circuns: Circunscripcion[] = [];
+	provs: Provincia[] = [];
+	muns: Municipio[] = [];
+	recs: Recinto[] = [];
+	acta:any={codigo:'',emp:0,apertura:'',cierre:'',foto:null};
+	info:any={cir:'',prov:'',mun:'',rec:'',loc:'',mesa:-1};
+	ngOnInit() {}
+	ngAfterViewInit() {
+		this.$cir.all().subscribe(
+			(res) => {
+				this.circuns = res;
+				let list = [];
+				for (let i = 0; i < res.length; i++) {
+					list.push({ value: res[i], label: res[i].name });
+				}
+				this.dropCir.source(list);
+			},
+			(error) => {
+				console.log(error);
+			}
+		);
+		this.$prov.all().subscribe(
+			(res) => {
+				this.provs = res;
+			},
+			(error) => {
+				console.log(error);
+			}
+		);
+		this.$mun.all().subscribe(
+			(res) => {
+				this.muns = res;
+			},
+			(error) => {
+				console.log(error);
+			}
+		);
+		this.$rec.all().subscribe(
+			(res) => {
+				this.recs = res;
+			},
+			(error) => {
+				console.log(error);
+			}
+		);
+	}
 
-    votos.push({
-      numeroMesa: this.Mesa,
-      circunscripcion: cir,
-      recinto: rec,
-      estado: "Enviado",
-      candidatura: tab[0].candidatura,
-      MASIPSP: tab[0].MAS,
-      CC: tab[0].CC,
-      LIBRE21: tab[0].LIBRE21,
-      FPV: tab[0].FPV,
-      PANBOL: tab[0].PANBOL,
-      ADN: tab[0].ADN,
-      CREEMOS: tab[0].CREEMOS,
-      votosBlancos: tab[0].blancos,
-      votosNullos: tab[0].nulos,
-    });
-    if (this.modelRec.tipo.length == 1) {
-      if (this.modelRec.tipo[0] == "Especial") {
-        votos.push({
-          numeroMesa: this.Mesa,
-          circunscripcion: cir,
-          recinto: rec,
-          estado: "Enviado",
-          candidatura: tab[2].candidatura,
-          MASIPSP: tab[2].MAS,
-          CC: tab[2].CC,
-          LIBRE21: tab[2].LIBRE21,
-          FPV: tab[2].FPV,
-          PANBOL: tab[2].PANBOL,
-          ADN: tab[2].ADN,
-          CREEMOS: tab[2].CREEMOS,
-          votosBlancos: tab[2].blancos,
-          votosNullos: tab[2].nulos,
-        });
-      } else {
-        votos.push({
-          numeroMesa: this.Mesa,
-          circunscripcion: cir,
-          recinto: rec,
-          estado: "Enviado",
-          candidatura: tab[1].candidatura,
-          MASIPSP: tab[1].MAS,
-          CC: tab[1].CC,
-          LIBRE21: tab[1].LIBRE21,
-          FPV: tab[1].FPV,
-          PANBOL: tab[1].PANBOL,
-          ADN: tab[1].ADN,
-          CREEMOS: tab[1].CREEMOS,
-          votosBlancos: tab[1].blancos,
-          votosNullos: tab[1].nulos,
-        });
-      }
-    }
+	showPreviousStep(event?: Event) {
+		this.ngWizardService.previous();
+	}
 
-    const data = [
-      {
-        codMesa: this.numberMesa.val(),
-        empadronados: this.empadronados.val(),
-        horaApertura: this.apertura.val(),
-        horaCierre: this.cierre.val(),
-        filename: "",
-        estado: "enviado",
-      },
-      votos,
-    ];
-    this.$vot.upload(data).subscribe(
-      (data) => {
-        console.log(data);
-      },
-      (error) => {
-        console.log(error);
-      }
-    );
-    console.log(data);
-  }
+	showNextStep(event?: Event) {
+		this.ngWizardService.next();
+		console.log(event);
+	}
+	
+	resetWizard(event?: Event) {
+		this.ngWizardService.reset();
+		console.log(event);
+	}
+	
+	setTheme(theme: THEME) {
+		this.ngWizardService.theme(theme);
+	}
+	
+	stepChanged(args: StepChangedArgs) {
+		this.$ev=args;
+		console.log(args);
+	}
+	cambiarProvs() {
+		this.dropProv.clearFilter();
+		this.dropMun.clearFilter();
+		this.dropRec.clearFilter();
+		this.dropProv.clearSelection();
+		this.dropMun.clearSelection();
+		this.dropRec.clearSelection();
+		this.myValidator.validateInput('inCir');
+		const cirSelect = this.dropCir.getSelectedItem();
+		this.info.cir=cirSelect.value;
+		let list = [];
+		for (let i = 0; i < this.circuns.length; i++) {
+			if (this.circuns[i]._id === cirSelect.value._id) {
+				for (let j = 0; j < this.circuns[i].provincias.length; j++) {
+					list.push({
+						value: this.circuns[i].provincias[j],
+						label: this.circuns[i].provincias[j].name,
+					});
+				}
+				break;
+			}
+		}
+		console.log(this.circuns);
+
+		this.dropProv.source(list);
+	}
+	cambiarMuns() {
+		this.dropMun.clearFilter();
+		this.dropRec.clearFilter();
+		this.dropMun.clearSelection();
+		this.dropRec.clearSelection();
+		this.myValidator.validateInput('inProv');
+		const provSelect = this.dropProv.getSelectedItem();
+		console.log(provSelect);
+		this.info.prov=provSelect.value;
+		let list = [];
+		for (let i = 0; i < this.muns.length; i++) {
+			if (this.muns[i].provincia._id === provSelect.value._id) {
+				list.push({
+					value: this.muns[i],
+					label: this.muns[i].name,
+				});
+			}
+		}
+
+		this.dropMun.source(list);
+	}
+	modelRec: Recinto = new Recinto();
+	mess: any[] = [];
+	cambiarRecs() {
+		this.dropRec.clearFilter();
+		this.dropRec.clearSelection();
+		this.myValidator.validateInput('inMun');
+		const munSelect = this.dropMun.getSelectedItem();
+		this.info.mun=munSelect.value;
+		console.log(munSelect)
+		let list = [];
+		for (let i = 0; i < this.recs.length; i++) {
+			if (
+				"municipio" in this.recs[i] &&
+				this.recs[i].municipio._id === munSelect.value._id
+			) {
+				list.push({
+					value: this.recs[i],
+					label: this.recs[i].institucion
+				});
+			}
+		}
+		this.dropRec.source(list);
+	}
+	generarMesas() {
+		const recSelect = this.dropRec.getSelectedItem();
+		this.info.rec=recSelect.value;
+		this.info.loc=recSelect.value.localidad.name;
+		console.log(recSelect.value);
+		this.myValidator.validateInput('inRec');
+		this.checkmesa=-1;
+		this.mess=[];
+		for (let i = 0; i < this.recs.length; i++) {
+			if (this.recs[i]._id === recSelect.value._id) {
+				this.modelRec = this.recs[i];
+				break;
+			}
+		}
+		for (let i = 0; i < this.info.rec.numeroMesas; i++) {
+			this.mess.push(i + 1);
+		}
+	}
+	Mesa: any;
+	cargar(mesa) {
+		this.Mesa = mesa;
+		this.info.mesa=mesa;
+		console.log(this.modelRec, "numero de mesa: " + mesa);
+	}
+	enviar() {
+		const cir = this.dropCir.getSelectedItem().value._id;
+		const pro = this.dropProv.getSelectedItem().value._id;
+		const mun = this.dropMun.getSelectedItem().value._id;
+		const rec = this.dropRec.getSelectedItem().value._id;
+		const tab = this.migrid.getdisplayrows();
+		let votos = [];
+		let form = new FormData();
+		votos.push({
+			candidatura: 'Presidente y Vicepresidente',
+			MASIPSP: tab[0].MAS,
+			CC: tab[0].CC,
+			LIBRE21: tab[0].LIBRE21,
+			FPV: tab[0].FPV,
+			PANBOL: tab[0].PANBOL,
+			ADN: tab[0].ADN,
+			CREEMOS: tab[0].CREEMOS,
+			votosBlancos: tab[0].blancos,
+			votosNullos: tab[0].nulos,
+		});
+		console.log(this.modelRec);
+		console.log(rec);
+		if (this.modelRec.tipo.length == 1) {
+			const _cand="Diputados "+((this.modelRec.tipo[0] === "Especial")?"Especiales":"Uninominales");
+			votos.push({candidatura: _cand,MASIPSP: tab[1].MAS,CC: tab[1].CC,LIBRE21: tab[1].LIBRE21,FPV: tab[1].FPV,PANBOL: tab[1].PANBOL,ADN: tab[1].ADN,CREEMOS: tab[1].CREEMOS,votosBlancos: tab[1].blancos,votosNullos: tab[1].nulos});
+		}
+		else{
+			votos.push({candidatura: "Diputados Uninominales",MASIPSP: tab[1].MAS,CC: tab[1].CC,LIBRE21: tab[1].LIBRE21,FPV: tab[1].FPV,PANBOL: tab[1].PANBOL,ADN: tab[1].ADN,CREEMOS: tab[1].CREEMOS,votosBlancos: tab[1].blancos,votosNullos: tab[1].nulos});
+			votos.push({candidatura: "Diputados Especiales",MASIPSP: tab[2].MAS,CC: tab[2].CC,LIBRE21: tab[2].LIBRE21,FPV: tab[2].FPV,PANBOL: tab[2].PANBOL,ADN: tab[2].ADN,CREEMOS: tab[2].CREEMOS,votosBlancos: tab[2].blancos,votosNullos: tab[2].nulos});
+		}
+		const data = {
+			file:this.imageChangedEvent.target.files[0],
+			arrayVotacion:[
+				{
+					codMesa: this.numberMesa.val(),
+					empadronados: this.empadronados.val(),
+					horaApertura: this.apertura.getDate(),
+					horaCierre: this.cierre.getDate(),
+					observaciones:this.obser.val(),
+					estado: "Enviado",
+				},
+				{
+					circunscripcion: cir,
+					numeroMesa: "Mesa "+this.Mesa,
+					recinto: rec,
+					estado: "Enviado",
+				},
+				votos
+			]
+		}
+		form.append('file',data.file);
+		form.append('arrayVotacion',JSON.stringify(data.arrayVotacion));
+		this.$vot.upload(form).subscribe(
+			(data) => {
+				this.mensaje('Se cargo satisfactoriamente','Votacion',0);
+				this.ngWizardService.reset();
+				console.log(data);
+			},
+			(error) => {
+				this.mensaje('No se cargo satisfactoriamente','Votacion',3);
+				console.log(error);	
+			}
+		);
+		// console.log(form);
+	}
+	uploadFoto(){
+		console.log(this.imageChangedEvent.target.files[0]);
+		const form = new FormData();
+		form.append("file",this.imageChangedEvent.target.files[0]);
+		
+		const data={
+			"file":this.imageChangedEvent.target.files[0],
+			"horaApertura": "2020-09-29T05:08:01.144Z",
+			"horaCierre": "2020-09-29T12:08:01.148Z",
+			"codMesa": "12345",
+			"empadronados": "100",
+			"estado": "Enviado",
+			"observaciones": "observaciones prueba a pablo Ninja"
+		};
+		this.$vot.file("5f72c1713df0064213420cd1",form).subscribe(
+			(res)=>{
+				console.log(res);
+			},
+			(error)=>{
+				console.log(error);
+			}
+		)
+	}
+ 
+	prueba(){		this.ngWizardService.next();	}
+	checkStep(){
+		console.log(this.$ev);
+		if(this.$ev==undefined || this.$ev.step.index==0){
+			this.myValidator.validate();
+		}
+		else if(this.$ev.step.index==1){
+			console.log(this.checkmesa); 
+			if(this.checkmesa!=-1){
+				this.resetActa();
+				this.ngWizardService.next();
+			}
+		}
+		else if(this.$ev.step.index==2){
+			this.acta.emp=this.empadronados.val();
+			this.acta.codigo=this.numberMesa.val();
+			this.acta.emp=this.empadronados.val();
+			this.acta.apertura=this.apertura.val();
+			this.acta.cierre=this.cierre.val();
+			
+			this.migrid.clear();
+			let list=[];
+			list.push({candidatura:'Presidente ',MAS:0,CC:0,LIBRE21:0,FPV:0,PANBOL:0,ADN:0,CREEMOS:0,blancos:0,nulos:0});
+			if(this.info.rec.tipo.length==1)
+				list.push({candidatura:this.info.rec.tipo[0],MAS:0,CC:0,LIBRE21:0,FPV:0,PANBOL:0,ADN:0,CREEMOS:0,blancos:0,nulos:0})
+			else{
+				list.push({candidatura:'Uninominal',MAS:0,CC:0,LIBRE21:0,FPV:0,PANBOL:0,ADN:0,CREEMOS:0,blancos:0,nulos:0})
+				list.push({candidatura:'Especial',MAS:0,CC:0,LIBRE21:0,FPV:0,PANBOL:0,ADN:0,CREEMOS:0,blancos:0,nulos:0})
+			}
+			this.migrid.addrow(null,list);
+			this.validatorActa.validate();
+		}
+		else {
+
+			console.log("ultimo paso");
+		}
+	}
+	archivo:File;
+	imagefile:File=null;
+resetActa(){
+	 this.numberMesa.val(''),
+	 this.empadronados.val(1),
+	 this.apertura.setDate(new Date()),
+	 this.cierre.setDate(new Date()),
+	 this.archivo= null;
+	 this.imagefile= null;
+	 this.croppedImage='';
+	 this.imageChangedEvent='';
+	 this.validatorActa.hide();
+}
+SelectFoto($event){
+	console.log($event);
+	console.log(this.archivo);
+}
+SelectFoto2($event){
+}
+
+	rulesRecinto=[
+		{ 	input: '.inCir', message: 'Seleccione un Circunscripción', action: 'keyup, blur', 
+			rule: (input:any, commit:any):boolean=>{
+				return this.dropCir.getSelectedIndex()!=-1;
+			}
+		},
+		{ 	input: '.inProv', message: 'Seleccione una provincia', action: 'keyup, blur', 
+				rule: (input:any, commit:any):boolean=>{
+					return this.dropProv.getSelectedIndex()!=-1;
+				}
+		},
+		{ 	input: '.inMun', message: 'Seleccione una municipio', action: 'keyup, blur', 
+		rule: (input:any, commit:any):boolean=>{
+			return this.dropMun.getSelectedIndex()!=-1;
+		}
+	},
+{ 	input: '.inRec', message: 'Seleccione un Recinto', action: 'keyup, blur', 
+		rule: (input:any, commit:any):boolean=>{
+			return this.dropRec.getSelectedIndex()!=-1;
+		}
+	}
+	];
+	rulesActa=[
+		{ 	input: '.inMesa', message: 'Codigo mesa requerido!', action: 'keyup, blur', rule: 'required' },
+		{ 	input: '.inMesa', message: 'Mínimo de 4 caracteres', action: 'keyup, blur', rule: 'minLength=4' },
+		{ 	input: '.inMesa', message: 'Máximo de 255 caracteres', action: 'keyup, blur', rule: 'maxLength=255' },
+		{ 	input: '.inEmp', message: 'debe estar entre 1 y 1024', action: 'keyup, blur',
+		rule: (input: any, commit: any): boolean => {
+			const lat = input.val();
+			return lat>=1 && lat<=1024;
+		}
+	},
+	{ 	input: '.inFoto', message: 'La imagen debe ser menor a 6Mb.', action: 'keyup, blur', 
+			rule:  (input: any, commit: any): boolean => {
+				const maxsize= 6291456;//6MB
+				if(this.imageChangedEvent=='')return false;
+				return this.imageChangedEvent.target.files[0].size<=maxsize;
+			}
+		}
+	];
+
+	mensaje(content: string, title: string, tipo) {
+		const op = {
+		  timeout: 2000,
+		  titleMaxLength: 22,
+		  showProgressBar: false,
+		  closeOnClick: true,
+		  pauseOnHover: true,
+		  position: SnotifyPosition.rightTop,
+		};
+		if (tipo == 0) this.$notifier.success(content, title, op);
+		if (tipo == 1) this.$notifier.warning(content, title, op);
+		if (tipo == 2) this.$notifier.info(content, title, op);
+		if (tipo == 3) this.$notifier.error(content, title, op);
+	  }
 }

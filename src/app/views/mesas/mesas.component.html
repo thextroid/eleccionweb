@@ -34,11 +34,11 @@
       <label for="name">Municipio:</label>
       <jqxDropDownList
         #dropMun
+        (onChange)="munCambiando($event)"
         [filterable]="true"
         [disabled]="true"
         [width]="'100%'"
         [height]="30"
-        [selectedIndex]="1"
         [autoOpen]="false"
       >
       </jqxDropDownList>
@@ -46,14 +46,14 @@
   </div>
   <div class="col-sm-3">
     <div class="form-group">
-      <label for="name">OFF:</label>
-      <jqxSwitchButton [width]="'50%'"></jqxSwitchButton>
+      <label for="name">Filtrado:</label>
+      <jqxSwitchButton #toggle [width]="'50%'" (onChecked)="filtrar()"></jqxSwitchButton>
     </div>
   </div>
   <div class="col-sm-3">
     <div class="form-group">
       <label for="name">Buscar:</label>
-      <input type="text" class="form-control" />
+      <input type="text"  [(ngModel)]="texto" class="inText text-input form-control" (change)="filtrar()">
     </div>
   </div>
 </div>
@@ -65,14 +65,16 @@
       [width]="'100%'"
       [source]="dataAdapter"
       [columns]="columns"
-      [height]="300"
+      [height]="500"
       [pageable]="true"
       [rendergridrows]="rendergridrows"
       [sortable]="true"
       [showtoolbar]="true"
+      [localization]="langs"
       [filterable]="true"
       [pagesizeoptions]="['10', '25', '50', '100']"
       [columnsresize]="true"
+      [autoshowfiltericon]="true"
     >
     </jqxGrid>
   </div>

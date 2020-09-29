@@ -103,11 +103,14 @@ export const routes: Routes = [
           import("./views/mesas/mesas.module").then((m) => m.MesasModule),
       },
       {
-        path: "subir",
+        path: "votos",
         loadChildren: () =>
-          import("./views/cargarvotos/cargarvotos.module").then(
-            (m) => m.CargarvotosModule
-          ),
+          import("./views/cargarvotos/cargarvotos.module").then(     (m) => m.CargarvotosModule),
+      },
+      {
+        path: "reportes",
+        loadChildren: () =>
+          import("./views/resportes/resportes.module").then( (m) => m.ResportesModule ),
       },
       {
         path: "base",

@@ -17,12 +17,15 @@ import { jqxValidatorModule } from "jqwidgets-ng/jqxvalidator";
 import { jqxListBoxModule } from "jqwidgets-ng/jqxlistbox";
 import { jqxCalendarModule } from "jqwidgets-ng/jqxcalendar";
 import { jqxDateTimeInputModule } from "jqwidgets-ng/jqxdatetimeinput";
+import { jqxNumberInputModule } from "jqwidgets-ng/jqxnumberinput";
 import { jqxFileUploadModule } from "jqwidgets-ng/jqxfileupload";
 import { jqxGridModule } from "jqwidgets-ng/jqxgrid";
+import { jqxTextAreaModule } from "jqwidgets-ng/jqxtextarea";
 import { jqxButtonModule } from "jqwidgets-ng/jqxbuttons";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { jqxInputModule } from "jqwidgets-ng/jqxinput";
 import { VotacionService } from "../../servicios/votacion.service";
+import { ImageCropperModule } from 'ngx-image-cropper';
 const ngWizardConfig: NgWizardConfig = {
   theme: THEME.default,
 };
@@ -41,9 +44,12 @@ const ngWizardConfig: NgWizardConfig = {
     jqxDateTimeInputModule,
     jqxFileUploadModule,
     jqxDropDownListModule,
+    ImageCropperModule,
+    jqxTextAreaModule,
     SnotifyModule,
     jqxInputModule,
     jqxValidatorModule,
+    jqxNumberInputModule,
     NgWizardModule.forRoot(ngWizardConfig),
   ],
   providers: [

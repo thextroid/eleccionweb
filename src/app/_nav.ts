@@ -54,11 +54,16 @@ export const navItems: INavData[] = [
     url: "/mesas",
     icon: "icon-folder",
   },
+  {
+    name: "Subir votacion",
+    url: "/votos",
+    icon: "icon-folder",
+  },
 
   {
-    name: "Temas",
-    url: "/theme/colors",
-    icon: "icon-drop",
+    name: "Reportes",
+    url: "/reportes",
+    icon: "icon-folder",
   },
   {
     name: "Tipografia",
