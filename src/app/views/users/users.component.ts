@@ -1,21 +1,22 @@
 import { Component, OnInit, TemplateRef, ViewChild } from "@angular/core";
 import { jqxGridComponent } from "jqwidgets-ng/jqxgrid";
-import {
-  BsModalRef,
-  BsModalService,
-  ModalDirective,
-} from "ngx-bootstrap/modal";
+import { BsModalRef, BsModalService } from "ngx-bootstrap/modal";
 import { User } from "../../models/user";
 import { UserService } from "../../servicios/user.service";
 import _ from "lodash";
-import { HttpClientModule } from "@angular/common/http";
+import { UserFormComponent } from "./user-form/user-form.component";
+
 @Component({
   templateUrl: "./users.component.html",
   styleUrls: ["./users.component.css"],
 })
 export class UsersComponent implements OnInit {
   @ViewChild("myGrid") myGrid: jqxGridComponent;
-  @ViewChild("modal") modal: ModalDirective;
+  config = {
+    backdrop: "static",
+    ignoreBackdropClick: true,
+  };
+
   source: any = {
     localdata: null,
     datafields: [
@@ -75,7 +76,6 @@ export class UsersComponent implements OnInit {
     this.userService.getAll().subscribe((data) => {
       this.source.localdata = data;
       this.myGrid.updatebounddata();
-      console.log("data...");
     });
   }
 
@@ -84,31 +84,53 @@ export class UsersComponent implements OnInit {
       _id: null,
       name: "",
       fullName: "",
-      telefono: null,
-      rol: "",
+      telefono: "",
+      rol: "Operador",
       state: false,
     };
     this.selectedUser = emptyUser;
   }
 
-  refeshCourses() {
+  iniModal() {
+    const initialState = {
+      list: [this.selectedUser],
+    };
+    this.modalRef = this.modalService.show(UserFormComponent, {
+      initialState,
+      ignoreBackdropClick: true,
+    });
+
+    this.modalRef.content.event.subscribe(this.saveUser.bind(this));
+  }
+
+  addUserModal() {
+    this.resetSelectedUser();
+    this.iniModal();
+  }
+
+  updateUserModal() {
+    if (!this.selectedUser._id) return alert("Selecione un Usuario");
+    this.iniModal();
+  }
+
+  refeshUsers() {
     this.resetSelectedUser();
     this.loadData();
   }
-  openModal(template: TemplateRef<any>) {
-    this.modalRef = this.modalService.show(template);
-    this.resetSelectedUser();
-  }
 
-  saveUser(user) {
-    console.log(user);
-    if (this.selectedUser._id) {
+  saveUser(user: User) {
+    const id = this.selectedUser._id;
+    user.telefono = user.telefono + "";
+    if (id) {
+      this.userService.update(id, user).subscribe((result) => {
+        this.refeshUsers();
+      });
     } else {
-      this.userService
-        .save(user.value)
-        .subscribe((result) => this.refeshCourses());
-      this.modalRef.hide();
+      this.userService.save(user).subscribe((result) => {
+        this.refeshUsers();
+      });
     }
+    this.modalRef.hide();
   }
   selectUser(event) {
     this.selectedUser = _.pick(event.args.row, [

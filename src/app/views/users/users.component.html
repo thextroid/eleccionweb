@@ -1,79 +1,31 @@
-		<div class="row">
-			<div class="col-lg-12">
-				<div class="card">
-					<div class="card-header">
-						<i class="fa fa-align-justify"></i>Datos de Usuarios
-					</div>
-					<div class="card-body">
-						<jqxGrid #myGrid [width]="800" [source]="dataAdapter" 
-						[columns]="columns"
-						(onRowselect)="selectUser($event)">
-						</jqxGrid>
-					</div>
-				</div>
-				<button type="button" class="btn btn-primary" (click)="openModal(template)">Agregar</button>
-				<ng-template #template>
+<div class="row">
+  <div class="col-lg-12">
+    <div class="card">
+      <div class="card-header">
+        <i class="fa fa-align-justify"></i>Datos de Usuarios
+      </div>
+      <div class="card-body">
+        <jqxGrid
+          #myGrid
+          [width]="800"
+          [source]="dataAdapter"
+          [pageable]="true"
+          [columns]="columns"
+          [sortable]="true"
+          (onRowselect)="selectUser($event)"
+        >
+        </jqxGrid>
+      </div>
+    </div>
+    <button type="button" class="btn btn-primary" (click)="addUserModal()">
+      Agregar
+    </button>
+    <button type="button" class="btn btn-primary" (click)="updateUserModal()">
+      Modificar
+    </button>
 
-					<div class="modal-header">
-						<h4 class="modal-title pull-lef">Usuario</h4>
-						<button type="button" class="close pull-right" aria-label="Close" (click)="modalRef.hide()">
-						<span aria-hidden="true">&times;</span>
-						</button>
-					</div>
-					<div class="col-sm-12">
-						<div class="card">
-						  <div class="card-body">
-							  <form #form="ngForm" (submit)='saveUser(form)'>
-								  <div class="form-group">
-									<label for="fullName">Nombres y Apellidos</label>
-									<input type="text" name="fullName" class="form-control" id="fullName" 
-										[(ngModel)]="selectedUser.fullName" required>
-								  </div>
-								  <div class="form-group">
-									<label for="phone">telefono</label>
-									<input type="text" name="telefono" class="form-control" id="phone" placeholder="75259..."
-										 [(ngModel)]="selectedUser.telefono" required>
-								  </div>
-								  <div class="row">
-									<div class="form-group col-sm-8">
-									  <label for="roles">Example select</label>
-										<select class="form-control" name="rol" id="rol" 
-										[(ngModel)]="selectedUser.rol" required>
-										  <option value='Admin'>Admin</option>
-										  <option value='Operador'>Operador</option>
-										  <option value='Control'>Control</option>
-										  <option value='Reportes'>Reportes</option>
-									  </select>
-									</div>
-									<!-- <div class="form-group col-sm-4">
-									  <label for="postal-code">Postal Code</label>
-									  <input type="text" class="form-control" id="postal-code" placeholder="Postal Code">
-									</div> -->
-								  </div>
-								  <div class="form-group">
-									<label for="usuario">Usuario</label>
-									<input type="text" name="name" class="form-control" id="usuario" matInput [(ngModel)]="selectedUser.name" required>
-								  </div>
-								  <div class="form-group">
-									  <label for="password">Clave</label>
-									  <input type="password" name="password" class="form-control" id="password" matInput ngModel required>
-								  </div>
-								  <div class="form-group custom-control custom-switch">
-									  <input type="checkbox" name="state" class="custom-control-input" id="state" [(ngModel)]="selectedUser.state">
-									  <label class="custom-control-label" for="state">Estado</label>
-								  </div>
-								  <div class="form-group col-sm-4">
-									  <button [disabled]="form.invalid" type="submit" class="btn btn-success">Aceptar</button>
-									  <button type="button" class="btn btn-danger" (click)="modalRef.hide()">Cancelar</button>
-									</div>
-							  </form>
-							  {{form.value | json}}
-							  {{form.valid}}
-						  </div>
-						</div>
-					  </div>
-
-				</ng-template>
-			</div>
-			<!--/.col-->
-		</div>
+    <!-- <app-user-form [user]="selectedUser" (saveUserForm)="saveUser($event)">
+    </app-user-form> -->
+  </div>
+  <!--/.col-->
+</div>

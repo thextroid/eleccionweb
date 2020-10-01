@@ -87,7 +87,6 @@ import { TokenInterceptorService } from "./servicios/token-interceptor.service";
       useClass: HashLocationStrategy,
     },
     BsModalService,
-    UserService,
     AuthGuard,
     {
       provide: HTTP_INTERCEPTORS,
