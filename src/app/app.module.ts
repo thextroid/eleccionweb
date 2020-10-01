@@ -7,7 +7,11 @@ import {
 } from "@angular/common";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 // jqxGRID
-import { jqxGridModule, jqxGridComponent } from "jqwidgets-ng/jqxgrid";
+import { jqxGridModule } from "jqwidgets-ng/jqxgrid";
+import { jqxInputModule } from "jqwidgets-ng/jqxinput";
+import { jqxButtonModule } from "jqwidgets-ng/jqxbuttons";
+import { jqxCheckBoxModule } from "jqwidgets-ng/jqxcheckbox";
+import { jqxPasswordInputModule } from "jqwidgets-ng/jqxpasswordinput";
 
 import { PerfectScrollbarModule } from "ngx-perfect-scrollbar";
 import { PERFECT_SCROLLBAR_CONFIG } from "ngx-perfect-scrollbar";
@@ -26,6 +30,8 @@ import { P404Component } from "./views/error/404.component";
 import { P500Component } from "./views/error/500.component";
 import { LoginComponent } from "./auth/login/login.component";
 import { RegisterComponent } from "./views/register/register.component";
+import { jqxValidatorComponent } from "jqwidgets-ng/jqxvalidator";
+
 const APP_CONTAINERS = [DefaultLayoutComponent];
 
 import {
@@ -72,6 +78,10 @@ import { TokenInterceptorService } from "./servicios/token-interceptor.service";
     jqxGridModule,
     CommonModule,
     HttpClientModule,
+    jqxInputModule,
+    jqxButtonModule,
+    jqxCheckBoxModule,
+    jqxPasswordInputModule,
   ],
   declarations: [
     AppComponent,
@@ -80,6 +90,7 @@ import { TokenInterceptorService } from "./servicios/token-interceptor.service";
     P500Component,
     LoginComponent,
     RegisterComponent,
+    jqxValidatorComponent,
   ],
   providers: [
     {
