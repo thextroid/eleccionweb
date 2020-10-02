@@ -26,6 +26,7 @@ import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { jqxInputModule } from "jqwidgets-ng/jqxinput";
 import { VotacionService } from "../../servicios/votacion.service";
 import { ImageCropperModule } from 'ngx-image-cropper';
+import { NgxUploaderModule } from 'ngx-uploader';
 const ngWizardConfig: NgWizardConfig = {
   theme: THEME.default,
 };
@@ -50,6 +51,7 @@ const ngWizardConfig: NgWizardConfig = {
     jqxInputModule,
     jqxValidatorModule,
     jqxNumberInputModule,
+    NgxUploaderModule,
     NgWizardModule.forRoot(ngWizardConfig),
   ],
   providers: [

@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from "@angular/core";
+import { Component, EventEmitter, OnInit, ViewChild } from "@angular/core";
 import { jqxCalendarComponent } from "jqwidgets-ng/jqxcalendar";
 import { jqxDateTimeInputComponent } from "jqwidgets-ng/jqxdatetimeinput";
 import { jqxDropDownListComponent } from "jqwidgets-ng/jqxdropdownlist";
@@ -16,6 +16,7 @@ import {
 	NgWizardService,
 } from "ng-wizard";
 import { ImageCroppedEvent } from 'ngx-image-cropper';
+import { UploaderOptions, UploadFile, UploadInput, UploadOutput, UploadStatus } from 'ngx-uploader';
 import { Circunscripcion } from "../../models/circunscripcion";
 import { Municipio } from "../../models/municipio";
 import { Provincia } from "../../models/provincia";
@@ -46,9 +47,18 @@ export class CargarvotosComponent implements OnInit {
 	@ViewChild('myValidator', { static: false }) myValidator: jqxValidatorComponent;
 	@ViewChild('valacta', { static: false }) validatorActa: jqxValidatorComponent;
 	@ViewChild('myTextArea') obser: jqxTextAreaComponent; 
- 
+	url = 'http://192.81.217.7:/api/actas/image/';
+	formData: FormData;
+	files: UploadFile[];
+	uploadInput: EventEmitter<UploadInput>;
+	humanizeBytes: Function;
+	dragOver: boolean;
+	options: UploaderOptions;
+	
+	
 	imageChangedEvent: any = '';
-    croppedImage: any = '';
+	croppedImage: any = '';
+	mesasExistentes=[];
 
     fileChangeEvent(event: any): void {
 				this.imageChangedEvent = event;
@@ -188,7 +198,7 @@ export class CargarvotosComponent implements OnInit {
 			this.source.totalrecords = data.TotalRows;
 		},
 	};
-
+	
 	columns: any[] = [
 		{ datafield: "candidatura", text: "", width: "19%" ,editable:false},
 		{ datafield: "CREEMOS", text: "CREEMOS", width: "9%" ,editable:true},
@@ -231,12 +241,18 @@ export class CargarvotosComponent implements OnInit {
 		private $mun: MunicipiosService,
 		private $rec: RecintosService,
 		private $notifier: SnotifyService
-	) {}
+	) {
+		this.options = { concurrency: 1, maxUploads: 1, maxFileSize: 1000000 };
+		this.files = [];
+		this.uploadInput = new EventEmitter<UploadInput>();
+		this.humanizeBytes = this.humanizeBytes;
+	}
+
 	circuns: Circunscripcion[] = [];
 	provs: Provincia[] = [];
 	muns: Municipio[] = [];
 	recs: Recinto[] = [];
-	acta:any={codigo:'',emp:0,apertura:'',cierre:'',foto:null};
+	acta:any={codigo:'',emp:0,apertura:'',cierre:'',foto:null,id:''};
 	info:any={cir:'',prov:'',mun:'',rec:'',loc:'',mesa:-1};
 	ngOnInit() {}
 	ngAfterViewInit() {
@@ -277,6 +293,8 @@ export class CargarvotosComponent implements OnInit {
 				console.log(error);
 			}
 		);
+		
+		
 	}
 
 	showPreviousStep(event?: Event) {
@@ -324,10 +342,9 @@ export class CargarvotosComponent implements OnInit {
 			}
 		}
 		console.log(this.circuns);
-
 		this.dropProv.source(list);
 	}
-	cambiarMuns() {
+	cambiarMuns(){
 		this.dropMun.clearFilter();
 		this.dropRec.clearFilter();
 		this.dropMun.clearSelection();
@@ -379,15 +396,31 @@ export class CargarvotosComponent implements OnInit {
 		this.myValidator.validateInput('inRec');
 		this.checkmesa=-1;
 		this.mess=[];
+		
 		for (let i = 0; i < this.recs.length; i++) {
 			if (this.recs[i]._id === recSelect.value._id) {
 				this.modelRec = this.recs[i];
 				break;
 			}
 		}
-		for (let i = 0; i < this.info.rec.numeroMesas; i++) {
-			this.mess.push(i + 1);
-		}
+		this.$vot.getMesas(recSelect.value._id).subscribe(
+			(data)=>{
+				console.log(data);
+				let match;
+				for (let i = 0; i < this.info.rec.numeroMesas; i++) {
+					match=null;
+					for (let j = 0; match==null && j < data.length; j++)
+						if(data[j].numeroMesa===("Mesa "+(i+1)))
+							match= data[j].estado;
+					
+					this.mess.push({nro:i + 1,disabled:(match==null),estado:(match!=null)?match:'Habilitado'});
+				}
+				console.log(this.mess)
+			},
+			(error)=>{
+				console.log(error);
+			}
+		)
 	}
 	Mesa: any;
 	cargar(mesa) {
@@ -395,7 +428,7 @@ export class CargarvotosComponent implements OnInit {
 		this.info.mesa=mesa;
 		console.log(this.modelRec, "numero de mesa: " + mesa);
 	}
-	enviar() {
+	uploadVotos() {
 		const cir = this.dropCir.getSelectedItem().value._id;
 		const pro = this.dropProv.getSelectedItem().value._id;
 		const mun = this.dropMun.getSelectedItem().value._id;
@@ -415,8 +448,6 @@ export class CargarvotosComponent implements OnInit {
 			votosBlancos: tab[0].blancos,
 			votosNullos: tab[0].nulos,
 		});
-		console.log(this.modelRec);
-		console.log(rec);
 		if (this.modelRec.tipo.length == 1) {
 			const _cand="Diputados "+((this.modelRec.tipo[0] === "Especial")?"Especiales":"Uninominales");
 			votos.push({candidatura: _cand,MASIPSP: tab[1].MAS,CC: tab[1].CC,LIBRE21: tab[1].LIBRE21,FPV: tab[1].FPV,PANBOL: tab[1].PANBOL,ADN: tab[1].ADN,CREEMOS: tab[1].CREEMOS,votosBlancos: tab[1].blancos,votosNullos: tab[1].nulos});
@@ -425,32 +456,21 @@ export class CargarvotosComponent implements OnInit {
 			votos.push({candidatura: "Diputados Uninominales",MASIPSP: tab[1].MAS,CC: tab[1].CC,LIBRE21: tab[1].LIBRE21,FPV: tab[1].FPV,PANBOL: tab[1].PANBOL,ADN: tab[1].ADN,CREEMOS: tab[1].CREEMOS,votosBlancos: tab[1].blancos,votosNullos: tab[1].nulos});
 			votos.push({candidatura: "Diputados Especiales",MASIPSP: tab[2].MAS,CC: tab[2].CC,LIBRE21: tab[2].LIBRE21,FPV: tab[2].FPV,PANBOL: tab[2].PANBOL,ADN: tab[2].ADN,CREEMOS: tab[2].CREEMOS,votosBlancos: tab[2].blancos,votosNullos: tab[2].nulos});
 		}
-		const data = {
-			file:this.imageChangedEvent.target.files[0],
-			arrayVotacion:[
-				{
-					codMesa: this.numberMesa.val(),
-					empadronados: this.empadronados.val(),
-					horaApertura: this.apertura.getDate(),
-					horaCierre: this.cierre.getDate(),
-					observaciones:this.obser.val(),
-					estado: "Enviado",
-				},
-				{
-					circunscripcion: cir,
-					numeroMesa: "Mesa "+this.Mesa,
-					recinto: rec,
-					estado: "Enviado",
-				},
-				votos
-			]
-		}
-		form.append('file',data.file);
-		form.append('arrayVotacion',JSON.stringify(data.arrayVotacion));
-		this.$vot.upload(form).subscribe(
+		// file:this.imageChangedEvent.target.files[0];
+		const formVotos = {
+			codMesa:this.numberMesa.val(),
+			circunscripcion: cir,
+			numeroMesa: "Mesa "+this.Mesa,
+			recinto: rec,
+			estado: "Enviado",
+			candidatura:votos
+		};
+		// form.append('file',data.file);
+		// form.append('arrayVotacion',JSON.stringify(data.arrayVotacion));
+		this.$vot.uploadVotos(formVotos).subscribe(
 			(data) => {
-				this.mensaje('Se cargo satisfactoriamente','Votacion',0);
-				this.ngWizardService.reset();
+				this.mensaje('Se cargo satisfactoriamente','Votaciones',0);
+				this.ngWizardService.next();
 				console.log(data);
 			},
 			(error) => {
@@ -460,63 +480,100 @@ export class CargarvotosComponent implements OnInit {
 		);
 		// console.log(form);
 	}
+	checkVotos(){
+
+	}
+	uploadActa():void{
+		const data={
+			codMesa: this.numberMesa.val(),
+			empadronados: this.empadronados.val(),
+			horaApertura: this.apertura.getDate(),
+			horaCierre: this.cierre.getDate(),
+			observaciones:this.obser.val(),
+			estado: "Enviado"
+		};
+		console.log("upload Data: ",data)
+		this.$vot.uploadActa(data).subscribe(
+			(res)=>{
+				this.mensaje('Se cargo datos correctamente','Acta',0);
+				console.log(res);
+				this.acta.id=res._id;
+				this.ngWizardService.next();
+			},
+			(error)=>{
+				this.mensaje('No pudo cargar Acta','Acta',3);
+				console.log()
+			}
+		);
+	}
+	_Acta(){
+		console.log(".....");
+		this.acta.emp=this.empadronados.val();
+		this.acta.codigo=this.numberMesa.val();
+		this.acta.emp=this.empadronados.val();
+		this.acta.apertura=this.apertura.val();
+		this.acta.cierre=this.cierre.val();
+		this.acta.obser=this.obser.val();
+		
+		this.migrid.clear();
+		let list=[];
+		list.push({candidatura:'Presidente ',MAS:0,CC:0,LIBRE21:0,FPV:0,PANBOL:0,ADN:0,CREEMOS:0,blancos:0,nulos:0});
+		if(this.info.rec.tipo.length==1)
+			list.push({candidatura:this.info.rec.tipo[0],MAS:0,CC:0,LIBRE21:0,FPV:0,PANBOL:0,ADN:0,CREEMOS:0,blancos:0,nulos:0})
+		else{
+			list.push({candidatura:'Uninominal',MAS:0,CC:0,LIBRE21:0,FPV:0,PANBOL:0,ADN:0,CREEMOS:0,blancos:0,nulos:0})
+			list.push({candidatura:'Especial',MAS:0,CC:0,LIBRE21:0,FPV:0,PANBOL:0,ADN:0,CREEMOS:0,blancos:0,nulos:0})
+		}
+		this.migrid.addrow(null,list);
+		this.uploadActa();
+	}
 	uploadFoto(){
 		console.log(this.imageChangedEvent.target.files[0]);
 		const form = new FormData();
 		form.append("file",this.imageChangedEvent.target.files[0]);
 		
-		const data={
-			"file":this.imageChangedEvent.target.files[0],
-			"horaApertura": "2020-09-29T05:08:01.144Z",
-			"horaCierre": "2020-09-29T12:08:01.148Z",
-			"codMesa": "12345",
-			"empadronados": "100",
-			"estado": "Enviado",
-			"observaciones": "observaciones prueba a pablo Ninja"
-		};
-		this.$vot.file("5f72c1713df0064213420cd1",form).subscribe(
+		// const data={
+		// 	"file":this.imageChangedEvent.target.files[0],
+		// 	"horaApertura": "2020-09-29T05:08:01.144Z",
+		// 	"horaCierre": "2020-09-29T12:08:01.148Z",
+		// 	"codMesa": "12345",
+		// 	"empadronados": "100",
+		// 	"estado": "Enviado",
+		// 	"observaciones": "observaciones prueba a pablo Ninja"
+		// };
+		this.$vot.file(this.acta.id,form).subscribe(
 			(res)=>{
+				this.mensaje('la imagen del acta se cargó!','Foto',0)
+				this.ngWizardService.reset();
 				console.log(res);
 			},
 			(error)=>{
+				this.mensaje('No se pudo subir la foto','',3)
 				console.log(error);
 			}
 		)
 	}
  
 	prueba(){		this.ngWizardService.next();	}
-	checkStep(){
+	checkStep(mesa?:any){
 		console.log(this.$ev);
 		if(this.$ev==undefined || this.$ev.step.index==0){
 			this.myValidator.validate();
 		}
 		else if(this.$ev.step.index==1){
-			console.log(this.checkmesa); 
-			if(this.checkmesa!=-1){
+			this.Mesa = mesa;
+			this.info.mesa=mesa;
+			console.log(mesa);
+			// if(this.checkmesa!=-1){
 				this.resetActa();
 				this.ngWizardService.next();
-			}
+			// }
 		}
 		else if(this.$ev.step.index==2){
-			this.acta.emp=this.empadronados.val();
-			this.acta.codigo=this.numberMesa.val();
-			this.acta.emp=this.empadronados.val();
-			this.acta.apertura=this.apertura.val();
-			this.acta.cierre=this.cierre.val();
 			
-			this.migrid.clear();
-			let list=[];
-			list.push({candidatura:'Presidente ',MAS:0,CC:0,LIBRE21:0,FPV:0,PANBOL:0,ADN:0,CREEMOS:0,blancos:0,nulos:0});
-			if(this.info.rec.tipo.length==1)
-				list.push({candidatura:this.info.rec.tipo[0],MAS:0,CC:0,LIBRE21:0,FPV:0,PANBOL:0,ADN:0,CREEMOS:0,blancos:0,nulos:0})
-			else{
-				list.push({candidatura:'Uninominal',MAS:0,CC:0,LIBRE21:0,FPV:0,PANBOL:0,ADN:0,CREEMOS:0,blancos:0,nulos:0})
-				list.push({candidatura:'Especial',MAS:0,CC:0,LIBRE21:0,FPV:0,PANBOL:0,ADN:0,CREEMOS:0,blancos:0,nulos:0})
-			}
-			this.migrid.addrow(null,list);
-			this.validatorActa.validate();
 		}
 		else {
+			this.ngWizardService.next();
 
 			console.log("ultimo paso");
 		}
@@ -534,12 +591,7 @@ resetActa(){
 	 this.imageChangedEvent='';
 	 this.validatorActa.hide();
 }
-SelectFoto($event){
-	console.log($event);
-	console.log(this.archivo);
-}
-SelectFoto2($event){
-}
+
 
 	rulesRecinto=[
 		{ 	input: '.inCir', message: 'Seleccione un Circunscripción', action: 'keyup, blur', 
@@ -584,7 +636,7 @@ SelectFoto2($event){
 
 	mensaje(content: string, title: string, tipo) {
 		const op = {
-		  timeout: 2000,
+		  timeout: 3500,
 		  titleMaxLength: 22,
 		  showProgressBar: false,
 		  closeOnClick: true,
@@ -595,5 +647,66 @@ SelectFoto2($event){
 		if (tipo == 1) this.$notifier.warning(content, title, op);
 		if (tipo == 2) this.$notifier.info(content, title, op);
 		if (tipo == 3) this.$notifier.error(content, title, op);
+	  }
+
+
+	  
+	  onUploadOutput(output: UploadOutput): void {
+		if (output.type === 'allAddedToQueue') {
+		  const event: UploadInput = {
+			type: 'uploadAll',
+			url: this.url+this.numberMesa.val(),
+			method: 'PUT',
+			data: { }
+		  };
+	
+		  this.uploadInput.emit(event);
+		} else if (output.type === 'addedToQueue' && typeof output.file !== 'undefined') {
+		  this.files.push(output.file);
+		} else if (output.type === 'uploading' && typeof output.file !== 'undefined') {
+		  const index = this.files.findIndex(file => typeof output.file !== 'undefined' && file.id === output.file.id);
+		  this.files[index] = output.file;
+		} else if (output.type === 'cancelled' || output.type === 'removed') {
+		  this.files = this.files.filter((file: UploadFile) => file !== output.file);
+		} else if (output.type === 'dragOver') {
+		  this.dragOver = true;
+		} else if (output.type === 'dragOut') {
+		  this.dragOver = false;
+		} else if (output.type === 'drop') {
+		  this.dragOver = false;
+		} else if (output.type === 'rejected' && typeof output.file !== 'undefined') {
+		  console.log(output.file.name + ' rejected');
+		}
+		else if( output.type==='done'){
+			this.mensaje('Imagen de acta cargada correctamente!','Foto',0);
+			this.ngWizardService.reset();
+			this.generarMesas();
+			this.ngWizardService.next();
+		}
+	
+		this.files = this.files.filter(file => file.progress.status !== UploadStatus.Done);
+	  }
+	
+	  startUpload(): void {
+		const event: UploadInput = {
+			type: 'uploadAll',
+			url: this.url+this.numberMesa.val(),
+			method: 'PUT',
+		  data: { }
+		};
+	
+		this.uploadInput.emit(event);
+	  }
+	
+	  cancelUpload(id: string): void {
+		this.uploadInput.emit({ type: 'cancel', id: id });
+	  }
+	
+	  removeFile(id: string): void {
+		this.uploadInput.emit({ type: 'remove', id: id });
+	  }
+	
+	  removeAllFiles(): void {
+		this.uploadInput.emit({ type: 'removeAll' });
 	  }
 }

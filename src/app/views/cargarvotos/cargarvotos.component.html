@@ -58,33 +58,44 @@
         </div>
       </form>
       </jqxValidator>
+      <jqxButton #btnForward [height]='40' [template]="'primary'" (onClick)="checkStep()"><i class="fa fa-table"></i> Entrar a Recinto</jqxButton>
     </div>
   </ng-wizard-step>
 
-  <ng-wizard-step [title]="'Paso 2'" [description]="'Acta'">
+  <ng-wizard-step [title]="'Paso 2'" [description]="'Mesa'">
     <div class="container">
       <div class="row">
-        <div *ngFor="let i of mess; let row = index" class="col-md-3 text-center">
-          <button
-          class="btn btn-warning"
-          (click)="cargar(row + 1)"
+        <div *ngFor="let iterator of mess; let row = index" class="col-md-3 text-center">
+
+          <button *ngIf="!iterator.disabled"
+          class="btn btn-light"
+          (click)="checkStep(iterator.nro)" disabled
           style="width: 100%; margin: 4px">
-          <h5 style="margin-bottom:0px">Mesa {{row+1}}</h5>
+          <h5 style="margin-bottom:0px">Mesa {{iterator.nro}}</h5>
           <img src="assets/img/brand/urna.png" style="width:50px" alt="">
           <p style="margin-bottom:0px">
-              <label class="switch switch-label switch-pill switch-primary" style="margin-bottom: 0px;">
-                <input type="radio" class="switch-input"  [(ngModel)]="checkmesa" name="checkmesa" value="{{row+1}}">
-                <span class="switch-slider" data-checked="&#x2713;" data-unchecked="&#x2715;"></span>
-              </label>
+              {{iterator.estado}}
             </p>
           </button>
+          
+          <button *ngIf="iterator.disabled"
+          class="btn btn-warning"
+          (click)="checkStep(iterator.nro)" 
+          style="width: 100%; margin: 4px">
+          <h5 style="margin-bottom:0px">Mesa {{iterator.nro}}</h5>
+          <img src="assets/img/brand/urna.png" style="width:50px" alt="">
+          <p style="margin-bottom:0px">
+              {{iterator.estado}}
+            </p>
+          </button>
+
         </div>
       </div>
     </div>
   </ng-wizard-step>
   
-  <ng-wizard-step [title]="'Paso 3'" [description]="'Votos'">
-    <jqxValidator #valacta [rules]="rulesActa" [animationDuration]="0"   (onValidationSuccess)="prueba()"  [hintType]="'label'">
+  <ng-wizard-step [title]="'Paso 3'" [description]="'Acta'">
+    <jqxValidator #valacta [rules]="rulesActa" [animationDuration]="0"   (onValidationSuccess)="uploadActa()"  [hintType]="'label'">
       <div class="row">
         <div class="form-group col-md-6">
             <button class="btn btn-outline-primary" (click)="resetActa()"><i class="fa fa-trash"></i> Limpiar</button>
@@ -147,35 +158,17 @@
             [height]="90" [placeHolder]="'...'" [disabled]="false">
             </jqxTextArea>
           </div>
-          
+          <div class="form-group col-sm-6">
+            <button class="btn btn-primary btn-lg" (click)="_Acta()"><i class="fa fa-file"></i> Subir datos de acta</button>
+          </div>
         </div>
       </div>
       <div class="col-md-6">
         <div class="row">
-          <div class="form-group col-sm-12">
-            <label for="postal-code">Foto:</label>
-            <input type="file"  class="inFoto form-control" accept="image/*" (change)="fileChangeEvent($event)" />
-            <div class="container" style="visibility: hidden;">
-              <image-cropper
-                  [imageChangedEvent]="imageChangedEvent"
-                  [maintainAspectRatio]="false"
-                  [aspectRatio]="5/4"
-                  [backgroundColor]="'#F5F5DC'"
-                  format="png"
-                  [disabled]="true"
-                  [imageFile]="imagefile"
-                  (imageCropped)="imageCropped($event)"
-                  (imageLoaded)="imageLoaded()"
-                  (cropperReady)="cropperReady()"
-                  (loadImageFailed)="loadImageFailed()"
-              ></image-cropper>
-
-            </div>
-
-
-          </div>
+          
         </div>
-      </div>        
+      </div>
+
       </div>
 
   </jqxValidator>
@@ -184,34 +177,145 @@
   
   <ng-wizard-step [title]="'Paso 4'" [description]="'Votacion'">
     <div class="form-group row">
-      <label for="" class="control-label col-sm-3"><span class="h5">Codigo Acta:</span><span class="h2">{{acta.codigo}}</span></label>
-      <label for="" class="control-label col-sm-3"><span class="h5">Mesa N°. {{info.mesa}}</span></label>
-      <label for="" class="control-label col-sm-3"><span class="h5">N° Empadronados:</span> <span class="h4">{{acta.emp}}</span></label>
-      <label for="" class="control-label col-sm-3"><span class="h5">Tipo:</span> <span class="h4">{{info.rec.tipo}}</span></label>
+      <label class="control-label col-sm-3"><span class="h5">Codigo Acta:</span><span class="h2">{{acta.codigo}}</span></label>
+      <label class="control-label col-sm-3"><span class="h5">Mesa N°. {{info.mesa}}</span></label>
+      <label class="control-label col-sm-3"><span class="h5">N° Empadronados:</span> <span class="h4">{{acta.emp}}</span></label>
+      <label class="control-label col-sm-3"><span class="h5">Tipo:</span> <span class="h4">{{info.rec.tipo}}</span></label>
     </div>
     <div class="form-group row">
-      <label for="" class="control-label col-sm-3"><span class="h6">Circunscripcion:</span> <span>{{info.cir.name}}</span></label>
-      <label for="" class="control-label col-sm-3"><span class="h6">Localidad:</span> <span>{{info.loc}}</span></label>
-      <label for="" class="control-label col-sm-3"><span class="h6">Municipio:</span> <span>{{info.mun.name}}</span></label>
-      <label for="" class="control-label col-sm-3"><span class="h6">Provincia:</span> <span>{{info.prov.name}}</span></label>
+      <label class="control-label col-sm-3"><span class="h6">Circunscripcion:</span> <span>{{info.cir.name}}</span></label>
+      <label class="control-label col-sm-3"><span class="h6">Localidad:</span> <span>{{info.loc}}</span></label>
+      <label class="control-label col-sm-3"><span class="h6">Municipio:</span> <span>{{info.mun.name}}</span></label>
+      <label class="control-label col-sm-3"><span class="h6">Provincia:</span> <span>{{info.prov.name}}</span></label>
     </div>
-     <h2 for="" class="control-label h2 text-center">{{info.rec.institucion}}</h2>
+    <h2 for="" class="control-label h2 text-center">{{info.rec.institucion}}</h2>
     <jqxGrid
-      #migrid
-      [width]="'100%'"
-      [source]="dataAdapter"
-      [columns]="columns"
-      [height]="300"
-      [editable]="true"
-      [columnsresize]="true" >
-    </jqxGrid>
+    #migrid
+    [width]="'100%'"
+    [source]="dataAdapter"
+    [columns]="columns"
+    [height]="300"
+    [editable]="true"
+    [columnsresize]="true" >
+  </jqxGrid>
+  
+  
+  
+  <button class="btn btn-primary btn-lg" (click)="uploadVotos()"><i class="fa fa-upload"></i> Subir Votacion</button>
+  <!-- <button class="btn btn-primary btn-lg" (click)="uploadFoto()"><i class="fa fa-upload"></i> subir Acta</button> -->
+  
+</ng-wizard-step>
+  <ng-wizard-step [title]="'Paso 5'" [description]="'Foto'">
+    <div class="hero is-fullheight">
+      <div class="hero-body">
+        <div class="container">
+          <div class="columns is-multiline">
+            <div class="column is-6 is-offset-3">
+              <div class="upload-box">
+                <div class="upload-box-header">
+                  <div class="control-circles">
+                    <span class="circle is-green"></span>
+                    <span class="circle is-yellow"></span>
+                    <span class="circle is-red"></span>
+                  </div>
+                  <div class="header-title">
+                    <h2>ngx-uploader</h2>
+                  </div>
+                  <div class="gh-icon">
+                    <a target="_blank" href="https://github.com/bleenco/ngx-uploader">
+                      <i class="ionicon ion-social-github"></i>
+                    </a>
+                  </div>
+                </div>
+                <div class="upload-box-content">
+                  <div class="drop-container" ngFileDrop [options]="options" (uploadOutput)="onUploadOutput($event)" [uploadInput]="uploadInput">
+                    <p>
+                      Arraste o haga click 
+                      <label class="upload-button">
+                        <input type="file" ngFileSelect [options]="options" (uploadOutput)="onUploadOutput($event)" [uploadInput]="uploadInput" accept="image/*" (change)="fileChangeEvent($event)"> [AQUI]
+                      </label>
+                      para cargar.
+                    </p>
+                  </div>
+                  <div class="upload-item" *ngFor="let f of files; let i = index;">
+                    <div class="upload-item-content">
+                      <div class="filename">
+                        <div class="filename-left">
+                          <i class="ionicon ion-ios-copy"></i>
+                          <span>{{ f.name }}</span>
+                        </div>
+                        <div class="filename-right">
+                          <i class="ionicon ion-close-round" (click)="cancelUpload(f.id)"></i>
+                        </div>
+                      </div>
+                      <div class="progress-content">
+                        <div class="progress">
+                          <span class="bar" [style.width]="f?.progress?.data?.percentage + '%'" [class.is-done]="f?.progress?.data?.percentage === 100"></span>
+                        </div>
+                      </div>
+                      <div class="progress-text-content">
+                        <span class="progress-text" [class.is-done]="f?.progress?.data?.percentage === 100">
+                          <span>{{ f.progress?.data?.percentage }}% </span>
+                          <span *ngIf="f.progress?.data?.percentage !== 100">subiendo...</span>
+                          <span *ngIf="f.progress?.data?.percentage === 100">Listo</span>
+                        </span>
+                        <span class="speed-and-eta-text" *ngIf="f.progress?.data?.percentage !== 0 && f.progress?.data?.percentage !== 100">
+                          <span>{{ f.progress?.data?.speedHuman }} </span>
+                          <span>ETA {{ f.progress?.data?.etaHuman }}</span>
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="help-text">
+                  
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
 
-    <button class="btn btn-primary btn-lg" (click)="enviar()"><i class="fa fa-upload"></i> Subir</button>
-    <!-- <button class="btn btn-primary btn-lg" (click)="uploadFoto()"><i class="fa fa-upload"></i> subir Acta</button> -->
 
+
+
+
+    <div class="form-group col-sm-12">
+      <label for="postal-code">Foto:</label>
+      <!-- <input type="file"  class="inFoto form-control" accept="image/*" (change)="fileChangeEvent($event)" /> -->
+      <div class="container" style="visibility: hidden;">
+        <image-cropper
+            [imageChangedEvent]="imageChangedEvent"
+            [maintainAspectRatio]="false"
+            [aspectRatio]="5/4"
+            [backgroundColor]="'#F5F5DC'"
+            format="png"
+            [disabled]="true"
+            [imageFile]="imagefile"
+            (imageCropped)="imageCropped($event)"
+            (imageLoaded)="imageLoaded()"
+            (cropperReady)="cropperReady()"
+            (loadImageFailed)="loadImageFailed()"></image-cropper>
+      </div>
+    </div>
   </ng-wizard-step>
-</ng-wizard>
-<jqxButton #btnBack [height]='40' [template]="'primary'" (onClick)="showPreviousStep($event)"><i class="fa fa-backward"></i> Atras</jqxButton>
-<jqxButton #btnForward [height]='40' [template]="'primary'" (onClick)="checkStep()"><i class="fa fa-forward"></i> Continuar</jqxButton>
 
+</ng-wizard>
+
+<jqxButton #btnBack [height]='40' [template]="'primary'" (onClick)="showPreviousStep($event)"><i class="fa fa-backward"></i> Atras</jqxButton>
+<!-- <table class="table table-condensed table-bordered">
+  <thead>
+    <th></th>
+    <th>CREEMOS</th>
+    <th>ADN</th>
+    <th>MAS</th>
+    <th>FPV</th>
+    <th>PANBOL</th>
+    <th>LIBRE21 </th>
+    <th>CC</th>
+    <th>Blancos</th>
+    <th>Nulos</th>
+  </thead>
+</table> -->
 <ng-snotify></ng-snotify>

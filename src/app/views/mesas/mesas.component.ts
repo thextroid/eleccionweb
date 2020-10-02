@@ -17,6 +17,7 @@ import { CircunscripcionesService } from "../../servicios/circunscripciones.serv
 import { jqxValidatorComponent } from "jqwidgets-ng/jqxvalidator";
 import { jqxSwitchButtonComponent } from 'jqwidgets-ng/jqxswitchbutton';
 import { VotacionService } from '../../servicios/votacion.service';
+import { NgWizardService } from 'ng-wizard';
 
 @Component({
   selector: "app-mesas",
@@ -25,6 +26,7 @@ import { VotacionService } from '../../servicios/votacion.service';
 })
 export class MesasComponent implements OnInit {
   @ViewChild("migrid") migrid: jqxGridComponent;
+  @ViewChild("gridVotos") gridvot: jqxGridComponent;
   @ViewChild("myModal") public myModal: ModalDirective;
   @ViewChild("mdDepUpdate") public mdDepUpdate: ModalDirective;
   @ViewChild("msgNotification") minoti: jqxNotificationComponent;
@@ -44,7 +46,8 @@ export class MesasComponent implements OnInit {
     protected $local: LocalidadesService,
     protected $prov: ProvinciasService,
     protected $vot: VotacionService,
-    protected $cir: CircunscripcionesService
+    protected $cir: CircunscripcionesService,
+    private ngWizardService: NgWizardService
   ) {}
 
   formRec: FormGroup = new FormGroup({
@@ -174,6 +177,79 @@ export class MesasComponent implements OnInit {
   };
 
   dataAdapter: any = new jqx.dataAdapter(this.source);
+  
+	source2: any = {
+		datafields:  [
+      {
+        name: "candidatura",
+        map: "candidatura",
+        type: "string",
+      },
+      {
+        name: "CREEMOS",
+        map: "CREEMOS",
+        type: "number",
+      },
+      {
+        name: "ADN",
+        map: "ADN",
+        type: "number",
+      },
+      {
+        name: "MAS",
+        map: "MAS",
+        type: "number",
+      },
+      {
+        name: "FPV",
+        map: "FPV",
+        type: "number",
+      },
+      {
+        name: "PANBOL",
+        map: "PANBOL",
+        type: "number",
+      },
+      {
+        name: "LIBRE21",
+        map: "LIBRE21",
+        type: "number",
+      },
+      {
+        name: "CC",
+        map: "CC",
+        type: "number",
+      },
+      {
+        name: "blancos",
+        map: "blancos",
+        type: "number",
+      },
+      {
+        name: "nulos",
+        map: "nulos",
+        type: "number",
+      },
+    ],
+		localdata: [],
+		beforeprocessing: (data: any) => {
+			this.source.totalrecords = data.TotalRows;
+		},
+	};
+	
+	columns2: any[] = [
+		{ datafield: "candidatura", text: "", width: "19%" ,editable:false},
+		{ datafield: "CREEMOS", text: "CREEMOS", width: "9%" ,editable:true},
+		{ datafield: "ADN", text: "ADN", width: "9%" ,editable:true},
+		{ datafield: "MAS", text: "MAS-IPSP", width: "9%" ,editable:true},
+		{ datafield: "FPV", text: "FPV", width: "9%" ,editable:true},
+		{ datafield: "PANBOL", text: "PANBOL", width: "9%" ,editable:true},
+		{ datafield: "LIBRE21", text: "LIBRE21", width: "9%" ,editable:true},
+		{ datafield: "CC", text: "CC", width: "9%" ,editable:true},
+		{ datafield: "blancos", text: "Blancos", width: "9%" ,editable:true},
+		{ datafield: "nulos", text: "Nulos", width: "9%" ,editable:true},
+	];
+	dataAdapter2: any = new jqx.dataAdapter(this.source2);
 
   linkrender = (row: number, column: any, value: any): any => {
     
