@@ -11,7 +11,6 @@ import { jqxGridModule } from "jqwidgets-ng/jqxgrid";
 import { jqxInputModule } from "jqwidgets-ng/jqxinput";
 import { jqxButtonModule } from "jqwidgets-ng/jqxbuttons";
 import { jqxCheckBoxModule } from "jqwidgets-ng/jqxcheckbox";
-import { jqxPasswordInputModule } from "jqwidgets-ng/jqxpasswordinput";
 
 import { PerfectScrollbarModule } from "ngx-perfect-scrollbar";
 import { PERFECT_SCROLLBAR_CONFIG } from "ngx-perfect-scrollbar";
@@ -30,7 +29,6 @@ import { P404Component } from "./views/error/404.component";
 import { P500Component } from "./views/error/500.component";
 import { LoginComponent } from "./auth/login/login.component";
 import { RegisterComponent } from "./views/register/register.component";
-import { jqxValidatorComponent } from "jqwidgets-ng/jqxvalidator";
 
 const APP_CONTAINERS = [DefaultLayoutComponent];
 
@@ -48,7 +46,6 @@ import { AppRoutingModule } from "./app.routing";
 // Import 3rd party components
 import { BsDropdownModule } from "ngx-bootstrap/dropdown";
 import { TabsModule } from "ngx-bootstrap/tabs";
-import { ChartsModule } from "ng2-charts";
 import { SwitchesComponent } from "./views/base/switches.component";
 import { FormsModule } from "@angular/forms";
 import { UserService } from "./servicios/user.service";
@@ -73,14 +70,13 @@ import { TokenInterceptorService } from "./servicios/token-interceptor.service";
     BsDropdownModule.forRoot(),
     TabsModule.forRoot(),
     FormsModule,
-    ChartsModule,
+    // ChartsModule,
     jqxGridModule,
     CommonModule,
     HttpClientModule,
     jqxInputModule,
     jqxButtonModule,
     jqxCheckBoxModule,
-    jqxPasswordInputModule,
     //ChartsModule,
     jqxGridModule,
   ],
@@ -91,7 +87,6 @@ import { TokenInterceptorService } from "./servicios/token-interceptor.service";
     P500Component,
     LoginComponent,
     RegisterComponent,
-    jqxValidatorComponent,
   ],
   providers: [
     {

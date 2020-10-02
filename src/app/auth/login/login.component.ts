@@ -24,7 +24,7 @@ export class LoginComponent implements OnInit {
       this.authService.validLogin(user.value).subscribe(
         (res: any) => {
           localStorage.setItem("access_token", res.token);
-          this.router.navigate(["/"]);
+          this.router.navigate(["/usuarios"]);
         },
         ({ error }) => {
           this.messageUser = error;
