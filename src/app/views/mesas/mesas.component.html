@@ -1,65 +1,109 @@
-<div class="row">
-  
-    <div class="col-sm-2">
+<ng-wizard [config]="config" (stepChanged)="stepChanged($event)">
+  <ng-wizard-step [title]="'Paso 1'" [description]="'Recintos'">
+    <div class="row">
+      <div class="col-sm-2">
         <div class="form-group">
-            <label for="name">Circunscripcion:</label>
-            <jqxDropDownList #dropCir [filterable]="true" (onChange)="cirCambiando($event)" 
-            [width]="'100%'" [height]="30"  [selectedIndex]="1" [autoOpen]="false">
-        </jqxDropDownList>
+          <label for="name">Circunscripcion:</label>
+          <jqxDropDownList #dropCir [filterable]="true" (onChange)="cirCambiando($event)" [width]="'100%'" [height]="30" [selectedIndex]="1" [autoOpen]="false">
+          </jqxDropDownList>
         </div>
-    </div>
-    <div class="col-sm-2">
-    <div class="form-group">
-        <label for="name">Provincia:</label>
-        <jqxDropDownList #dropProv [filterable]="true" (onChange)="provCambiando($event)"
-        [width]="'100%'" [height]="30" [disabled]="true" [autoOpen]="false">
-        </jqxDropDownList>
+      </div>
+      <div class="col-sm-2">
+        <div class="form-group">
+          <label for="name">Provincia:</label>
+          <jqxDropDownList
+            #dropProv
+            [filterable]="true"
+            (onChange)="provCambiando($event)"
+            [width]="'100%'"
+            [height]="30"
+            [disabled]="true"
+            [autoOpen]="false"
+          >
+          </jqxDropDownList>
+        </div>
+      </div>
+      <div class="col-sm-2">
+        <div class="form-group">
+          <label for="name">Municipio:</label>
+          <jqxDropDownList
+            #dropMun
+            (onChange)="munCambiando($event)"
+            [filterable]="true"
+            [disabled]="true"
+            [width]="'100%'"
+            [height]="30"
+            [autoOpen]="false"
+          >
+          </jqxDropDownList>
+        </div>
+      </div>
+      <div class="col-sm-3">
+        <div class="form-group">
+          <label for="name">Filtrado:</label>
+          <jqxSwitchButton #toggle [width]="'50%'" (onChecked)="filtrar()"></jqxSwitchButton>
+        </div>
+      </div>
+      <div class="col-sm-3">
+        <div class="form-group">
+          <label for="name">Buscar:</label>
+          <input type="text"  [(ngModel)]="texto" class="inText text-input form-control" (change)="filtrar()">
+        </div>
       </div>
     </div>
-    <div class="col-sm-2">
-      <div class="form-group">
-        <label for="name">Municipio:</label>
-        <jqxDropDownList #dropMun [filterable]="true"[disabled]="true"
-        [width]="'100%'" [height]="30" [selectedIndex]="1" [autoOpen]="false">
-        </jqxDropDownList>
+    <div class="row">
+      <div class="col-sm-12">
+        <jqxGrid
+          #migrid
+          (onRowselect)="Rowselect($event)"
+          [width]="'100%'"
+          [source]="dataAdapter"
+          [columns]="columns"
+          [height]="500"
+          [pageable]="true"
+          [rendergridrows]="rendergridrows"
+          [sortable]="true"
+          [showtoolbar]="true"
+          [localization]="langs"
+          [filterable]="true"
+          [pagesizeoptions]="['10', '25', '50', '100']"
+          [columnsresize]="true"
+          [autoshowfiltericon]="true"
+        >
+        </jqxGrid>
       </div>
     </div>
-    <div class="col-sm-3">
-      <div class="form-group">
-        <label for="name">OFF:</label>
-        <jqxSwitchButton [width]="'50%'" ></jqxSwitchButton>
-      </div>
+  </ng-wizard-step>
+  <ng-wizard-step [title]="'Paso 2'" [description]="'Verificar'">
+
+    <!-- <div class="form-group row">
+      <label class="control-label col-sm-3"><span class="h5">Codigo Acta:</span><span class="h2">{{acta.codigo}}</span></label>
+      <label class="control-label col-sm-3"><span class="h5">Mesa N°. {{info.mesa}}</span></label>
+      <label class="control-label col-sm-3"><span class="h5">N° Empadronados:</span> <span class="h4">{{acta.emp}}</span></label>
+      <label class="control-label col-sm-3"><span class="h5">Tipo:</span> <span class="h4">{{info.rec.tipo}}</span></label>
     </div>
-    <div class="col-sm-3">
-      <div class="form-group">
-        <label for="name">Buscar:</label>
-        <input type="text" class="form-control">
-      </div>
+    <div class="form-group row">
+      <label class="control-label col-sm-3"><span class="h6">Circunscripcion:</span> <span>{{info.cir.name}}</span></label>
+      <label class="control-label col-sm-3"><span class="h6">Localidad:</span> <span>{{info.loc}}</span></label>
+      <label class="control-label col-sm-3"><span class="h6">Municipio:</span> <span>{{info.mun.name}}</span></label>
+      <label class="control-label col-sm-3"><span class="h6">Provincia:</span> <span>{{info.prov.name}}</span></label>
     </div>
-  
-</div>
-<div class="row">
-	<div class="col-sm-12">
-		<jqxGrid #migrid
-		(onRowselect)="Rowselect($event)"
-			[width]="'100%'"
-			[source]="dataAdapter"
-			[columns]="columns"
-			[height]="300"
-			[pageable]="true"
-			[rendergridrows]="rendergridrows"
-			[sortable]="true"
-			[showtoolbar]="true"
-			[filterable]="true"
-			[columnsresize]="true">
-		</jqxGrid>
-	</div>
-</div>
+    <h2 for="" class="control-label h2 text-center">{{info.rec.institucion}}</h2> -->
+    <jqxGrid
+    #gridVotos
+    [width]="'100%'"
+    [source]="dataAdapter2"
+    [columns]="columns2"
+    [height]="300"
+    [editable]="true"
+    [columnsresize]="true" >
+  </jqxGrid>
+  <button class="btn btn-primary btn-lg" (click)="uploadVotos()"><i class="fa fa-upload"></i> Verificar</button>
+  </ng-wizard-step>
+</ng-wizard>
 
 
 <div id="notification1"></div>
 <jqxNotification #msgNotification [width]="250" [position]="'top-right'">
-<div>
-    Seleccione una fila
-</div>
+  <div>Seleccione una fila</div>
 </jqxNotification>

@@ -6,6 +6,7 @@ import { jqxGridComponent } from 'jqwidgets-ng/jqxgrid';
 import { jqxInputComponent } from 'jqwidgets-ng/jqxinput';
 import { jqxListBoxComponent } from 'jqwidgets-ng/jqxlistbox';
 import { jqxNotificationComponent } from 'jqwidgets-ng/jqxnotification';
+import { jqxValidatorComponent } from 'jqwidgets-ng/jqxvalidator';
 import { SnotifyPosition, SnotifyService } from 'ng-snotify';
 import { ModalDirective } from 'ngx-bootstrap/modal';
 import { ProvinciasService } from '../../servicios/provincias.service';
@@ -27,6 +28,7 @@ export class ProvinciasComponent implements OnInit {
 	@ViewChild('btnAdd') btnAdd: jqxButtonComponent;
 	@ViewChild('btnEdit') btnEdit: jqxButtonComponent;
 	@ViewChild('btnReload') btnReload: jqxButtonComponent;
+	@ViewChild('myValidator', { static: false }) myValidator: jqxValidatorComponent;
 	constructor(protected $prov: ProvinciasService,protected $notifier: SnotifyService) { }
 	public formProv: FormGroup = new FormGroup({
 		name: new FormControl('') 
@@ -49,8 +51,6 @@ export class ProvinciasComponent implements OnInit {
 						name:data[i].name
 					});
 				}
-				console.log(data);
-				console.log(list);
 				this.migrid.addrow(null,list);
 				this.btnReload.setOptions({disabled:false});
 				this.mensaje('Se recargo las provincias','Actualizacion',2);
@@ -87,7 +87,6 @@ export class ProvinciasComponent implements OnInit {
 		datatype: 'array',
 		root: 'Rows',
 		beforeprocessing: (data: any) => {
-			console.log(this.source.localdata);
 			this.source.totalrecords = data.TotalRows;
 		}
 	};
@@ -105,9 +104,6 @@ export class ProvinciasComponent implements OnInit {
 	}
 	
 	Rowselect(event: any): void{
-		this.formProv.setValue({name:event.args.row.name});
-		console.log(this.formProv.get("name"));
-		console.log(event.args.row);
 	}
 		
 	
@@ -125,7 +121,6 @@ export class ProvinciasComponent implements OnInit {
 			}
 			else{
 				let rowdata = this.migrid.getrowdata(this.migrid.getselectedrowindex());
-				// console.log(this.migrid.getrowdata(this.migrid.getselectedrowindex()));
 				this.inputNombre.value(rowdata.name);
 				this.myModal.show();
 			}
@@ -135,24 +130,37 @@ export class ProvinciasComponent implements OnInit {
 		this.btnReload.setOptions({disabled:true});
 		this.migrid.clear();
 		this.refresh();
-		
+		// this.mensaje('Datos Actualizados!','Provincias',2);
 	}
-	save(form: FormGroup){
+	invalidValidation(){
+		this.mensaje('Algunos datos fueron llenados incorrectamente','Formulario',3);
+	}
+	checkValidation(){
+		this.myValidator.validate();
+	}
+	successValidation(){
 		let data = {name:this.inputNombre.val()};
 		if(this.action_text=="Adicionar"){
 			this.$prov.save(data).subscribe((response)=>{
-				console.log(response);
-				
+				let rowtotal= this.migrid.getdatainformation().rowscount;
+				this.migrid.addrow(rowtotal,{
+					id:rowtotal+1,
+					name:response.name
+				});
 				this.mensaje('Se adicionó satisfactoriamente!','Provincia',0);
 			},(error)=>{
 				this.mensaje('no se pudo adicionar!','Provincia',3);
+				console.log(error);
 			});
 		}
 		else{
 			let rowindex = this.migrid.getselectedrowindex();
 			let rowdata = this.migrid.getrowdata(rowindex);		
 			this.$prov.update(rowdata._id,data).subscribe((response)=>{
-				this.migrid.updaterow(rowindex,{name:response.name});
+				this.migrid.updaterow(rowindex,{
+					id:rowdata.id,
+					name:response.name
+				});
 				this.mensaje('Se actualizó satisfactoriamente!','Provincia',0);
 			},
 			(error)=>{
@@ -162,8 +170,9 @@ export class ProvinciasComponent implements OnInit {
 		}
 		this.myModal.hide();
 	}
-	resetForm(){
+	reset(){
 		this.inputNombre.value('');
+		this.myValidator.hide();
 	}
 
 	mensaje(content:string,title:string,tipo){
@@ -184,4 +193,10 @@ export class ProvinciasComponent implements OnInit {
 		if(tipo==3)
 		this.$notifier.error(content,title, op);
 	}
+
+	rules=[
+		{ 	input: '.inNombre', message: 'Nombre es requerido!', action: 'keyup, blur', rule: 'required' },
+		{ 	input: '.inNombre', message: 'Mínimo de caracteres permitidos: 4', action: 'keyup, blur', rule: 'minLength=4' },
+		{ 	input: '.inNombre', message: 'Máximo de caracteres permitidos: 255', action: 'keyup, blur', rule: 'maxLength=255' }
+	];
 }

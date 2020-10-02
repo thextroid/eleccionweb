@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { jqxButtonComponent } from 'jqwidgets-ng/jqxbuttons';
 import { jqxDropDownListComponent } from 'jqwidgets-ng/jqxdropdownlist';
@@ -6,6 +6,7 @@ import { jqxGridComponent } from 'jqwidgets-ng/jqxgrid';
 import { jqxInputComponent } from 'jqwidgets-ng/jqxinput';
 import { jqxListBoxComponent } from 'jqwidgets-ng/jqxlistbox';
 import { jqxNotificationComponent } from 'jqwidgets-ng/jqxnotification';
+import { jqxValidatorComponent } from 'jqwidgets-ng/jqxvalidator';
 import { SnotifyPosition, SnotifyService } from 'ng-snotify';
 import { ModalDirective } from 'ngx-bootstrap/modal';
 import { Provincia } from '../../models/provincia';
@@ -29,8 +30,10 @@ export class MunicipiosComponent implements OnInit {
 	@ViewChild('btnAdd') btnAdd: jqxButtonComponent;
 	@ViewChild('btnEdit') btnEdit: jqxButtonComponent;
 	@ViewChild('btnReload') btnReload: jqxButtonComponent;
+	@ViewChild('myValidator', { static: false }) myValidator: jqxValidatorComponent;
+
 	constructor(protected $mun: MunicipiosService,protected $prov: ProvinciasService,
-		protected $notifier: SnotifyService) { }
+				protected $notifier: SnotifyService) { }
 	public formMun: FormGroup = new FormGroup({
 		name: new FormControl('') 
 	})
@@ -93,27 +96,36 @@ export class MunicipiosComponent implements OnInit {
 		datatype: 'array',
 		root: 'Rows',
 		beforeprocessing: (data: any) => {
-			console.log(this.source.localdata);
 			this.source.totalrecords = data.TotalRows;
 		}
 	};
 
 	dataAdapter:any = new jqx.dataAdapter(this.source);
-
+	@ViewChild('') div: ElementRef; 
 	columns : any[]=[
 		{datafield:"_id",text:"ID",width:30,hidden:true},
 		{datafield:"id",text:"#",width:30},
-		{datafield:"name",text:"Municipio",width:250},
-		{datafield:"provincia",text:"Provincia",width:200,hidden:true}
+		{datafield:"name",text:"Municipio",width:250
+		},
+		{datafield:"provincia",text:"Provincia",width:100,
+			cellsrenderer:function(row,column,value,defaultHtml){
+				
+				if('name' in value){
+					return '<div class="jqx-grid-cell-left-align" style="color:#009688;margin-top: 8px;"><i class="fa fa-lg fa-battery-full"></i></div>';
+					
+				}
+				else
+					return '<div class="jqx-grid-cell-left-align" style="color:#95a7a5;margin-top: 8px;"><i class="fa fa-lg fa-battery-1"></i></div>';
+			}
+		}
 	];
 	
 	rendergridrows = (params: any): any =>{
+		
 		return params.data;
 	}
 	
 	Rowselect(event: any): void{
-	this.formMun.setValue({name:event.args.row.name});
-			console.log(event.args.row);
 	}
 		
 	
@@ -148,22 +160,29 @@ export class MunicipiosComponent implements OnInit {
 	}
 		
 	reload (event){
-		console.log(event);
 		this.btnReload.setOptions({disabled:true});
 		this.migrid.clear();
 		this.refresh();
+		this.mensaje('Datos actualizados','Municipios',2);
 	}
 	reset(){
 		this.dropProv.clearSelection();
 		this.inputMun.val('');
+		this.myValidator.hide();
+		this.myValidator.hideHint('inProv');
 	}
-		
-	save(form: FormGroup){
+	invalidValidation(){
+		this.mensaje('Algunos datos fueron llenados incorrectamente','Formulario',3);
+	}
+	checkValidation(){
+		this.myValidator.validate();
+		this.myValidator.validateInput('inProv');
+	}
+	successValidation(){
 		let data	=	{
 			name:this.inputMun.val(),
 			provinciaId:this.dropProv.getSelectedItem().value
 		}
-		console.log(data);
 		if(this.action_text=="Adicionar"){
 			var rowindex = this.migrid.getselectedrowindex();
 			var rowdata = this.migrid.getrowdata(rowindex);
@@ -187,7 +206,6 @@ export class MunicipiosComponent implements OnInit {
 			var rowindex = this.migrid.getselectedrowindex();
 			var rowdata = this.migrid.getrowdata(rowindex);
 			this.$mun.update(rowdata._id,data).subscribe((response)=>{
-				this.mensaje('Se actualizó satisfactoriamente','Municipio',0);
 				this.migrid.updaterow(rowindex,
 					{
 						_id:response._id,
@@ -195,6 +213,7 @@ export class MunicipiosComponent implements OnInit {
 						name:response.name,
 						provincia:response.provincia
 					});
+					this.mensaje('Se actualizó satisfactoriamente','Municipio',0);
 			},
 			(error)=>{
 				this.mensaje('No se pudo actualizar','Error',3);
@@ -221,5 +240,18 @@ export class MunicipiosComponent implements OnInit {
 		if(tipo==3)
 		this.$notifier.error(content,title, op);
 	}
+	prueba(){
+		this.myValidator.validateInput('.inProv');
+	}
+	rules=[
+		{ 	input: '.inNombre', message: 'Nombre es requerida!', action: 'keyup, blur', rule: 'required' },
+		{ 	input: '.inNombre', message: 'Mínimo de Carateres permitidos: 4', action: 'keyup, blur', rule: 'minLength=4' },
+		{ 	input: '.inNombre', message: 'Máximo de Carateres permitidos: 255', action: 'keyup, blur', rule: 'maxLength=255' },
+		{ 	input: '.inProv', message: 'Seleccione una Provincia', action: '', 
+			rule: (input:any, commit:any):boolean=>{
+				return this.dropProv.getSelectedIndex()!=-1;
+		   }  
+		}
+	];
 
 }

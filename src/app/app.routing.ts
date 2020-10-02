@@ -105,6 +105,20 @@ export const routes: Routes = [
           import("./views/mesas/mesas.module").then((m) => m.MesasModule),
       },
       {
+        path: "votos",
+        loadChildren: () =>
+          import("./views/cargarvotos/cargarvotos.module").then(
+            (m) => m.CargarvotosModule
+          ),
+      },
+      {
+        path: "reportes",
+        loadChildren: () =>
+          import("./views/resportes/resportes.module").then(
+            (m) => m.ResportesModule
+          ),
+      },
+      {
         path: "base",
         loadChildren: () =>
           import("./views/base/base.module").then((m) => m.BaseModule),
@@ -143,11 +157,10 @@ export const routes: Routes = [
         loadChildren: () =>
           import("./views/theme/theme.module").then((m) => m.ThemeModule),
       },
-      {
-        path: "widgets",
-        loadChildren: () =>
-          import("./views/widgets/widgets.module").then((m) => m.WidgetsModule),
-      },
+      // {
+      // 	path: 'widgets',
+      // 	loadChildren: () => import('./views/widgets/widgets.module').then(m => m.WidgetsModule)
+      // }
     ],
   },
   { path: "**", component: P404Component },

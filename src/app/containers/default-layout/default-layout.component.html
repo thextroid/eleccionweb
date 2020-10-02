@@ -2,16 +2,16 @@
   [navbarBrandRouterLink]="['/dashboard']"
   [fixed]="true"
   [navbarBrandFull]="{
-    src: 'assets/img/brand/logo.svg',
+    src: 'assets/img/brand/logo-1.svg',
     width: 89,
-    height: 25,
-    alt: 'CoreUI Logo'
+    height: 50,
+    alt: 'CtrlC Logo'
   }"
   [navbarBrandMinimized]="{
-    src: 'assets/img/brand/sygnet.svg',
+    src: 'assets/img/brand/logo-3.svg',
     width: 30,
-    height: 30,
-    alt: 'CoreUI Logo'
+    height: 50,
+    alt: 'CrlC Logo'
   }"
   [sidebarToggler]="'lg'"
   [asideMenuToggler]="'lg'"
@@ -46,7 +46,7 @@
         (click)="(false)"
       >
         <img
-          src="assets/img/avatars/6.jpg"
+          src="assets/img/avatars/7.jpg"
           class="img-avatar"
           alt="admin@bootstrapmaster.com"
         />
@@ -60,11 +60,7 @@
         <a class="dropdown-item" href="#"><i class="fa fa-user"></i> Profile</a>
         <!-- <a class="dropdown-item" href="#"><i class="fa fa-bell-o"></i> Updates<span class="badge badge-info">42</span></a> -->
         <div class="divider"></div>
-        <a
-          class="dropdown-item"
-          routerLink="/login"
-          routerLinkActive="active"
-          (click)="logOut()"
+        <a class="dropdown-item" href="#"
           ><i class="fa fa-lock"></i>Cerrar Sesion</a
         >
       </div>
@@ -92,20 +88,6 @@
     <!-- breaking change 'cui-breadcrumb' -->
     <cui-breadcrumb>
       <!-- Breadcrumb Menu-->
-      <li class="breadcrumb-menu d-md-down-none">
-        <div
-          class="btn-group"
-          role="group"
-          aria-label="Button group with nested dropdown"
-        >
-          <a class="btn" [routerLink]="['/dashboard']"
-            ><i class="icon-graph"></i> &nbsp;Dashboard</a
-          >
-          <a class="btn" href="#"
-            ><i class="icon-settings"></i> &nbsp;Configuracion</a
-          >
-        </div>
-      </li>
     </cui-breadcrumb>
 
     <div class="container-fluid">

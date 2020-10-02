@@ -1,48 +1,102 @@
-<jqxButton #btnAdd [width]='120' [height]='40' [template]="'success'" (onClick)="open('Adicionar')"><i class="fa fa-plus"></i> Adicionar</jqxButton>
-<jqxButton #btnEdit [width]='120' [height]='40' [template]="'warning'" (onClick)="open('Editar')"><i class="fa fa-pencil"></i> Editar</jqxButton>
-<jqxButton #btnReload [width]='120' [height]='40' [template]="'primary'" (onClick)="reload()"><i class="fa fa-refresh"></i> Refrescar</jqxButton>
+<jqxButton
+  #btnAdd
+  [width]="120"
+  [height]="40"
+  [template]="'success'"
+  (onClick)="open('Adicionar')"
+  ><i class="fa fa-plus"></i> Adicionar</jqxButton
+>
+<jqxButton
+  #btnEdit
+  [width]="120"
+  [height]="40"
+  [template]="'warning'"
+  (onClick)="open('Editar')"
+  ><i class="fa fa-pencil"></i> Editar</jqxButton
+>
+<jqxButton
+  #btnReload
+  [width]="120"
+  [height]="40"
+  [template]="'primary'"
+  (onClick)="reload($event)"
+  ><i class="fa fa-refresh"></i> Refrescar</jqxButton
+>
 <div class="row">
-	<div class="col-sm-6">
-		<jqxGrid #migrid
-		(onRowselect)="Rowselect($event)"
-			[width]="'100%'"
-			[source]="dataAdapter"
-			[columns]="columns"
-			[height]="300"
-			[pageable]="true"
-			[rendergridrows]="rendergridrows"
-			[sortable]="true"
-			[showtoolbar]="true"
-			[filterable]="true"
-			[columnsresize]="true">
-		</jqxGrid>
-	</div>
+  <div class="col-sm-6">
+    <jqxGrid
+      #migrid
+      (onRowselect)="Rowselect($event)"
+      [width]="'100%'"
+      [source]="dataAdapter"
+      [columns]="columns"
+      [height]="300"
+      [pageable]="true"
+      [rendergridrows]="rendergridrows"
+      [sortable]="true"
+      [showtoolbar]="true"
+      [filterable]="true"
+      [pagesizeoptions]="['10', '25', '50', '100']"
+      [columnsresize]="true"
+    >
+    </jqxGrid>
+  </div>
 </div>
 
-<div bsModal #myModal="bs-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-	<div class="modal-dialog" role="document">
-		<div class="modal-content">
-			<div class="modal-header">
-				<h4 class="modal-title"> Provincia</h4>
-				<button type="button" class="close" (click)="myModal.hide()" aria-label="Close">
-					<span aria-hidden="true">&times;</span>
-				</button>
-			</div>
-			<div class="modal-body">
-				<form [formGroup]="formProv" (ngSubmit)="save(formProv)">
-					<div class="row">
-						<div class="form-group col-sm-12  ">
-							<label for="provincia">Nombre:</label>
-							<jqxInput #inputNombre  class="inNombre text-input form-control"></jqxInput>
-						</div>
-						
-						<div class="form-group col-sm-12">
-							<button type="submit" class="btn btn-primary" id="guardar">Guardar</button>
-						</div>
-					</div>
-					</form>
-			</div>
-		</div><!-- /.modal-content -->
-	</div><!-- /.modal-dialog -->
+<div
+  bsModal
+  #myModal="bs-modal"
+  (onHidden)="reset()"
+  class="modal fade"
+  tabindex="-1"
+  role="dialog"
+  aria-labelledby="myModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">{{ action_text }} Provincia</h4>
+        <button
+          type="button"
+          class="close"
+          (click)="myModal.hide()"
+          aria-label="Close"
+        >
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <jqxValidator
+          #myValidator
+          [rules]="rules"
+          [animationDuration]="0"
+          (onValidationError)="invalidValidation()"
+          (onValidationSuccess)="successValidation()"
+          [hintType]="'label'"
+        >
+          <form [formGroup]="formProv" (ngSubmit)="checkValidation()">
+            <div class="row">
+              <div class="form-group col-sm-12">
+                <label for="provincia">Nombre:</label>
+                <jqxInput
+                  #inputNombre
+                  class="inNombre text-input form-control"
+                ></jqxInput>
+              </div>
+
+              <div class="form-group col-sm-12">
+                <button type="submit" class="btn btn-primary" id="guardar">
+                  Guardar
+                </button>
+              </div>
+            </div>
+          </form>
+        </jqxValidator>
+      </div>
+    </div>
+    <!-- /.modal-content -->
+  </div>
+  <!-- /.modal-dialog -->
 </div>
 <ng-snotify></ng-snotify>

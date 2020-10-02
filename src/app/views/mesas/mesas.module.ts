@@ -19,18 +19,27 @@ import { LocalidadesService } from '../../servicios/localidades.service';
 import { ProvinciasService } from '../../servicios/provincias.service';
 import { RecintosService } from '../../servicios/recintos.service';
 import { CircunscripcionesService } from '../../servicios/circunscripciones.service';
+import { jqxValidatorModule } from 'jqwidgets-ng/jqxvalidator';
+import { VotacionService } from '../../servicios/votacion.service';
+import { NgWizardConfig, NgWizardModule, THEME } from 'ng-wizard';
 
-
+const ngWizardConfig: NgWizardConfig = {
+  theme: THEME.default,
+};
 @NgModule({
   declarations: [MesasComponent],
   imports: [
     ModalModule.forRoot(),
     CommonModule,HttpClientModule,
     MesasRoutingModule,jqxGridModule,jqxButtonModule,ReactiveFormsModule,FormsModule,
-    jqxListBoxModule,jqxDropDownListModule,jqxNotificationModule,jqxSwitchButtonModule
+    jqxListBoxModule,jqxDropDownListModule,jqxNotificationModule,jqxSwitchButtonModule,
+    jqxValidatorModule,jqxInputModule,
+    NgWizardModule.forRoot(ngWizardConfig),
   ],
   providers:[
-    MunicipiosService, LocalidadesService,ProvinciasService,RecintosService,CircunscripcionesService
+    MunicipiosService, LocalidadesService,
+    ProvinciasService,RecintosService,
+    CircunscripcionesService,VotacionService
   ]
 })
 export class MesasModule { }

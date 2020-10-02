@@ -50,8 +50,6 @@ import { BsDropdownModule } from "ngx-bootstrap/dropdown";
 import { TabsModule } from "ngx-bootstrap/tabs";
 import { ChartsModule } from "ng2-charts";
 import { SwitchesComponent } from "./views/base/switches.component";
-import { DatosComponent } from "./views/datos/datos.component";
-import { DatosModule } from "./views/datos/datos.module";
 import { FormsModule } from "@angular/forms";
 import { UserService } from "./servicios/user.service";
 import { HttpClientModule } from "@angular/common/http";
@@ -59,6 +57,7 @@ import { BsModalService } from "ngx-bootstrap/modal";
 import { AuthGuard } from "./auth/auth.guard";
 import { HTTP_INTERCEPTORS } from "@angular/common/http";
 import { TokenInterceptorService } from "./servicios/token-interceptor.service";
+//import { ChartsModule } from 'ng2-charts';
 
 @NgModule({
   imports: [
@@ -82,6 +81,8 @@ import { TokenInterceptorService } from "./servicios/token-interceptor.service";
     jqxButtonModule,
     jqxCheckBoxModule,
     jqxPasswordInputModule,
+    //ChartsModule,
+    jqxGridModule,
   ],
   declarations: [
     AppComponent,

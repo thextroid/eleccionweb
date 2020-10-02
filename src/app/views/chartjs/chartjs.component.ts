@@ -7,11 +7,16 @@ export class ChartJSComponent {
 
   // lineChart
   public lineChartData: Array<any> = [
-    {data: [65, 59, 80, 81, 56, 55, 40], label: 'Series A'},
-    {data: [28, 48, 40, 19, 86, 27, 90], label: 'Series B'},
-    {data: [18, 48, 77, 9, 100, 27, 40], label: 'Series C'}
+    {data: [65, 59, 80, 81, 56, 55], label: 'MAS-IPSP'},
+    {data: [28, 48, 40, 19, 86, 27], label: 'CC'},
+    {data: [31, 47, 40, 19, 86, 27], label: 'FPV'},
+    {data: [10, 50, 19, 86, 27], label: 'LIBRE21'},
+    {data: [5, 45, 42, 19, 86, 27], label: 'CC'},
+    {data: [80, 48, 40, 19, 86, 27], label: 'PANBOL'},
+    {data: [15, 40, 40, 19, 86, 27], label: 'CREEMOS'},
+    {data: [23, 4, 77, 9, 100, 27], label: 'ADN'}
   ];
-  public lineChartLabels: Array<any> = ['January', 'February', 'March', 'April', 'May', 'June', 'July'];
+  public lineChartLabels: Array<any> = ['Aviles', 'Arce', 'Cercado', 'Gran Chaco', 'Mendez', 'O.Connor'];
   public lineChartOptions: any = {
     animation: false,
     responsive: true

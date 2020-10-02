@@ -18,9 +18,9 @@ export class LocalidadesService {
     return this.http.get<Localidad>(api+"/"+id);
   }
   save(data){
-    return this.http.post(api,{name:data.name}); 
+    return this.http.post<Localidad>(api,data); 
   }
-  update(data){
-  	return this.http.put(api+"/"+data.id,{name:data.name});
+  update(id,data){
+  	return this.http.put<Localidad>(api+"/"+id,data);
   }
 }
