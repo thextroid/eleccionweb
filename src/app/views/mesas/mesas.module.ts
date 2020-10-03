@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { CUSTOM_ELEMENTS_SCHEMA, NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 import { ModalModule } from 'ngx-bootstrap/modal';
@@ -7,7 +7,8 @@ import { jqxGridModule } from 'jqwidgets-ng/jqxgrid';
 import { jqxButtonModule } from 'jqwidgets-ng/jqxbuttons';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { jqxNotificationModule } from 'jqwidgets-ng/jqxnotification';
-import { jqxWindowModule } from 'jqwidgets-ng/jqxwindow';
+
+import { jqxTextAreaModule } from 'jqwidgets-ng/jqxtextarea';
 import { jqxDropDownListModule } from 'jqwidgets-ng/jqxdropdownlist';
 import { jqxSwitchButtonModule } from 'jqwidgets-ng/jqxswitchbutton';
 import { jqxListBoxModule } from 'jqwidgets-ng/jqxlistbox';
@@ -22,6 +23,11 @@ import { CircunscripcionesService } from '../../servicios/circunscripciones.serv
 import { jqxValidatorModule } from 'jqwidgets-ng/jqxvalidator';
 import { VotacionService } from '../../servicios/votacion.service';
 import { NgWizardConfig, NgWizardModule, THEME } from 'ng-wizard';
+import { SnotifyModule, SnotifyService, ToastDefaults } from 'ng-snotify';
+import { BsDropdownModule } from 'ngx-bootstrap/dropdown';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { jqxNumberInputModule } from 'jqwidgets-ng/jqxnumberinput';
+import { NgxSpinnerModule } from 'ngx-spinner';
 
 const ngWizardConfig: NgWizardConfig = {
   theme: THEME.default,
@@ -30,16 +36,20 @@ const ngWizardConfig: NgWizardConfig = {
   declarations: [MesasComponent],
   imports: [
     ModalModule.forRoot(),
+    BsDropdownModule.forRoot(),
     CommonModule,HttpClientModule,
     MesasRoutingModule,jqxGridModule,jqxButtonModule,ReactiveFormsModule,FormsModule,
     jqxListBoxModule,jqxDropDownListModule,jqxNotificationModule,jqxSwitchButtonModule,
-    jqxValidatorModule,jqxInputModule,
-    NgWizardModule.forRoot(ngWizardConfig),
+    jqxValidatorModule,SnotifyModule,jqxInputModule,jqxNumberInputModule,jqxTextAreaModule,
+    NgWizardModule.forRoot(ngWizardConfig),NgxSpinnerModule
   ],
   providers:[
+    { provide: 'SnotifyToastConfig', useValue: ToastDefaults},
     MunicipiosService, LocalidadesService,
     ProvinciasService,RecintosService,
+    SnotifyService,
     CircunscripcionesService,VotacionService
-  ]
+  ],
+  schemas:[CUSTOM_ELEMENTS_SCHEMA]
 })
 export class MesasModule { }
