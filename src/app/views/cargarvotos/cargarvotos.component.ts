@@ -242,7 +242,7 @@ export class CargarvotosComponent implements OnInit {
 		private $rec: RecintosService,
 		private $notifier: SnotifyService
 	) {
-		this.options = { concurrency: 1, maxUploads: 1, maxFileSize: 1000000 };
+		this.options = { concurrency: 1, maxUploads: 100, maxFileSize: 1000000 };
 		this.files = [];
 		this.uploadInput = new EventEmitter<UploadInput>();
 		this.humanizeBytes = this.humanizeBytes;

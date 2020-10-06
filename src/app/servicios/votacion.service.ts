@@ -28,7 +28,7 @@ export class VotacionService {
     
   }
   updateVotos(id,data):Observable<any> {
-    return this.http.post<any>(api+apivot+"/"+id, data);
+    return this.http.put<any>(api+apivot+"/"+id, data);
   }
   uploadActa(data){
     return this.http.post<any>(api+"/actas",data);

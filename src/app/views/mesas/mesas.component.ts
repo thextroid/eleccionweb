@@ -264,8 +264,9 @@ export class MesasComponent implements OnInit {
     rowdata.votosBlancos+
     rowdata.votosNullos;
     // sumvotos+this.acta.emp;
+    console.log(value,sumvotos,this.inemp.val());
     
-    if(value==0 || sumvotos<=this.inemp.val())
+    if(sumvotos==0 || value==0 || sumvotos<=this.inemp.val())
     return "<h6 style='height:100%;text-align:center;vertical-align:middle;'><div class='cell-default'>"+value+"</div></h6>";
     else
     return "<h6 style='height:100%;text-align:center;vertical-align:middle;'><div class='cell-red'>"+value+"</div></h6>";
@@ -402,8 +403,9 @@ export class MesasComponent implements OnInit {
       this.acta.cierre = rowdata._id.acta.horaCierre;
       this.acta.estado = rowdata._id.acta.estado;
       let list=[];
-      for (let i = 0; i < rowdata._id.candidatura.length; i++) {
-        list.push(rowdata._id.candidatura[i]);
+      console.log(rowdata._id);
+      for (let i = 0; i < rowdata._id.candidaturas.length; i++) {
+        list.push(rowdata._id.candidaturas[i]);
       }
       this.gridvot.clear();
       this.gridvot.addrow(null,list);
@@ -455,7 +457,8 @@ export class MesasComponent implements OnInit {
     };
     let v=[];
     for (let i = 0; i < listvotos.length; i++) {
-      v.push({candidatura:listvotos[i].candidatura,
+      v.push({
+        candidatura:listvotos[i].candidatura,
       'CREEMOS':listvotos[i].CREEMOS,
       'ADN':listvotos[i].ADN,
       'MASIPSP':listvotos[i].MASIPSP,
@@ -485,10 +488,13 @@ export class MesasComponent implements OnInit {
       
       this.$vot.updateActa(this.acta.id,data).subscribe(
         (res)=>{
-          this.$vot.updateVotos(listvotos[0]._id,formVotos).subscribe(
+          const row = this.migrid.getrowdata(this.migrid.getselectedrowindex());
+          console.log(row);
+          this.$vot.updateVotos(row._id._id,formVotos).subscribe(
             (res2)=>{
               this.mensaje('se actualizo la votacion','',0);
               this.ngWizardService.reset();
+              this.$spinner.hide();
               this.migrid.setcellvalue(this.migrid.getselectedrowindex(),'estado','Verificado');
             },
             (error2)=>{
@@ -500,6 +506,7 @@ export class MesasComponent implements OnInit {
         },
         (error)=>{
           this.mensaje('No pudo cargar Acta','Acta',3);
+          this.$spinner.hide();
           console.log(error)
         }
       );
