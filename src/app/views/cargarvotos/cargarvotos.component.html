@@ -42,6 +42,7 @@
             >
             </jqxDropDownList>
           </div>
+          
           <div class="form-group col-sm-12">
             <label for="postal-code">Recinto:</label>
             <jqxDropDownList
@@ -114,12 +115,12 @@
             <jqxNumberInput
             #inputEmp
             class="inEmp"
-            [spinButtons]="true"
             [min]="1"
             [max]="1024"
             [height]="33.5"
             [width]="'100%'"
             [digits]="4"
+            [disabled]="true"
             [decimalDigits]="0"
             >
           </jqxNumberInput>

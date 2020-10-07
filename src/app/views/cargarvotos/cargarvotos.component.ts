@@ -221,7 +221,7 @@ export class CargarvotosComponent implements OnInit {
 	checkmesa:any=-1;
 	$ev :StepChangedArgs;
 	config: NgWizardConfig = {
-		selected:4,
+		selected:0,
 		theme: THEME.dots,
 		lang:{
 			next:'Continuar',
@@ -382,7 +382,7 @@ export class CargarvotosComponent implements OnInit {
 			) {
 				list.push({
 					value: this.recs[i],
-					label: this.recs[i].institucion
+					label: this.recs[i].institucion+"/"+this.recs[i].localidad
 				});
 			}
 		}
@@ -391,7 +391,7 @@ export class CargarvotosComponent implements OnInit {
 	generarMesas() {
 		const recSelect = this.dropRec.getSelectedItem();
 		this.info.rec=recSelect.value;
-		this.info.loc=recSelect.value.localidad.name;
+		this.info.loc=recSelect.value.localidad;
 		console.log(recSelect.value);
 		this.myValidator.validateInput('inRec');
 		this.checkmesa=-1;
@@ -407,13 +407,13 @@ export class CargarvotosComponent implements OnInit {
 			(data)=>{
 				console.log(data);
 				let match;
-				for (let i = 0; i < this.info.rec.numeroMesas; i++) {
+				for (let i = 0; i < this.info.rec.totalMesas; i++) {
 					match=null;
 					for (let j = 0; match==null && j < data.length; j++)
 						if(data[j].numeroMesa===("Mesa "+(i+1)))
 							match= data[j].estado;
 					
-					this.mess.push({nro:i + 1,disabled:(match==null),estado:(match!=null)?match:'Habilitado'});
+					this.mess.push({nro:this.info.rec.mesas[i].mesa,disabled:(match==null),estado:(match!=null)?match:'Habilitado'});
 				}
 				console.log(this.mess)
 			},
@@ -466,7 +466,6 @@ export class CargarvotosComponent implements OnInit {
 		// file:this.imageChangedEvent.target.files[0];
 		const formVotos = {
 			codMesa:this.numberMesa.val(),
-			circunscripcion: cir,
 			numeroMesa: "Mesa "+this.Mesa,
 			recinto: rec,
 			estado: "Enviado",
@@ -474,23 +473,7 @@ export class CargarvotosComponent implements OnInit {
 		};
 		// form.append('file',data.file);
 		// form.append('arrayVotacion',JSON.stringify(data.arrayVotacion));
-		this.$vot.uploadVotos(formVotos).subscribe(
-			(data) => {
-				this.mensaje('Se cargo satisfactoriamente','Votaciones',0);
-				this.ngWizardService.next();
-				console.log(data);
-			},
-			(error) => {
-				this.mensaje('No se cargo satisfactoriamente','Votacion',3);
-				console.log(error);	
-			}
-		);
-		// console.log(form);
-	}
-	checkVotos(){
 
-	}
-	uploadActa():void{
 		const data={
 			codMesa: this.numberMesa.val(),
 			empadronados: this.empadronados.val(),
@@ -502,8 +485,19 @@ export class CargarvotosComponent implements OnInit {
 		console.log("upload Data: ",data)
 		this.$vot.uploadActa(data).subscribe(
 			(res)=>{
-				this.mensaje('Se cargo datos correctamente','Acta',0);
 				console.log(res);
+				this.$vot.uploadVotos(formVotos).subscribe(
+					(data) => {
+						this.mensaje('Se cargo satisfactoriamente','Votaciones',0);
+						this.ngWizardService.next();
+						console.log(data);
+					},
+					(error) => {
+						this.mensaje('No se cargo satisfactoriamente','Votacion',3);
+						console.log(error);	
+					}
+				);
+
 				this.acta.id=res._id;
 				this.ngWizardService.next();
 			},
@@ -512,6 +506,12 @@ export class CargarvotosComponent implements OnInit {
 				console.log()
 			}
 		);
+	}
+	checkVotos(){
+
+	}
+	uploadActa():void{
+		
 	}
 	_Acta(){
 		console.log(".....");
@@ -532,7 +532,8 @@ export class CargarvotosComponent implements OnInit {
 			list.push({candidatura:'Especial',MAS:0,CC:0,LIBRE21:0,FPV:0,PANBOL:0,ADN:0,CREEMOS:0,blancos:0,nulos:0})
 		}
 		this.migrid.addrow(null,list);
-		this.uploadActa();
+		// this.uploadActa();
+		this.ngWizardService.next();
 	}
 	uploadFoto(){
 		console.log(this.imageChangedEvent.target.files[0]);
@@ -570,6 +571,12 @@ export class CargarvotosComponent implements OnInit {
 		else if(this.$ev.step.index==1){
 			this.Mesa = mesa;
 			this.info.mesa=mesa;
+			for (let i = 0; i < this.info.rec.mesas.length; i++) {
+				if(this.info.rec.mesas[i].mesa==mesa){
+					this.info.mesaHabilitados=this.info.rec.mesas[i].habilitados;
+					break;
+				}
+			}
 			console.log(mesa);
 			// if(this.checkmesa!=-1){
 				this.resetActa();
@@ -587,11 +594,18 @@ export class CargarvotosComponent implements OnInit {
 	}
 	archivo:File;
 	imagefile:File=null;
+
 resetActa(){
-	 this.numberMesa.val(''),
-	 this.empadronados.val(1),
-	 this.apertura.setDate(new Date()),
-	 this.cierre.setDate(new Date()),
+	for (let i = 0; i < this.info.rec.mesas.length; i++) {
+		if(this.info.rec.mesas[i].mesa==this.Mesa){
+			this.info.mesaHabilitados=this.info.rec.mesas[i].habilitados;
+			this.empadronados.val(this.info.rec.mesas[i].habilitados);
+			break;
+		}
+	}
+	 this.numberMesa.val('');
+	 this.apertura.setDate(new Date());
+	 this.cierre.setDate(new Date());
 	 this.archivo= null;
 	 this.imagefile= null;
 	 this.croppedImage='';

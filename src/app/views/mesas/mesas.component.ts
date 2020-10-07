@@ -93,6 +93,7 @@ export class MesasComponent implements OnInit {
       (data)=>{
         let list=[];
         console.log(data);
+        const token= localStorage.getItem('token');
         for (let i = 0; i < data.length; i++) {
           list.push({
             _id:data[i],
@@ -100,10 +101,10 @@ export class MesasComponent implements OnInit {
             recinto:data[i].recinto.institucion,
             mesa:data[i].numeroMesa,
             estado:data[i].estado,
-            circunscripcion:data[i].circunscripcion.name,
-            provincia:data[i].recinto.municipio.provincia.name,
+            circunscripcion:data[i].recinto.circunscripcion.name,
+            provincia:data[i].recinto.provincia.name,
             municipio:data[i].recinto.municipio.name,
-            delegado:"Israel Marino Jerez",
+            delegado:((token==undefined)?"Israel":token),
             // localidad:data[i].recinto.localidad.name,
             tipo:(data[i].recinto.tipo.length==1?data[i].recinto.tipo[0]:data[i].recinto.tipo[0]+"/"+data[i].recinto.tipo[1]),
             habilitados:data[i].acta.empadronados
@@ -266,10 +267,16 @@ export class MesasComponent implements OnInit {
     // sumvotos+this.acta.emp;
     console.log(value,sumvotos,this.inemp.val());
     
+    let r="";
+    if(row==0)r ="Presidente";
+    if(row==1)r ="Uninominal";
+    if(row==2)r ="Especial";
     if(sumvotos==0 || value==0 || sumvotos<=this.inemp.val())
-    return "<h6 style='height:100%;text-align:center;vertical-align:middle;'><div class='cell-default'>"+value+"</div></h6>";
-    else
-    return "<h6 style='height:100%;text-align:center;vertical-align:middle;'><div class='cell-red'>"+value+"</div></h6>";
+      this.mensaje('La suma de votos de ['+r+"] supera a los Habilitados ",'Sumatoria',3);
+    else{
+      this.mensaje('La suma de votos de ['+r+"] supera a los Habilitados ",'Sumatoria',3);
+    }
+    return value;
   }
 	columns2: any[] = [
 		{ datafield: "candidatura", text: "", width: "19%" ,editable:false},
@@ -392,8 +399,8 @@ export class MesasComponent implements OnInit {
       this.info.rec = rowdata._id.recinto;
       this.info.mun = rowdata._id.recinto.municipio;
       this.info.loc = rowdata._id.recinto.localidad;
-      this.info.prov = rowdata._id.recinto.municipio.provincia;
-      this.info.cir = rowdata._id.circunscripcion;
+      this.info.prov = rowdata._id.recinto.provincia;
+      this.info.cir = rowdata._id.recinto.circunscripcion;
       this.acta.codigo = rowdata._id.acta.codMesa;
       this.acta.id = rowdata._id.acta._id;
       this.inacta.val(this.acta.codigo);
@@ -459,21 +466,21 @@ export class MesasComponent implements OnInit {
     for (let i = 0; i < listvotos.length; i++) {
       v.push({
         candidatura:listvotos[i].candidatura,
-      'CREEMOS':listvotos[i].CREEMOS,
-      'ADN':listvotos[i].ADN,
-      'MASIPSP':listvotos[i].MASIPSP,
-      'FPV':listvotos[i].FPV,
-      'PANBOL':listvotos[i].PANBOL,
-      'LIBRE21':listvotos[i].LIBRE21,
-      'CC':listvotos[i].CC,
-      'votosValidos':listvotos[i].CREEMOS+listvotos[i].ADN+listvotos[i].MASIPSP+listvotos[i].FPV+listvotos[i].PANBOL+listvotos[i].LIBRE21+listvotos[i].CC,
-      'votosBlancos':listvotos[i].votosBlancos,
-      'votosNullos':listvotos[i].votosNullos});
+        'CREEMOS':listvotos[i].CREEMOS,
+        'ADN':listvotos[i].ADN,
+        'MASIPSP':listvotos[i].MASIPSP,
+        'FPV':listvotos[i].FPV,
+        'PANBOL':listvotos[i].PANBOL,
+        'LIBRE21':listvotos[i].LIBRE21,
+        'CC':listvotos[i].CC,
+        'votosValidos':listvotos[i].CREEMOS+listvotos[i].ADN+listvotos[i].MASIPSP+listvotos[i].FPV+listvotos[i].PANBOL+listvotos[i].LIBRE21+listvotos[i].CC,
+        'votosBlancos':listvotos[i].votosBlancos,
+        'votosNullos':listvotos[i].votosNullos});
     }
     const formVotos = {
       codMesa:this.inacta.val(),
       recinto:this.info.rec._id,
-      circunscripcion:this.info.cir._id,
+      // circunscripcion:this.info.cir._id,
       numeroMesa:this.info.mesa,
       estado:"Verificado",
       candidaturas:v
