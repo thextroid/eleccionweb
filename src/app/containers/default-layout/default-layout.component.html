@@ -1,71 +1,34 @@
 <app-header
-  [navbarBrandRouterLink]="['/dashboard']"
-  [fixed]="true"
-  [navbarBrandFull]="{
-    src: 'assets/img/brand/logo-1.svg',
-    width: 89,
-    height: 50,
-    alt: 'CtrlC Logo'
-  }"
-  [navbarBrandMinimized]="{
-    src: 'assets/img/brand/logo-3.svg',
-    width: 30,
-    height: 50,
-    alt: 'CrlC Logo'
-  }"
-  [sidebarToggler]="'lg'"
-  [asideMenuToggler]="'lg'"
->
-  <ul class="nav navbar-nav d-md-down-none">
-    <li class="nav-item px-3">
-      <a class="nav-link" href="#">Dashboard</a>
-    </li>
-    <li class="nav-item px-3">
-      <a class="nav-link" href="#">Usuarios</a>
-    </li>
-    <li class="nav-item px-3">
-      <a class="nav-link" href="#">Recinto</a>
-    </li>
-    <li class="nav-item px-3">
-      <a class="nav-link" href="#">Datos</a>
-    </li>
-  </ul>
-  <ul class="nav navbar-nav ml-auto">
-    <li class="nav-item d-md-down-none">
-      <a class="nav-link" href="#"><i class="icon-location-pin"></i></a>
-    </li>
-    <li class="nav-item dropdown" dropdown placement="bottom right">
-      <a
-        class="nav-link"
-        data-toggle="dropdown"
-        href="#"
-        role="button"
-        aria-haspopup="true"
-        aria-expanded="false"
-        dropdownToggle
-        (click)="(false)"
-      >
-        <img
-          src="assets/img/avatars/7.jpg"
-          class="img-avatar"
-          alt="admin@bootstrapmaster.com"
-        />
-      </a>
-      <div
-        class="dropdown-menu dropdown-menu-right"
-        *dropdownMenu
-        aria-labelledby="simple-dropdown"
-      >
-        <div class="dropdown-header text-center"><strong>Cuenta</strong></div>
-        <a class="dropdown-item" href="#"><i class="fa fa-user"></i> Profile</a>
-        <!-- <a class="dropdown-item" href="#"><i class="fa fa-bell-o"></i> Updates<span class="badge badge-info">42</span></a> -->
-        <div class="divider"></div>
-        <a class="dropdown-item" href="#"
-          ><i class="fa fa-lock"></i>Cerrar Sesion</a
-        >
-      </div>
-    </li>
-  </ul>
+	[navbarBrandRouterLink]="['/dashboard']"
+	[fixed]="true"
+	[navbarBrandFull]="{src: 'assets/img/brand/logo-1.svg', width: 89, height: 50, alt: 'CtrlC Logo'}"
+	[navbarBrandMinimized]="{src: 'assets/img/brand/logo-3.svg', width: 30, height: 50, alt: 'CrlC Logo'}"
+	
+	[sidebarToggler]="'lg'"
+	[asideMenuToggler]="'lg'">
+	<ul class="nav navbar-nav d-md-down-none">
+		<!-- <li class="nav-item px-3">
+			<a class="nav-link" href="#">Dashboard</a>
+		</li> -->
+	</ul>
+	<ul class="nav navbar-nav ml-auto">
+		
+		<li class="nav-item d-md-down-none bottom right">
+			<!-- <a class="nav-link" href="#"><i class="fa fa-power-off"></i> Salir</a> -->
+		</li>
+		<li class="nav-item dropdown" dropdown placement="bottom right">
+			<a class="nav-link" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false" dropdownToggle (click)="false">
+				<img src="assets/img/avatars/7.jpg" class="img-avatar" alt="admin@bootstrapmaster.com"/>
+			</a>
+			<div class="dropdown-menu dropdown-menu-right" *dropdownMenu aria-labelledby="simple-dropdown">
+				<div class="dropdown-header text-center"><strong>Cuenta</strong></div>
+				<a class="dropdown-item" href="#"><i class="fa fa-user"></i> User1</a>
+				<!-- <a class="dropdown-item" href="#"><i class="fa fa-bell-o"></i> Updates<span class="badge badge-info">42</span></a> -->
+				<div class="divider"></div>
+				<a class="dropdown-item" href="#"><i class="fa fa-power-off"></i>Cerrar Sesion</a>
+			</div>
+		</li>
+	</ul>
 </app-header>
 <div class="app-body">
   <app-sidebar

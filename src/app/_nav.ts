@@ -7,12 +7,8 @@ export const navItems: INavData[] = [
     icon: "icon-speedometer",
     badge: {
       variant: "info",
-      text: "NEW",
+      text: "admin",
     },
-  },
-  {
-    title: true,
-    name: "Theme",
   },
   {
     name: "Usuarios",

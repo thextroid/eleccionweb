@@ -84,6 +84,12 @@
                   class="inNombre text-input form-control"
                 ></jqxInput>
               </div>
+              <div class="form-group col-sm-12">
+								<label for="postal-code">Circunscriopnes:</label>
+								<jqxDropDownList #dropCir [filterable]="true" (onChange)="prueba()" [checkboxes]="true" class="inCir"
+										[width]="'100%'" [height]="30" [autoOpen]="false">
+								</jqxDropDownList>
+							</div><!--/.row-->
 
               <div class="form-group col-sm-12">
                 <button type="submit" class="btn btn-primary" id="guardar">
