@@ -1,42 +1,62 @@
 <div class="container">
-    <div class="animated fadeIn">
-        <div class="row">
-          <div class="col-md-6 mb-4">
-            <!-- Nav tabs -->
-              <jqxValidator #myValidator [rules]="rulesRecinto" [animationDuration]="0" (onValidationSuccess)="prueba()" [hintType]="'label'">
-                <form id="form" >
-                  <div class="row">
-                    <div class="form-group col-sm-4">
-                      <label for="postal-code">Provincia:</label>
-                      <jqxDropDownList
-                        #dropProv
-                        [filterable]="true"
-                        class="inProv"
-                        (onChange)="change($event)"
-                        [width]="'100%'"
-                        [height]="30"
-                        [autoOpen]="false"
-                      >
-                      </jqxDropDownList>
-                    </div>
-                    <div class="form-group col-sm-4">
-                      <label for="postal-code">Municipio:</label>
-                      <jqxDropDownList
-                        #dropMun
-                        [filterable]="true"
-                        class="inMun"
-                        (onChange)="change($event)"
-                        [width]="'100%'"
-                        [height]="30"
-                        [autoOpen]="false"
-                      >
-                      </jqxDropDownList>
-                    </div>
-                  </div>
-                </form>
-              </jqxValidator>
+  <div class="animated fadeIn">
+    <div class="row">
+      <div class="col-md-6 mb-4">
+        <!-- Nav tabs -->
+        <jqxValidator
+          #myValidator
+          [rules]="rulesRecinto"
+          [animationDuration]="0"
+          (onValidationSuccess)="prueba()"
+          [hintType]="'label'"
+        >
+          <form id="form">
+            <div class="row">
+              <div class="form-group col-sm-4">
+                <label for="postal-code">Provincia:</label>
+                <jqxDropDownList
+                  #dropProv
+                  [filterable]="true"
+                  class="inProv"
+                  (onChange)="change($event)"
+                  [width]="'100%'"
+                  [height]="30"
+                  [autoOpen]="false"
+                >
+                </jqxDropDownList>
+              </div>
+              <div class="form-group col-sm-4">
+                <label for="postal-code">Municipio:</label>
+                <jqxDropDownList
+                  #dropMun
+                  [filterable]="true"
+                  class="inMun"
+                  (onChange)="change($event)"
+                  [width]="'100%'"
+                  [height]="30"
+                  [autoOpen]="false"
+                >
+                </jqxDropDownList>
+              </div>
+            </div>
+          </form>
+        </jqxValidator>
 
-          </div><!--/.col-->
-        </div><!--/.col-->
-    </div><!--/.col-->
+        <div style="display: block; background-color: white">
+          <canvas
+            baseChart
+            [data]="pieChartData"
+            [labels]="pieChartLabels"
+            [chartType]="pieChartType"
+            [colors]="donutColors"
+            height="450"
+            width="500"
+          ></canvas>
+        </div>
+      </div>
+      <!--/.col-->
+    </div>
+    <!--/.col-->
+  </div>
+  <!--/.col-->
 </div>
