@@ -10,6 +10,7 @@ import { jqxValidatorComponent } from 'jqwidgets-ng/jqxvalidator';
 import { SnotifyPosition, SnotifyService } from 'ng-snotify';
 import { ModalDirective } from 'ngx-bootstrap/modal';
 import { Provincia } from '../../models/provincia';
+import { CircunscripcionesService } from '../../servicios/circunscripciones.service';
 import { MunicipiosService } from '../../servicios/municipios.service';
 import { ProvinciasService } from '../../servicios/provincias.service';
 
@@ -24,7 +25,8 @@ export class MunicipiosComponent implements OnInit {
 	@ViewChild('myModal') public myModal: ModalDirective;
 	@ViewChild('mdDepUpdate') public mdDepUpdate: ModalDirective;
 	@ViewChild('msgNotification') minoti: jqxNotificationComponent;
-	@ViewChild('myDropDownList2', { static: false }) dropProv: jqxDropDownListComponent;
+	@ViewChild('dropProv', { static: false }) dropProv: jqxDropDownListComponent;
+	@ViewChild('dropCir', { static: false }) dropCir: jqxDropDownListComponent;
 	@ViewChild('inputMunicipio', { static: false }) inputMun: jqxInputComponent;
 	@ViewChild('smallModal') public smallModal: ModalDirective;
 	@ViewChild('btnAdd') btnAdd: jqxButtonComponent;
@@ -33,13 +35,14 @@ export class MunicipiosComponent implements OnInit {
 	@ViewChild('myValidator', { static: false }) myValidator: jqxValidatorComponent;
 
 	constructor(protected $mun: MunicipiosService,protected $prov: ProvinciasService,
-				protected $notifier: SnotifyService) { }
+				protected $notifier: SnotifyService,
+				private $cir: CircunscripcionesService) { }
 	public formMun: FormGroup = new FormGroup({
 		name: new FormControl('') 
 	})
 	action_text = '';
 	modelMunicipio:{name:'',id:undefined,_id:'',provincia:string};
-	
+	cirs=[];
 	ngOnInit(){	}
 	
 	ngAfterViewInit(): void {	this.refresh();	}
@@ -50,7 +53,7 @@ export class MunicipiosComponent implements OnInit {
 				let e='',list=[];
 				for(let i=0;i<data.length;i++){
 					list.push({
-						_id: data[i]._id,
+						_id: data[i],
 						id:i+1,
 						name:data[i].name,
 						provincia:('provincia' in data[i])?data[i].provincia:new Provincia()
@@ -65,7 +68,23 @@ export class MunicipiosComponent implements OnInit {
 			for(let i=0;i<data.length;i++)
 				e.push({value:data[i]._id, label:data[i].name});
 			this.dropProv.source(e);
-		})
+		});
+		this.$cir.all().subscribe(
+			(data=>{
+				let list=[];
+				for(let i=0;i<data.length;i++){
+					list.push({
+						value: data[i],
+						label:data[i].name
+					});
+				}
+				this.dropCir.source(list);
+				this.cirs=data;
+			}),
+			(error)=>{
+				console.log(error);
+			}
+		);
 
 	}
 	
@@ -141,17 +160,30 @@ export class MunicipiosComponent implements OnInit {
 					this.mensaje('Seleccione una fila','',2);
 				}
 				else{
-					var data = this.migrid.getrowdata(this.migrid.getselectedrowindex());
-					this.inputMun.val(data.name);
-					if('provincia' in data){
-
+					var rowdata = this.migrid.getrowdata(this.migrid.getselectedrowindex());
+					this.inputMun.val(rowdata._id.name);
+					if('provincia' in rowdata._id){
+						
 						var items = this.dropProv.getItems();
 						for (let i = 0; i < items.length; i++) {
-							if(items[i].value==data.provincia._id){
+							if(items[i].value==rowdata._id.provincia._id){
 								this.dropProv.selectedIndex(i);
 								break;
 							}
 						}
+					}
+					if('circunscripcions' in rowdata._id)
+					for (let i = 0; i < rowdata._id.circunscripcions.length; i++) {
+						const a=rowdata._id.circunscripcions[i];
+						this.cirs=this.dropCir.getItems();
+						for (let j = 0; j < this.cirs.length; j++) {
+							const b=this.cirs[j];
+							if(a._id==b.value._id){
+								this.dropCir.checkIndex(j);
+								break;
+							}
+						}
+						
 					}
 					this.myModal.show();
 				}
@@ -167,9 +199,11 @@ export class MunicipiosComponent implements OnInit {
 	}
 	reset(){
 		this.dropProv.clearSelection();
+		this.dropCir.uncheckAll();
 		this.inputMun.val('');
 		this.myValidator.hide();
 		this.myValidator.hideHint('inProv');
+		this.myValidator.hideHint('inCir');
 	}
 	invalidValidation(){
 		this.mensaje('Algunos datos fueron llenados incorrectamente','Formulario',3);
@@ -177,11 +211,14 @@ export class MunicipiosComponent implements OnInit {
 	checkValidation(){
 		this.myValidator.validate();
 		this.myValidator.validateInput('inProv');
+		this.myValidator.validateInput('inCir');
 	}
 	successValidation(){
+		this.cirs=this.dropCir.getCheckedItems().map( (arg:any)=> arg.value._id );
 		let data	=	{
 			name:this.inputMun.val(),
-			provinciaId:this.dropProv.getSelectedItem().value
+			provinciaId:this.dropProv.getSelectedItem().value,
+			circunscripcions:this.cirs
 		}
 		if(this.action_text=="Adicionar"){
 			var rowindex = this.migrid.getselectedrowindex();
@@ -191,7 +228,7 @@ export class MunicipiosComponent implements OnInit {
 				this.mensaje('Se adicionó satisfactoriamente','Municipio',0);
 				this.migrid.addrow(rowTotal,
 					{
-						_id:response._id,
+						_id:response,
 						id:rowTotal+1,
 						name:response.name,
 						provincia:response.provincia
@@ -205,10 +242,10 @@ export class MunicipiosComponent implements OnInit {
 		else{
 			var rowindex = this.migrid.getselectedrowindex();
 			var rowdata = this.migrid.getrowdata(rowindex);
-			this.$mun.update(rowdata._id,data).subscribe((response)=>{
+			this.$mun.update(rowdata._id._id,data).subscribe((response)=>{
 				this.migrid.updaterow(rowindex,
 					{
-						_id:response._id,
+						_id:response,
 						id:rowdata.id,
 						name:response.name,
 						provincia:response.provincia
@@ -242,6 +279,7 @@ export class MunicipiosComponent implements OnInit {
 	}
 	prueba(){
 		this.myValidator.validateInput('.inProv');
+		this.myValidator.validateInput('.inCir');
 	}
 	rules=[
 		{ 	input: '.inNombre', message: 'Nombre es requerida!', action: 'keyup, blur', rule: 'required' },
@@ -250,6 +288,11 @@ export class MunicipiosComponent implements OnInit {
 		{ 	input: '.inProv', message: 'Seleccione una Provincia', action: '', 
 			rule: (input:any, commit:any):boolean=>{
 				return this.dropProv.getSelectedIndex()!=-1;
+		   }  
+		},
+		{ 	input: '.inCir', message: 'Seleccione circunscripciones', action: '', 
+			rule: (input:any, commit:any):boolean=>{
+				return this.dropCir.getCheckedItems().length>0;
 		   }  
 		}
 	];

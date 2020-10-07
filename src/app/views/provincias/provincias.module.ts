@@ -16,6 +16,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { ProvinciasService } from '../../servicios/provincias.service';
 import { SnotifyModule, SnotifyService, ToastDefaults } from 'ng-snotify';
 import { jqxValidatorModule } from 'jqwidgets-ng/jqxvalidator';
+import { CircunscripcionesService } from '../../servicios/circunscripciones.service';
 
 
 @NgModule({
@@ -30,7 +31,8 @@ import { jqxValidatorModule } from 'jqwidgets-ng/jqxvalidator';
   providers:[
     { provide: 'SnotifyToastConfig', useValue: ToastDefaults},
     SnotifyService,
-    ProvinciasService
+    ProvinciasService,
+    CircunscripcionesService
   ]
 })
 export class ProvinciasModule { }

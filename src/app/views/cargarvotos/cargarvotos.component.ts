@@ -221,7 +221,7 @@ export class CargarvotosComponent implements OnInit {
 	checkmesa:any=-1;
 	$ev :StepChangedArgs;
 	config: NgWizardConfig = {
-		selected:0,
+		selected:4,
 		theme: THEME.dots,
 		lang:{
 			next:'Continuar',
@@ -242,7 +242,7 @@ export class CargarvotosComponent implements OnInit {
 		private $rec: RecintosService,
 		private $notifier: SnotifyService
 	) {
-		this.options = { concurrency: 1, maxUploads: 100, maxFileSize: 1000000 };
+		this.options = { concurrency: 1, maxUploads: 100, maxFileSize: (1<<23) };
 		this.files = [];
 		this.uploadInput = new EventEmitter<UploadInput>();
 		this.humanizeBytes = this.humanizeBytes;
@@ -648,7 +648,7 @@ resetActa(){
 		  showProgressBar: false,
 		  closeOnClick: true,
 		  pauseOnHover: true,
-		  position: SnotifyPosition.rightTop,
+		  position: SnotifyPosition.centerBottom,
 		};
 		if (tipo == 0) this.$notifier.success(content, title, op);
 		if (tipo == 1) this.$notifier.warning(content, title, op);
@@ -667,7 +667,7 @@ resetActa(){
 			data: { }
 		  };
 	
-		  this.uploadInput.emit(event);
+		//   this.uploadInput.emit(event);
 		} else if (output.type === 'addedToQueue' && typeof output.file !== 'undefined') {
 		  this.files.push(output.file);
 		} else if (output.type === 'uploading' && typeof output.file !== 'undefined') {
@@ -682,6 +682,7 @@ resetActa(){
 		} else if (output.type === 'drop') {
 		  this.dragOver = false;
 		} else if (output.type === 'rejected' && typeof output.file !== 'undefined') {
+			this.mensaje('No se pudo cargar la imagen','Foto',3);
 		  console.log(output.file.name + ' rejected');
 		}
 		else if( output.type==='done'){
@@ -694,7 +695,7 @@ resetActa(){
 		this.files = this.files.filter(file => file.progress.status !== UploadStatus.Done);
 	  }
 	
-	  startUpload(): void {
+	  subir(): void {
 		const event: UploadInput = {
 			type: 'uploadAll',
 			url: this.url+this.numberMesa.val(),
@@ -707,6 +708,9 @@ resetActa(){
 	
 	  cancelUpload(id: string): void {
 		this.uploadInput.emit({ type: 'cancel', id: id });
+	  }
+	  cancelAllUpload(): void {
+		this.uploadInput.emit({ type: 'cancelAll' });
 	  }
 	
 	  removeFile(id: string): void {

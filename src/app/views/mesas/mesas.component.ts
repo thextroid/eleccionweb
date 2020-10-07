@@ -104,7 +104,7 @@ export class MesasComponent implements OnInit {
             provincia:data[i].recinto.municipio.provincia.name,
             municipio:data[i].recinto.municipio.name,
             delegado:"Israel Marino Jerez",
-            localidad:data[i].recinto.localidad.name,
+            // localidad:data[i].recinto.localidad.name,
             tipo:(data[i].recinto.tipo.length==1?data[i].recinto.tipo[0]:data[i].recinto.tipo[0]+"/"+data[i].recinto.tipo[1]),
             habilitados:data[i].acta.empadronados
           });          
