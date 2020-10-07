@@ -1,7 +1,7 @@
-<ng-wizard [config]="config" (stepChanged)="stepChanged($event)">
+<ng-wizard [config]="config" >
   <ng-wizard-step [title]="'Paso 1'" [description]="'Recintos'">
     <div class="row">
-      <div class="col-sm-2">
+      <!-- <div class="col-sm-2">
         <div class="form-group">
           <label for="name">Circunscripcion:</label>
           <jqxDropDownList #dropCir [filterable]="true" (onChange)="cirCambiando($event)" [width]="'100%'" [height]="30" [selectedIndex]="1" [autoOpen]="false">
@@ -22,23 +22,13 @@
           >
           </jqxDropDownList>
         </div>
+      </div> -->
+      <div class="col-sm-3">
+        <div class="form-group">
+          <jqxButton  [height]='40' [template]="'primary'" (onClick)="next($event)"><i class="fa fa-forward"></i>Votación</jqxButton>
+      </div>
       </div>
       <div class="col-sm-2">
-        <div class="form-group">
-          <label for="name">Municipio:</label>
-          <jqxDropDownList
-            #dropMun
-            (onChange)="munCambiando($event)"
-            [filterable]="true"
-            [disabled]="true"
-            [width]="'100%'"
-            [height]="30"
-            [autoOpen]="false"
-          >
-          </jqxDropDownList>
-        </div>
-      </div>
-      <div class="col-sm-3">
         <div class="form-group">
           <label for="name">Filtrado:</label>
           <jqxSwitchButton #toggle [width]="'50%'" (onChecked)="filtrar()"></jqxSwitchButton>
@@ -61,6 +51,7 @@
           [columns]="columns"
           [height]="500"
           [pageable]="true"
+          [showfilterrow]="true"
           [rendergridrows]="rendergridrows"
           [sortable]="true"
           [showtoolbar]="true"
@@ -75,35 +66,94 @@
     </div>
   </ng-wizard-step>
   <ng-wizard-step [title]="'Paso 2'" [description]="'Verificar'">
-
-    <!-- <div class="form-group row">
-      <label class="control-label col-sm-3"><span class="h5">Codigo Acta:</span><span class="h2">{{acta.codigo}}</span></label>
-      <label class="control-label col-sm-3"><span class="h5">Mesa N°. {{info.mesa}}</span></label>
-      <label class="control-label col-sm-3"><span class="h5">N° Empadronados:</span> <span class="h4">{{acta.emp}}</span></label>
-      <label class="control-label col-sm-3"><span class="h5">Tipo:</span> <span class="h4">{{info.rec.tipo}}</span></label>
+    <jqxValidator #validatorVotos [rules]="rules" [animationDuration]="0"   (onValidationSuccess)="save()"  [hintType]="'label'">
+    <div class="form-group row">
+      <label class="control-label col-sm-4"><span class="h5">Codigo Acta:</span>
+        <span class="h2"><jqxInput #inputActa  class="inCodmesa form-input1 form-control" [width]="'100%'"></jqxInput></span>
+      </label>
+      <label class="control-label col-sm-3"><span class="h5">N°.</span>
+        <span class="h2"><div class="form-input1 form-control" style="color:grey">{{info.mesa}}</div></span>
+      </label>
+      <label class="control-label col-sm-3 offset-md-2"><span class="h5">Habilitados:</span> 
+        <span class="h2">
+          <jqxNumberInput #inputEmpadronados 
+          [min]="1"
+          [max]="1024"
+          [height]="'100%'"
+          [digits]="4"
+          [decimalDigits]="0"
+          (onTextchanged)="habilitadosChange($event)" 
+          class="inEmp form-input1 form-control"
+          [width]="'100%'" ></jqxNumberInput></span></label>
+      
     </div>
     <div class="form-group row">
       <label class="control-label col-sm-3"><span class="h6">Circunscripcion:</span> <span>{{info.cir.name}}</span></label>
       <label class="control-label col-sm-3"><span class="h6">Localidad:</span> <span>{{info.loc}}</span></label>
       <label class="control-label col-sm-3"><span class="h6">Municipio:</span> <span>{{info.mun.name}}</span></label>
-      <label class="control-label col-sm-3"><span class="h6">Provincia:</span> <span>{{info.prov.name}}</span></label>
+      <label class="control-label col-sm-3"><span class="h5"></span> 
+          <div class="btn-group" dropdown>
+            <button id="button-basic" dropdownToggle type="button" class="btn btn-primary dropdown-toggle" aria-controls="dropdown-basic">
+              Tipo de votación <span class="caret"></span>
+            </button>
+            <ul id="dropdown-basic" *dropdownMenu class="dropdown-menu"
+                role="menu" aria-labelledby="button-basic">
+              <li role="menuitem"><a class="dropdown-item" href="#">{{info.rec.tipo}}</a></li>
+            </ul>
+          </div>
+      </label>
     </div>
-    <h2 for="" class="control-label h2 text-center">{{info.rec.institucion}}</h2> -->
-    <jqxGrid
-    #gridVotos
-    [width]="'100%'"
-    [source]="dataAdapter2"
-    [columns]="columns2"
-    [height]="300"
-    [editable]="true"
-    [columnsresize]="true" >
-  </jqxGrid>
-  <button class="btn btn-primary btn-lg" (click)="uploadVotos()"><i class="fa fa-upload"></i> Verificar</button>
+    <h2 for="" class="control-label h2 text-center">{{info.rec.institucion}}</h2>
+    <div class="row">
+      <div class="col-md-3">
+        <a href="/api/actas/image/{{acta.id}}">
+          <img *ngIf="acta.id" src="/api/actas/image/{{acta.id}}" style="width:100%" alt="">
+        </a>
+      </div>
+      <div class="col-md-9">
+        <jqxGrid
+        #gridVotos
+        (cellvaluechanged)="checkCellvalue($event)"
+        [width]="'100%'"
+        [source]="dataAdapter2"
+        [columns]="columns2"
+        [height]="200"
+        [editable]="true"
+        [columnsresize]="true" >
+        </jqxGrid>
+        <div class="row">
+          <div class="col-md-4">
+            <button class="btn btn-link btn-lg" (click)="downloadFoto()"><i class="fa fa-download"></i> foto</button>
+          </div>
+          <div class="col-md-4">
+            <jqxDropDownList #dropStatus (onChange)="checkSelectStatus($event)" class="inStatus" [source]="['Verificado']" [width]="'100%'" [height]="30" [autoOpen]="false">
+            </jqxDropDownList>
+          </div>
+          
+          <div class="col-md-4 text-right">
+            <button class="btn btn-success btn" (click)="preprocessingVotos()" ><i class="fa fa-check"></i> Guardar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-3">
+        <label for="postal-code">Observaciones:</label>
+        <jqxTextArea #myTextArea
+        class="inArea text-input form-control"
+        [width]="'100%'"
+        [height]="90" [placeHolder]="'...'" [disabled]="false">
+        </jqxTextArea>
+      </div>    
+    </div>
+    </jqxValidator>
+    <ngx-spinner [fullScreen]="false"></ngx-spinner>
   </ng-wizard-step>
 </ng-wizard>
-
 
 <div id="notification1"></div>
 <jqxNotification #msgNotification [width]="250" [position]="'top-right'">
   <div>Seleccione una fila</div>
 </jqxNotification>
+
+<ng-snotify></ng-snotify>

@@ -42,6 +42,7 @@
             >
             </jqxDropDownList>
           </div>
+          
           <div class="form-group col-sm-12">
             <label for="postal-code">Recinto:</label>
             <jqxDropDownList
@@ -114,12 +115,12 @@
             <jqxNumberInput
             #inputEmp
             class="inEmp"
-            [spinButtons]="true"
             [min]="1"
             [max]="1024"
             [height]="33.5"
             [width]="'100%'"
             [digits]="4"
+            [disabled]="true"
             [decimalDigits]="0"
             >
           </jqxNumberInput>
@@ -206,116 +207,105 @@
   
 </ng-wizard-step>
   <ng-wizard-step [title]="'Paso 5'" [description]="'Foto'">
-    <div class="hero is-fullheight">
-      <div class="hero-body">
-        <div class="container">
-          <div class="columns is-multiline">
-            <div class="column is-6 is-offset-3">
-              <div class="upload-box">
-                <div class="upload-box-header">
-                  <div class="control-circles">
-                    <span class="circle is-green"></span>
-                    <span class="circle is-yellow"></span>
-                    <span class="circle is-red"></span>
-                  </div>
-                  <div class="header-title">
-                    <h2>ngx-uploader</h2>
-                  </div>
-                  <div class="gh-icon">
-                    <a target="_blank" href="https://github.com/bleenco/ngx-uploader">
-                      <i class="ionicon ion-social-github"></i>
-                    </a>
-                  </div>
-                </div>
-                <div class="upload-box-content">
-                  <div class="drop-container" ngFileDrop [options]="options" (uploadOutput)="onUploadOutput($event)" [uploadInput]="uploadInput">
-                    <p>
-                      Arraste o haga click 
-                      <label class="upload-button">
-                        <input type="file" ngFileSelect [options]="options" (uploadOutput)="onUploadOutput($event)" [uploadInput]="uploadInput" accept="image/*" (change)="fileChangeEvent($event)"> [AQUI]
-                      </label>
-                      para cargar.
-                    </p>
-                  </div>
-                  <div class="upload-item" *ngFor="let f of files; let i = index;">
-                    <div class="upload-item-content">
-                      <div class="filename">
-                        <div class="filename-left">
-                          <i class="ionicon ion-ios-copy"></i>
-                          <span>{{ f.name }}</span>
-                        </div>
-                        <div class="filename-right">
-                          <i class="ionicon ion-close-round" (click)="cancelUpload(f.id)"></i>
+    <div class="row">
+      <div class="form-group col-md-6">
+        <div class="hero is-fullheight">
+          <div class="hero-body">
+            <div class="container">
+              <div class="columns is-multiline">
+                <div class="column is-6 is-offset-3">
+                  <div class="upload-box">
+                    <div class="upload-box-header">
+                      <div class="col-sm-12 header-title">
+                        <div class="row">
+                          
+                          <div class="col-6 col-md-4">
+                            <button type="button" class="btn btn-primary btn-sm" (click)="subir()"><i class="fa fa-upload"></i> </button>
+                            <button type="button" class="btn btn-danger btn-sm" (click)="cancelAllUpload()"><i class="fa fa-trash" style=""></i> </button>
+                          </div>
+                          <div class="col-md-4 header-title text-center hidden-sm">
+                            <h2>Fotos</h2>
+                          </div>
+                          <div class="col-6 col-md-4 text-right">
+                          </div>
                         </div>
                       </div>
-                      <div class="progress-content">
-                        <div class="progress">
-                          <span class="bar" [style.width]="f?.progress?.data?.percentage + '%'" [class.is-done]="f?.progress?.data?.percentage === 100"></span>
-                        </div>
+                    </div>
+                    <div class="upload-box-content">
+                      <div class="drop-container" ngFileDrop [options]="options" (uploadOutput)="onUploadOutput($event)" [uploadInput]="uploadInput">
+                        <p class="text-center">
+                          
+                          <label class="upload-button">
+                            <input type="file" ngFileSelect [options]="options" multiple (uploadOutput)="onUploadOutput($event)" [uploadInput]="uploadInput" accept="image/*" (change)="fileChangeEvent($event)"> 
+                            Arraste o haga click aquí <i class="fa fa-camera"></i> para cargar.
+                          </label>
+                          
+                        </p>
                       </div>
-                      <div class="progress-text-content">
-                        <span class="progress-text" [class.is-done]="f?.progress?.data?.percentage === 100">
-                          <span>{{ f.progress?.data?.percentage }}% </span>
-                          <span *ngIf="f.progress?.data?.percentage !== 100">subiendo...</span>
-                          <span *ngIf="f.progress?.data?.percentage === 100">Listo</span>
-                        </span>
-                        <span class="speed-and-eta-text" *ngIf="f.progress?.data?.percentage !== 0 && f.progress?.data?.percentage !== 100">
-                          <span>{{ f.progress?.data?.speedHuman }} </span>
-                          <span>ETA {{ f.progress?.data?.etaHuman }}</span>
-                        </span>
+                      
+                      
+                      <div class="upload-item" *ngFor="let f of files; let i = index;">
+                        <div class="upload-item-content">
+                          <div class="filename row">
+                            <div class="filename-left col-11 col-md-11">
+                              <i class="ionicon ion-ios-copy"></i>
+                              <span>{{ f.name }}</span>
+                            </div>
+                            <div class="filename-right col-1 col-md-1">
+                              <i class="ionicon ion-close-round fa fa-remove" (click)="cancelUpload(f.id)"></i>
+                            </div>
+                          </div>
+                          <div class="progress-content">
+                            <div class="progress">
+                              <span class="bar" [style.width]="f?.progress?.data?.percentage + '%'" [class.is-done]="f?.progress?.data?.percentage === 100"></span>
+                            </div>
+                          </div>
+                          <div class="progress-text-content">
+                            <span class="progress-text" [class.is-done]="f?.progress?.data?.percentage === 100">
+                              <span>{{ f.progress?.data?.percentage }}% </span>
+                              <span *ngIf="f.progress?.data?.percentage !== 100">subiendo...</span>
+                              <span *ngIf="f.progress?.data?.percentage === 100">Listo</span>
+                            </span>
+                            <span class="speed-and-eta-text" *ngIf="f.progress?.data?.percentage !== 0 && f.progress?.data?.percentage !== 100">
+                              <span>{{ f.progress?.data?.speedHuman }} </span>
+                              <span>ETA {{ f.progress?.data?.etaHuman }}</span>
+                            </span>
+                          </div>
+                        </div>
                       </div>
                     </div>
                   </div>
-                </div>
-                <div class="help-text">
-                  
                 </div>
               </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
 
-
-
-
-
-    <div class="form-group col-sm-12">
-      <label for="postal-code">Foto:</label>
-      <!-- <input type="file"  class="inFoto form-control" accept="image/*" (change)="fileChangeEvent($event)" /> -->
-      <div class="container" style="visibility: hidden;">
-        <image-cropper
-            [imageChangedEvent]="imageChangedEvent"
-            [maintainAspectRatio]="false"
-            [aspectRatio]="5/4"
-            [backgroundColor]="'#F5F5DC'"
-            format="png"
-            [disabled]="true"
-            [imageFile]="imagefile"
-            (imageCropped)="imageCropped($event)"
-            (imageLoaded)="imageLoaded()"
-            (cropperReady)="cropperReady()"
-            (loadImageFailed)="loadImageFailed()"></image-cropper>
+      <div class="form-group col-md-6">
+        <!-- <input type="file"  class="inFoto form-control" accept="image/*" (change)="fileChangeEvent($event)" /> -->
+        <div class="container" style="visibility: hidden;">
+          <image-cropper
+              [imageChangedEvent]="imageChangedEvent"
+              [maintainAspectRatio]="true"
+              [containWithinAspectRatio]="true"
+              [alignImage]="top"
+              [aspectRatio]="4/3"
+              [backgroundColor]="'#191916'"
+              format="png"
+              [disabled]="false"
+              [hideResizeSquares]="true"
+              [imageFile]="imagefile"
+              (imageCropped)="imageCropped($event)"
+              (imageLoaded)="imageLoaded()"
+              (cropperReady)="cropperReady()"
+              (loadImageFailed)="loadImageFailed()"></image-cropper>
+        </div>
       </div>
     </div>
   </ng-wizard-step>
 
 </ng-wizard>
-
 <jqxButton #btnBack [height]='40' [template]="'primary'" (onClick)="showPreviousStep($event)"><i class="fa fa-backward"></i> Atras</jqxButton>
-<!-- <table class="table table-condensed table-bordered">
-  <thead>
-    <th></th>
-    <th>CREEMOS</th>
-    <th>ADN</th>
-    <th>MAS</th>
-    <th>FPV</th>
-    <th>PANBOL</th>
-    <th>LIBRE21 </th>
-    <th>CC</th>
-    <th>Blancos</th>
-    <th>Nulos</th>
-  </thead>
-</table> -->
+
 <ng-snotify></ng-snotify>

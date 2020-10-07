@@ -110,7 +110,35 @@
                 >
                 </jqxNumberInput>
               </div>
-              <div class="form-group col-sm-12">
+              <div class="form-group col-sm-6">
+                <label for="postal-code">Circunscripcion de:</label>
+                <jqxDropDownList
+                  #dropCir
+                  id="inCir"
+                  [filterable]="true"
+                  class="inMun"
+                  (onChange)="prueba()"
+                  [width]="'100%'"
+                  [height]="30"
+                  [autoOpen]="false"
+                >
+                </jqxDropDownList>
+              </div>
+              <div class="form-group col-sm-6">
+                <label for="postal-code">Provincia de:</label>
+                <jqxDropDownList
+                  #dropProv
+                  id="inProv"
+                  [filterable]="true"
+                  class="inProv"
+                  (onChange)="prueba()"
+                  [width]="'100%'"
+                  [height]="30"
+                  [autoOpen]="false"
+                >
+                </jqxDropDownList>
+              </div>
+              <div class="form-group col-sm-6">
                 <label for="postal-code">Municipio de:</label>
                 <jqxDropDownList
                   #dropdownMunicipio
@@ -126,7 +154,7 @@
                 </jqxDropDownList>
               </div>
               <!--/.row-->
-              <div class="form-group col-sm-12">
+              <div class="form-group col-sm-7">
                 <label for="postal-code">Localidad de:</label>
                 <jqxDropDownList
                   #dropdownLocalidad
@@ -142,7 +170,7 @@
                 </jqxDropDownList>
               </div>
               <!--/.row-->
-              <div class="form-group col-sm-8">
+              <div class="form-group col-sm-5">
                 <label for="postal-code">Tipo:</label>
                 <jqxDropDownList
                   #dropdownTipo
@@ -159,12 +187,13 @@
               </div>
               <!--/.row-->
               <div class="form-group col-sm-4">
-                <label for="mesa">N° Mesa:</label>
+                <label for="mesa">N° Mesas:</label>
                 <jqxNumberInput
                   #inputMesa
                   class="inMesa"
                   [spinButtons]="true"
                   [min]="1"
+                  [disabled]="true"
                   [max]="250"
                   [promptChar]="''"
                   [width]="'100%'"
@@ -173,6 +202,30 @@
                 >
                 </jqxNumberInput>
               </div>
+              <div class="form-group col-sm-4">
+                <label for="mesa">Mesas:</label>
+                <button class="btn btn-outline-success btn-sm"><i class="fa fa-plus"></i> </button>
+                <button class="btn btn-outline-danger btn-sm"><i class="fa fa-trash"></i> </button>
+
+                <jqxGrid
+                #gridMesas
+                class="gridMesas"
+                (onRowselect)="Rowselect($event)"
+                [width]="'100%'"
+                [source]="dataAdapter2"
+                [columns]="columns2"
+                [height]="250"
+                [pageable]="true"
+                [editable]="true"
+                [rendergridrows]="rendergridrows"
+                [sortable]="true"
+                [filterable]="true"
+                [pagesizeoptions]="['50', '100']"
+                [columnsresize]="true"
+              >
+              </jqxGrid>
+              </div>
+      
               <div class="form-group col-sm-12">
                 <button on type="submit" class="btn btn-primary" id="guardar">
                   <i class="fa fa-save"></i> Guardar

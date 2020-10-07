@@ -18,6 +18,7 @@ import { ProvinciasModule } from '../provincias/provincias.module';
 import { ProvinciasService } from '../../servicios/provincias.service';
 import { SnotifyModule, SnotifyService, ToastDefaults } from 'ng-snotify';
 import { jqxValidatorModule } from 'jqwidgets-ng/jqxvalidator';
+import { CircunscripcionesService } from '../../servicios/circunscripciones.service';
 
 
 @NgModule({
@@ -32,7 +33,7 @@ import { jqxValidatorModule } from 'jqwidgets-ng/jqxvalidator';
   providers:[
     { provide: 'SnotifyToastConfig', useValue: ToastDefaults},
     SnotifyService,
-    MunicipiosService,ProvinciasService
+    MunicipiosService,ProvinciasService,CircunscripcionesService
   ]
 })
 export class MunicipiosModule { }

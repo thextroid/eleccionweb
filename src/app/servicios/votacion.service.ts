@@ -11,18 +11,30 @@ export class VotacionService {
   all():Observable<any>{
     return this.http.get<any>(api+apivot);
   }
+  get(idvotacion){
+    return this.http.get(api+apivot+"/"+idvotacion);
+  }
   getMesas(idrec):Observable<any>{
     return  this.http.get<any>(api+"/votacion/recinto/"+idrec);
+  }
+  downloadImage(codigo){
+    return this.http.get(api+"/actas/image/"+codigo,{responseType:'blob'});
   }
   uploadVotos(data):Observable<any> {
     return this.http.post<any>(api+apivot, data);
   }
   uploadFile(file,idacta){
     return  this.http.put<any>(api+"/actas/image/"+idacta,file);
-
+    
+  }
+  updateVotos(id,data):Observable<any> {
+    return this.http.put<any>(api+apivot+"/"+id, data);
   }
   uploadActa(data){
     return this.http.post<any>(api+"/actas",data);
+  }
+  updateActa(id,data){
+    return this.http.put<any>(api+"/actas/"+id,data);
   }
 
 

@@ -24,15 +24,15 @@ import { Recinto } from "../../models/recinto";
 })
 export class RecintosComponent implements OnInit {
   @ViewChild("migrid") migrid: jqxGridComponent;
+  @ViewChild("gridMesas") grid2: jqxGridComponent;
   @ViewChild("myModal") myModal: ModalDirective;
   @ViewChild("mdDepUpdate") public mdDepUpdate: ModalDirective;
   @ViewChild("msgNotification") minoti: jqxNotificationComponent;
-  @ViewChild("dropdownLocalidad", { static: false })
-  dropdownLocalidad: jqxDropDownListComponent;
-  @ViewChild("dropdownMunicipio", { static: false })
-  dropdownMunicipio: jqxDropDownListComponent;
-  @ViewChild("dropdownTipo", { static: false })
-  dropdownTipo: jqxDropDownListComponent;
+  @ViewChild("dropdownLocalidad", { static: false })  dropdownLocalidad: jqxDropDownListComponent;
+  @ViewChild("dropdownMunicipio", { static: false })  dropdownMunicipio: jqxDropDownListComponent;
+  @ViewChild("dropCir", { static: false })  dropCir: jqxDropDownListComponent;
+  @ViewChild("dropProv", { static: false })  dropProv: jqxDropDownListComponent;
+  @ViewChild("dropdownTipo", { static: false })   dropdownTipo: jqxDropDownListComponent;
   @ViewChild("btnAdd") btnAdd: jqxButtonComponent;
   @ViewChild("btnEdit") btnEdit: jqxButtonComponent;
   @ViewChild("btnReload") btnReload: jqxButtonComponent;
@@ -125,7 +125,7 @@ export class RecintosComponent implements OnInit {
   ];
   action_text = "";
   modelRecinto: Recinto = new Recinto();
-
+  counterMesa:number=0;
   ngOnInit() {}
 
   ngAfterViewInit(): void {
@@ -187,7 +187,27 @@ export class RecintosComponent implements OnInit {
   };
 
   dataAdapter: any = new jqx.dataAdapter(this.source);
+  dataAdapter2: any = new jqx.dataAdapter({
+    localdata: [],
+    datafields: [
+      {
+        name: "id",
+        map: "id",
+      },
+      {
+        name: "habilitados",
+        map: "habilitados",
+        type: "number"
+      }
+    ],
+    datatype: "array",
+    root: "Rows"
+  });
 
+  columns2: any[] = [
+    { datafield: "id", text: "#",width:40 ,editable:false},
+    { datafield: "habilitados", text: "Habilitados", width: 100 }
+  ];
   columns: any[] = [
     { datafield: "_id", text: "ID", hidden: true },
     { datafield: "id", text: "#", width: 40 },
@@ -208,7 +228,7 @@ export class RecintosComponent implements OnInit {
           id: i + 1,
           institucion: data[i].institucion,
           municipio: "municipio" in data[i] ? data[i].municipio.name : "",
-          localidad: "localidad" in data[i] ? data[i].localidad.name : "",
+          localidad: "localidad" in data[i] ? data[i].localidad : "",
           recinto: data[i],
           tipo: data[i].tipo,
         });
@@ -234,7 +254,10 @@ export class RecintosComponent implements OnInit {
   };
 
   Rowselect(event: any): void {}
-
+  
+  addMesa(){
+    this.grid2.addrow(0,{id:this.counterMesa+1,habilitados:0});
+  }
   open(_action) {
     this.action_text = _action;
     if (_action == "Adicionar") {
@@ -320,7 +343,7 @@ export class RecintosComponent implements OnInit {
             institucion: response.institucion,
             tipo: response.tipo,
             municipio: response.municipio.name,
-            localidad: response.localidad.name,
+            localidad: response.localidad,
             recinto: response,
           });
           this.mensaje("Se adicionó satisfactoriamente", "Recinto", 0);
@@ -341,7 +364,7 @@ export class RecintosComponent implements OnInit {
             institucion: response.institucion,
             tipo: response.tipo,
             municipio: response.municipio.name,
-            localidad: response.localidad.name,
+            localidad: response.localidad,
             recinto: response,
           });
           this.mensaje("Se actualizo satisfactoriamente", "Recinto", 0);
