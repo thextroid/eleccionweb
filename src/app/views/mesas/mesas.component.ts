@@ -61,7 +61,7 @@ export class MesasComponent implements OnInit {
     private $spinner: NgxSpinnerService
   ) {}
   acta:any={codigo:'',emp:0,apertura:'',cierre:'',foto:null,id:''};
-	info:any={cir:'',prov:'',mun:'',rec:'',loc:'',mesa:-1};
+  info:any={cir:'',prov:'',mun:'',rec:'',loc:'',mesa:-1};
   formRec: FormGroup = new FormGroup({
     institucion: new FormControl(""),
   });
@@ -93,7 +93,6 @@ export class MesasComponent implements OnInit {
       (data)=>{
         let list=[];
         console.log(data);
-        const token= localStorage.getItem('token');
         for (let i = 0; i < data.length; i++) {
           list.push({
             _id:data[i],
@@ -104,8 +103,8 @@ export class MesasComponent implements OnInit {
             circunscripcion:data[i].recinto.circunscripcion.name,
             provincia:data[i].recinto.provincia.name,
             municipio:data[i].recinto.municipio.name,
-            delegado:((token==undefined)?"Israel":token),
-            // localidad:data[i].recinto.localidad.name,
+            delegado:"Israel Marino Jerez",
+            localidad:data[i].recinto.localidad,
             tipo:(data[i].recinto.tipo.length==1?data[i].recinto.tipo[0]:data[i].recinto.tipo[0]+"/"+data[i].recinto.tipo[1]),
             habilitados:data[i].acta.empadronados
           });          
@@ -192,8 +191,8 @@ export class MesasComponent implements OnInit {
 
   dataAdapter: any = new jqx.dataAdapter(this.source);
   
-	source2: any = {
-		datafields:  [
+  source2: any = {
+    datafields:  [
       {
         name: "candidatura",
         map: "candidatura",
@@ -245,12 +244,12 @@ export class MesasComponent implements OnInit {
         type: "number",
       },
     ],
-		localdata: [],
-		beforeprocessing: (data: any) => {
-			this.source.totalrecords = data.TotalRows;
-		},
-	};
-	cellrender2 = (row: number, column: any, value: any): any => {
+    localdata: [],
+    beforeprocessing: (data: any) => {
+      this.source.totalrecords = data.TotalRows;
+    },
+  };
+  cellrender2 = (row: number, column: any, value: any): any => {
     let rowdata = this.gridvot.getrowdata(row);
     // console.log(rowdata);
     // console.log(rowdata[column]);
@@ -267,30 +266,24 @@ export class MesasComponent implements OnInit {
     // sumvotos+this.acta.emp;
     console.log(value,sumvotos,this.inemp.val());
     
-    let r="";
-    if(row==0)r ="Presidente";
-    if(row==1)r ="Uninominal";
-    if(row==2)r ="Especial";
     if(sumvotos==0 || value==0 || sumvotos<=this.inemp.val())
-      this.mensaje('La suma de votos de ['+r+"] supera a los Habilitados ",'Sumatoria',3);
-    else{
-      this.mensaje('La suma de votos de ['+r+"] supera a los Habilitados ",'Sumatoria',3);
-    }
-    return value;
+    return "<h6 style='height:100%;text-align:center;vertical-align:middle;'><div class='cell-default'>"+value+"</div></h6>";
+    else
+    return "<h6 style='height:100%;text-align:center;vertical-align:middle;'><div class='cell-red'>"+value+"</div></h6>";
   }
-	columns2: any[] = [
-		{ datafield: "candidatura", text: "", width: "19%" ,editable:false},
-		{ datafield: "CREEMOS", text: "CREEMOS", width: "9%" ,editable:true,cellsrenderer:this.cellrender2},
-		{ datafield: "ADN", text: "ADN", width: "9%" ,editable:true,cellsrenderer:this.cellrender2},
-		{ datafield: "MASIPSP", text: "MAS-IPSP", width: "9%" ,editable:true,cellsrenderer:this.cellrender2},
-		{ datafield: "FPV", text: "FPV", width: "9%" ,editable:true,cellsrenderer:this.cellrender2},
-		{ datafield: "PANBOL", text: "PANBOL", width: "9%" ,editable:true,cellsrenderer:this.cellrender2},
-		{ datafield: "LIBRE21", text: "LIBRE21", width: "9%" ,editable:true,cellsrenderer:this.cellrender2},
-		{ datafield: "CC", text: "CC", width: "9%" ,editable:true,cellsrenderer:this.cellrender2},
-		{ datafield: "votosBlancos", text: "Blancos", width: "9%" ,editable:true,cellsrenderer:this.cellrender2},
-		{ datafield: "votosNullos", text: "Nulos", width: "9%" ,editable:true,cellsrenderer:this.cellrender2},
-	];
-	dataAdapter2: any = new jqx.dataAdapter(this.source2);
+  columns2: any[] = [
+    { datafield: "candidatura", text: "", width: "19%" ,editable:false},
+    { datafield: "CREEMOS", text: "CREEMOS", width: "9%" ,editable:true,cellsrenderer:this.cellrender2},
+    { datafield: "ADN", text: "ADN", width: "9%" ,editable:true,cellsrenderer:this.cellrender2},
+    { datafield: "MASIPSP", text: "MAS-IPSP", width: "9%" ,editable:true,cellsrenderer:this.cellrender2},
+    { datafield: "FPV", text: "FPV", width: "9%" ,editable:true,cellsrenderer:this.cellrender2},
+    { datafield: "PANBOL", text: "PANBOL", width: "9%" ,editable:true,cellsrenderer:this.cellrender2},
+    { datafield: "LIBRE21", text: "LIBRE21", width: "9%" ,editable:true,cellsrenderer:this.cellrender2},
+    { datafield: "CC", text: "CC", width: "9%" ,editable:true,cellsrenderer:this.cellrender2},
+    { datafield: "votosBlancos", text: "Blancos", width: "9%" ,editable:true,cellsrenderer:this.cellrender2},
+    { datafield: "votosNullos", text: "Nulos", width: "9%" ,editable:true,cellsrenderer:this.cellrender2},
+  ];
+  dataAdapter2: any = new jqx.dataAdapter(this.source2);
 
   linkrender = (row: number, column: any, value: any): any => {
     
@@ -392,18 +385,24 @@ export class MesasComponent implements OnInit {
   next(){
     const rowselect = this.migrid.getselectedrowindex();
     if(rowselect!=-1){
-      this.ngWizardService.next();
+
       const rowdata = this.migrid.getrowdata(rowselect);
+      if(rowdata.estado==="Verificado"){
+        this.mensaje('Ya no se puede acceder porque ya esta verificada','Votacion',1);
+        return;
+      }
+      this.ngWizardService.next();
       console.log(rowdata._id);
       this.info.mesa = rowdata._id.numeroMesa;
       this.info.rec = rowdata._id.recinto;
       this.info.mun = rowdata._id.recinto.municipio;
       this.info.loc = rowdata._id.recinto.localidad;
-      this.info.prov = rowdata._id.recinto.provincia;
+      this.info.prov = rowdata._id.recinto.municipio.provincia;
       this.info.cir = rowdata._id.recinto.circunscripcion;
       this.acta.codigo = rowdata._id.acta.codMesa;
       this.acta.id = rowdata._id.acta._id;
       this.inacta.val(this.acta.codigo);
+      this.inobser.val(rowdata._id.acta.observaciones);
       this.acta.emp = rowdata._id.acta.empadronados;
       this.inemp.val(this.acta.emp);
       this.acta.apertura = rowdata._id.acta.horaApertura;
@@ -457,30 +456,30 @@ export class MesasComponent implements OnInit {
     this.dropStatus.getSelectedItem().value;
     let listvotos= this.gridvot.getdisplayrows();
     const data={
-			codMesa: this.inacta.val(),
-			empadronados: this.inemp.val(),
-			observaciones:this.inobser.val(),
-			estado: "Verificado"
+      codMesa: this.inacta.val(),
+      empadronados: this.inemp.val(),
+      observaciones:this.inobser.val(),
+      estado: "Verificado"
     };
     let v=[];
     for (let i = 0; i < listvotos.length; i++) {
       v.push({
         candidatura:listvotos[i].candidatura,
-        'CREEMOS':listvotos[i].CREEMOS,
-        'ADN':listvotos[i].ADN,
-        'MASIPSP':listvotos[i].MASIPSP,
-        'FPV':listvotos[i].FPV,
-        'PANBOL':listvotos[i].PANBOL,
-        'LIBRE21':listvotos[i].LIBRE21,
-        'CC':listvotos[i].CC,
-        'votosValidos':listvotos[i].CREEMOS+listvotos[i].ADN+listvotos[i].MASIPSP+listvotos[i].FPV+listvotos[i].PANBOL+listvotos[i].LIBRE21+listvotos[i].CC,
-        'votosBlancos':listvotos[i].votosBlancos,
-        'votosNullos':listvotos[i].votosNullos});
+      'CREEMOS':listvotos[i].CREEMOS,
+      'ADN':listvotos[i].ADN,
+      'MASIPSP':listvotos[i].MASIPSP,
+      'FPV':listvotos[i].FPV,
+      'PANBOL':listvotos[i].PANBOL,
+      'LIBRE21':listvotos[i].LIBRE21,
+      'CC':listvotos[i].CC,
+      'votosValidos':listvotos[i].CREEMOS+listvotos[i].ADN+listvotos[i].MASIPSP+listvotos[i].FPV+listvotos[i].PANBOL+listvotos[i].LIBRE21+listvotos[i].CC,
+      'votosBlancos':listvotos[i].votosBlancos,
+      'votosNullos':listvotos[i].votosNullos});
     }
     const formVotos = {
       codMesa:this.inacta.val(),
       recinto:this.info.rec._id,
-      // circunscripcion:this.info.cir._id,
+      circunscripcion:this.info.cir._id,
       numeroMesa:this.info.mesa,
       estado:"Verificado",
       candidaturas:v
@@ -635,21 +634,21 @@ mensaje(content: string, title: string, tipo) {
 }
 
 rules=[
-  { 	input: '.inCodmesa', message: 'Codigo mesa requerido!', action: 'keyup, blur', rule: 'required' },
-  { 	input: '.inCodmesa', message: 'Mínimo de 4 caracteres', action: 'keyup, blur', rule: 'minLength=4' },
-  { 	input: '.inCodmesa', message: 'Máximo de 255 caracteres', action: 'keyup, blur', rule: 'maxLength=255' },
-  { 	input: '.inEmp', message: 'debe estar entre 1 y 1024', action: 'keyup, blur',
+  {   input: '.inCodmesa', message: 'Codigo mesa requerido!', action: 'keyup, blur', rule: 'required' },
+  {   input: '.inCodmesa', message: 'Mínimo de 4 caracteres', action: 'keyup, blur', rule: 'minLength=4' },
+  {   input: '.inCodmesa', message: 'Máximo de 255 caracteres', action: 'keyup, blur', rule: 'maxLength=255' },
+  {   input: '.inEmp', message: 'debe estar entre 1 y 1024', action: 'keyup, blur',
   rule: (input: any, commit: any): boolean => {
     const lat = input.val();
     return lat>=1 && lat<=1024;
   }
 },
-  { 	input: '.inStatus', message: 'Seleccione el estado', action: 'keyup, blur',
+  {   input: '.inStatus', message: 'Seleccione el estado', action: 'keyup, blur',
   rule: (input: any, commit: any): boolean => {
     return this.dropStatus.getSelectedIndex()!=-1;
   }
 }
-// { 	input: '.inFoto', message: 'La imagen debe ser menor a 6Mb.', action: 'keyup, blur', 
+// {   input: '.inFoto', message: 'La imagen debe ser menor a 6Mb.', action: 'keyup, blur', 
 //     rule:  (input: any, commit: any): boolean => {
 //       // const maxsize= 6291456;//6MB
 //       // if(this.imageChangedEvent=='')return false;

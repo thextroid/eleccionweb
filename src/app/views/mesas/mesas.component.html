@@ -1,7 +1,7 @@
 <ng-wizard [config]="config" >
   <ng-wizard-step [title]="'Paso 1'" [description]="'Recintos'">
     <div class="row">
-      <div class="col-sm-2">
+      <!-- <div class="col-sm-2">
         <div class="form-group">
           <label for="name">Circunscripcion:</label>
           <jqxDropDownList #dropCir [filterable]="true" (onChange)="cirCambiando($event)" [width]="'100%'" [height]="30" [selectedIndex]="1" [autoOpen]="false">
@@ -22,7 +22,7 @@
           >
           </jqxDropDownList>
         </div>
-      </div>
+      </div> -->
       <div class="col-sm-3">
         <div class="form-group">
           <jqxButton  [height]='40' [template]="'primary'" (onClick)="next($event)"><i class="fa fa-forward"></i>Votación</jqxButton>
@@ -51,6 +51,7 @@
           [columns]="columns"
           [height]="500"
           [pageable]="true"
+          [showfilterrow]="true"
           [rendergridrows]="rendergridrows"
           [sortable]="true"
           [showtoolbar]="true"
@@ -88,7 +89,7 @@
     </div>
     <div class="form-group row">
       <label class="control-label col-sm-3"><span class="h6">Circunscripcion:</span> <span>{{info.cir.name}}</span></label>
-      <label class="control-label col-sm-3"><span class="h6">Localidad:</span> <span>{{info.loc.name}}</span></label>
+      <label class="control-label col-sm-3"><span class="h6">Localidad:</span> <span>{{info.loc}}</span></label>
       <label class="control-label col-sm-3"><span class="h6">Municipio:</span> <span>{{info.mun.name}}</span></label>
       <label class="control-label col-sm-3"><span class="h5"></span> 
           <div class="btn-group" dropdown>
