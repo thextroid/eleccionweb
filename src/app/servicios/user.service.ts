@@ -1,33 +1,24 @@
-import { Injectable } from '@angular/core';
-import { HttpClient} from '@angular/common/http'
-import { User } from '../models/user';
-import { Observable } from 'rxjs';
+import { Injectable } from "@angular/core";
+import { HttpClient } from "@angular/common/http";
+import { User } from "../models/user";
+import { Observable } from "rxjs";
 
-const API = '127.0.0.1:8080/api/users'
+const API = "http://192.81.217.7/api/users/";
 @Injectable({
-  providedIn: 'root'
+  providedIn: "root",
 })
 export class UserService {
-
-  constructor(private http: HttpClient) { 
+  constructor(private http: HttpClient) {}
+  getAll(): Observable<User[]> {
+    return this.http.get<User[]>(`${API}`);
   }
-  getAll(orderCol:String,ordername:String,status:Number, records:Number, page:Number, search:String,){
-    
-    return this.http.get('${API}?ordercol='+orderCol+'&orderName='+ordername+'&status='+status+'&records='+records+'&page='+page+'&search='+search);
+  getUser(id): Observable<User> {
+    return this.http.get<User>(`${API}${id}`);
   }
-  getUser(_id):Observable<User>{
-    return this.http.get<User>('${API}/'+_id);
+  save(user): Observable<User> {
+    return this.http.post<User>(`${API}`, user);
   }
-  save(user):Observable<User>{
-    return this.http.post<User>('${API}',user);
-  }
-  edit(user):Observable<User>{
-    return this.http.put<User>('${API}/'+user.ci,user);
-  }
-  delete(ci):Observable<User>{
-    return this.http.delete<User>('${API}/'+ci);
-  }
-  security(ci,login,clave){
-    return this.http.post('${API}/security',{'ci':ci,'login':login,'clave':clave});
+  update(id, user: User): Observable<User> {
+    return this.http.put<User>(`${API}` + id, user);
   }
 }

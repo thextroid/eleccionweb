@@ -6,13 +6,14 @@ import { DefaultLayoutComponent } from "./containers";
 
 import { P404Component } from "./views/error/404.component";
 import { P500Component } from "./views/error/500.component";
-import { LoginComponent } from "./views/login/login.component";
+import { LoginComponent } from "./auth/login/login.component";
 import { RegisterComponent } from "./views/register/register.component";
+import { AuthGuard } from "./auth/auth.guard";
 
 export const routes: Routes = [
   {
     path: "",
-    redirectTo: "departamentos",
+    redirectTo: "login",
     pathMatch: "full",
   },
   {
@@ -46,6 +47,7 @@ export const routes: Routes = [
   {
     path: "",
     component: DefaultLayoutComponent,
+    canActivate: [AuthGuard],
     data: {
       title: "Inicio",
     },
@@ -105,12 +107,16 @@ export const routes: Routes = [
       {
         path: "votos",
         loadChildren: () =>
-          import("./views/cargarvotos/cargarvotos.module").then(     (m) => m.CargarvotosModule),
+          import("./views/cargarvotos/cargarvotos.module").then(
+            (m) => m.CargarvotosModule
+          ),
       },
       {
         path: "reportes",
         loadChildren: () =>
-          import("./views/resportes/resportes.module").then( (m) => m.ResportesModule ),
+          import("./views/resportes/resportes.module").then(
+            (m) => m.ResportesModule
+          ),
       },
       {
         path: "base",
@@ -123,12 +129,16 @@ export const routes: Routes = [
           import("./views/buttons/buttons.module").then((m) => m.ButtonsModule),
       },
       // {
-      // 	path: 'charts',
-      // 	loadChildren: () => import('./views/chartjs/chartjs.module').then(m => m.ChartJSModule)
+      //   path: "charts",
+      //   loadChildren: () =>
+      //     import("./views/chartjs/chartjs.module").then((m) => m.ChartJSModule),
       // },
       // {
-      // 	path: 'dashboard',
-      // 	loadChildren: () => import('./views/dashboard/dashboard.module').then(m => m.DashboardModule)
+      //   path: "dashboard",
+      //   loadChildren: () =>
+      //     import("./views/dashboard/dashboard.module").then(
+      //       (m) => m.DashboardModule
+      //     ),
       // },
       {
         path: "icons",
