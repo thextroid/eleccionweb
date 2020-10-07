@@ -445,16 +445,23 @@ export class CargarvotosComponent implements OnInit {
 			PANBOL: tab[0].PANBOL,
 			ADN: tab[0].ADN,
 			CREEMOS: tab[0].CREEMOS,
+			votosValidos:tab[0].MAS+tab[0].CC+tab[0].LIBRE21+tab[0].FPV+tab[0].PANBOL+tab[0].ADN+tab[0].CREEMOS,
 			votosBlancos: tab[0].blancos,
 			votosNullos: tab[0].nulos,
 		});
 		if (this.modelRec.tipo.length == 1) {
 			const _cand="Diputados "+((this.modelRec.tipo[0] === "Especial")?"Especiales":"Uninominales");
-			votos.push({candidatura: _cand,MASIPSP: tab[1].MAS,CC: tab[1].CC,LIBRE21: tab[1].LIBRE21,FPV: tab[1].FPV,PANBOL: tab[1].PANBOL,ADN: tab[1].ADN,CREEMOS: tab[1].CREEMOS,votosBlancos: tab[1].blancos,votosNullos: tab[1].nulos});
+			votos.push({candidatura: _cand,MASIPSP: tab[1].MAS,CC: tab[1].CC,LIBRE21: tab[1].LIBRE21,FPV: tab[1].FPV,PANBOL: tab[1].PANBOL,ADN: tab[1].ADN,CREEMOS: tab[1].CREEMOS,
+				votosValidos:tab[1].MAS+tab[1].CC+tab[1].LIBRE21+tab[1].FPV+tab[1].PANBOL+tab[1].ADN+tab[1].CREEMOS,
+				votosBlancos: tab[1].blancos,votosNullos: tab[1].nulos});
 		}
 		else{
-			votos.push({candidatura: "Diputados Uninominales",MASIPSP: tab[1].MAS,CC: tab[1].CC,LIBRE21: tab[1].LIBRE21,FPV: tab[1].FPV,PANBOL: tab[1].PANBOL,ADN: tab[1].ADN,CREEMOS: tab[1].CREEMOS,votosBlancos: tab[1].blancos,votosNullos: tab[1].nulos});
-			votos.push({candidatura: "Diputados Especiales",MASIPSP: tab[2].MAS,CC: tab[2].CC,LIBRE21: tab[2].LIBRE21,FPV: tab[2].FPV,PANBOL: tab[2].PANBOL,ADN: tab[2].ADN,CREEMOS: tab[2].CREEMOS,votosBlancos: tab[2].blancos,votosNullos: tab[2].nulos});
+			votos.push({candidatura: "Diputados Uninominales",MASIPSP: tab[1].MAS,CC: tab[1].CC,LIBRE21: tab[1].LIBRE21,FPV: tab[1].FPV,PANBOL: tab[1].PANBOL,ADN: tab[1].ADN,CREEMOS: tab[1].CREEMOS,
+			votosValidos:tab[1].MAS+tab[1].CC+tab[1].LIBRE21+tab[1].FPV+tab[1].PANBOL+tab[1].ADN+tab[1].CREEMOS,
+			votosBlancos: tab[1].blancos,votosNullos: tab[1].nulos});
+			votos.push({candidatura: "Diputados Especiales",MASIPSP: tab[2].MAS,CC: tab[2].CC,LIBRE21: tab[2].LIBRE21,FPV: tab[2].FPV,PANBOL: tab[2].PANBOL,ADN: tab[2].ADN,CREEMOS: tab[2].CREEMOS,
+			votosValidos:tab[2].MAS+tab[2].CC+tab[2].LIBRE21+tab[2].FPV+tab[2].PANBOL+tab[2].ADN+tab[2].CREEMOS,
+			votosBlancos: tab[2].blancos,votosNullos: tab[2].nulos});
 		}
 		// file:this.imageChangedEvent.target.files[0];
 		const formVotos = {
@@ -463,7 +470,7 @@ export class CargarvotosComponent implements OnInit {
 			numeroMesa: "Mesa "+this.Mesa,
 			recinto: rec,
 			estado: "Enviado",
-			candidatura:votos
+			candidaturas:votos
 		};
 		// form.append('file',data.file);
 		// form.append('arrayVotacion',JSON.stringify(data.arrayVotacion));
