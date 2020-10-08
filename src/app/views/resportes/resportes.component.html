@@ -38,6 +38,33 @@
                 >
                 </jqxDropDownList>
               </div>
+              <div class="form-group col-sm-4">
+                <label for="postal-code">Circunscripcion:</label>
+                <jqxDropDownList
+                  #dropCir
+                  [filterable]="true"
+                  class="inCir"
+                  (onChange)="change($event)"
+                  [width]="'100%'"
+                  [height]="30"
+                  [autoOpen]="false"
+                >
+                </jqxDropDownList>
+              </div>
+              <div class="form-group col-sm-12">
+                <label for="postal-code">Recintos:</label>
+                <jqxDropDownList
+                  #dropRec
+                  [filterable]="true"
+                  class="inRec"
+                  [searchMode]="'contains'"
+                  (onChange)="change($event)"
+                  [width]="'100%'"
+                  [height]="30"
+                  [autoOpen]="false"
+                >
+                </jqxDropDownList>
+              </div>
             </div>
           </form>
         </jqxValidator>
@@ -52,6 +79,11 @@
             height="450"
             width="500"
           ></canvas>
+        </div>
+        <div>
+          <pre>
+            {{dataJson | json}}
+          </pre>
         </div>
       </div>
       <!--/.col-->

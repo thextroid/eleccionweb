@@ -645,14 +645,7 @@ resetActa(){
 			const lat = input.val();
 			return lat>=1 && lat<=1024;
 		}
-	},
-	{ 	input: '.inFoto', message: 'La imagen debe ser menor a 6Mb.', action: 'keyup, blur', 
-			rule:  (input: any, commit: any): boolean => {
-				const maxsize= 6291456;//6MB
-				if(this.imageChangedEvent=='')return false;
-				return this.imageChangedEvent.target.files[0].size<=maxsize;
-			}
-		}
+	}
 	];
 
 	mensaje(content: string, title: string, tipo) {

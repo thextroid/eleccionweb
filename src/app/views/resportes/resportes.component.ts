@@ -46,17 +46,21 @@ export class ResportesComponent implements OnInit {
       ],
     },
   ];
-
+  public dataJson:any;
   @ViewChild("dropProv", { static: false }) dropProv: jqxDropDownListComponent;
   @ViewChild("dropMun", { static: false }) dropMun: jqxDropDownListComponent;
+  @ViewChild("dropCir", { static: false }) dropCir: jqxDropDownListComponent;
+  @ViewChild("dropRec", { static: false }) dropRec: jqxDropDownListComponent;
   constructor(
     protected $prov: ProvinciasService,
     protected $mun: MunicipiosService,
+    protected $cir: CircunscripcionesService,
+    protected $rec: RecintosService,
     private reportesService: ReportesService
   ) {}
 
   ngOnInit(): void {
-    this.loadDataTest();
+    // this.loadDataTest();
   }
   ngAfterViewInit(): void {
     this.$prov.all().subscribe((response) => {
@@ -79,15 +83,27 @@ export class ResportesComponent implements OnInit {
       }
       this.dropMun.source(list);
     });
+    this.$rec.all().subscribe((response) => {
+      let list = [];
+      for (let i = 0; i < response.length; i++) {
+        list.push({
+          value: response[i],
+          label: response[i].institucion+"/"+response[i].localidad,
+        });
+      }
+      this.dropRec.source(list);
+    });
   }
   change(event) {
-    console.log(event);
+    this.loadDataTest();
   }
 
   loadDataTest() {
+    console.log(this.dropRec.getSelectedItem().value._id);
     this.reportesService
-      .getRecintos("5f7d9f5463ad192f6f9ccfa8")
+      .getRecintos(this.dropRec.getSelectedItem().value._id)
       .subscribe((data) => {
+        this.dataJson = data;
         this.pieChartData = this.pieChartLabels.map((label) => {
           return Math.round((data[0][label] + Number.EPSILON) * 100) / 100;
         });

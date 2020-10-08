@@ -77,18 +77,18 @@ export class MesasComponent implements OnInit {
   }
 
   refresh() {
-    this.$cir.all().subscribe(
-      (data) => {
-        let list: any[] = [];
-        for (let i = 0; i < data.length; i++) {
-          list.push({ value: data[i]._id, label: data[i].name });
-        }
-        this.dropCir.source(list);
-      },
-      (error) => {
-        console.log(error);
-      }
-    );
+    // this.$cir.all().subscribe(
+    //   (data) => {
+    //     let list: any[] = [];
+    //     for (let i = 0; i < data.length; i++) {
+    //       list.push({ value: data[i]._id, label: data[i].name });
+    //     }
+    //     this.dropCir.source(list);
+    //   },
+    //   (error) => {
+    //     console.log(error);
+    //   }
+    // );
     this.$vot.all().subscribe(
       (data)=>{
         let list=[];
