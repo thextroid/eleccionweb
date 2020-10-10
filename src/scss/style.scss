@@ -17,3 +17,19 @@
 @import "~ng-wizard/themes/ng_wizard_theme_circles.min.css";
 @import "~ng-wizard/themes/ng_wizard_theme_dots.min.css";
 @import "file.css";
+
+@import "../assets/highcharts.css";
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: inherit;
+}
+
+html {
+  box-sizing: border-box;
+}
+body {
+  height: 100vh;
+}

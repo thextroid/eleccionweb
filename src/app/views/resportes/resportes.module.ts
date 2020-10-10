@@ -18,9 +18,12 @@ import { RecintosService } from "../../servicios/recintos.service";
 import { CircunscripcionesService } from "../../servicios/circunscripciones.service";
 import { HttpClient, HttpClientModule } from "@angular/common/http";
 import { ChartsModule } from "ng2-charts";
+import { HighchartsChartModule } from "highcharts-angular";
+import { PieChartComponent } from './pie-chart/pie-chart.component';
+import { LineChartComponent } from './line-chart/line-chart.component';
 
 @NgModule({
-  declarations: [ResportesComponent],
+  declarations: [ResportesComponent, PieChartComponent, LineChartComponent],
   imports: [
     CommonModule,
     HttpClientModule,
@@ -35,6 +38,7 @@ import { ChartsModule } from "ng2-charts";
     jqxSwitchButtonModule,
     jqxValidatorModule,
     ChartsModule,
+    HighchartsChartModule,
   ],
   providers: [
     MunicipiosService,

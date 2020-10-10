@@ -16,6 +16,7 @@ import { CircunscripcionesService } from "../../servicios/circunscripciones.serv
 import { jqxValidatorComponent } from "jqwidgets-ng/jqxvalidator";
 import { jqxDropDownListComponent } from "jqwidgets-ng/jqxdropdownlist";
 import { ReportesService } from "../../servicios/reportes.service";
+
 @Component({
   selector: "app-resportes",
   templateUrl: "./resportes.component.html",
@@ -31,22 +32,27 @@ export class ResportesComponent implements OnInit {
     "LIBRE21",
     "CC",
   ];
-  public pieChartData = [];
-  public pieChartType = "pie";
-  public donutColors = [
-    {
-      backgroundColor: [
-        "#C3DFE0",
-        "#904E55AA",
-        "#1C5D99AA",
-        "rgba(129, 78, 40, 1)",
-        "#C42021AA",
-        "#06A77DAA",
-        "#FE5F55AA",
-      ],
-    },
-  ];
-  public dataJson:any;
+  // public pieChartData = [];
+  // public pieChartType = "pie";
+  // public donutColors = [
+  //   {
+  //     backgroundColor: [
+  //       "#C3DFE0",
+  //       "#904E55AA",
+  //       "#1C5D99AA",
+  //       "rgba(129, 78, 40, 1)",
+  //       "#C42021AA",
+  //       "#06A77DAA",
+  //       "#FE5F55AA",
+  //     ],
+  //   },
+  // ];
+  public dataJson: any;
+  public piedata: any[];
+  public linedata: any = {
+    mesas: null,
+    partidos: [],
+  };
   @ViewChild("dropProv", { static: false }) dropProv: jqxDropDownListComponent;
   @ViewChild("dropMun", { static: false }) dropMun: jqxDropDownListComponent;
   @ViewChild("dropCir", { static: false }) dropCir: jqxDropDownListComponent;
@@ -59,53 +65,75 @@ export class ResportesComponent implements OnInit {
     private reportesService: ReportesService
   ) {}
 
-  ngOnInit(): void {
-    // this.loadDataTest();
-  }
+  ngOnInit(): void {}
+
   ngAfterViewInit(): void {
-    this.$prov.all().subscribe((response) => {
-      let list = [];
-      for (let i = 0; i < response.length; i++) {
-        list.push({
-          value: response[i],
-          label: response[i].name,
-        });
-      }
-      this.dropProv.source(list);
-    });
-    this.$mun.all().subscribe((response) => {
-      let list = [];
-      for (let i = 0; i < response.length; i++) {
-        list.push({
-          value: response[i],
-          label: response[i].name,
-        });
-      }
-      this.dropMun.source(list);
-    });
-    this.$rec.all().subscribe((response) => {
-      let list = [];
-      for (let i = 0; i < response.length; i++) {
-        list.push({
-          value: response[i],
-          label: response[i].institucion+"/"+response[i].localidad,
-        });
-      }
-      this.dropRec.source(list);
-    });
+    // this.$prov.all().subscribe((response) => {
+    //   let list = [];
+    //   for (let i = 0; i < response.length; i++) {
+    //     list.push({
+    //       value: response[i],
+    //       label: response[i].name,
+    //     });
+    //   }
+    //   this.dropProv.source(list);
+    // });
+    // this.$mun.all().subscribe((response) => {
+    //   let list = [];
+    //   for (let i = 0; i < response.length; i++) {
+    //     list.push({
+    //       value: response[i],
+    //       label: response[i].name,
+    //     });
+    //   }
+    //   this.dropMun.source(list);
+    // });
+    // this.$rec.all().subscribe((response) => {
+    //   let list = [];
+    //   for (let i = 0; i < response.length; i++) {
+    //     list.push({
+    //       value: response[i],
+    //       label: response[i].institucion + "/" + response[i].localidad,
+    //     });
+    //   }
+    //   this.dropRec.source(list);
+    // });
+    this.loadDataTest();
+    this.loadDataLineChart();
   }
   change(event) {
-    this.loadDataTest();
+    // this.loadDataTest();
+  }
+  loadDataTest() {
+    // console.log(this.dropRec.getSelectedItem().value._id);
+    this.reportesService
+      .getRecintos("5f7d05a1449b8cdbde0d92bd")
+      .subscribe((response) => {
+        this.dataJson = response;
+
+        this.piedata = this.pieChartLabels.map((label) => {
+          return {
+            name: label,
+            y: this.roundEpsion(response[0][label]),
+          };
+        });
+      });
+  }
+  roundEpsion(number) {
+    return Math.round((number + Number.EPSILON) * 100) / 100;
   }
 
-  loadDataTest() {
-    console.log(this.dropRec.getSelectedItem().value._id);
+  loadDataLineChart() {
     this.reportesService
-      .getRecintos(this.dropRec.getSelectedItem().value._id)
-      .subscribe((data) => {
-        this.dataJson = data;
-        this.pieChartData = this.pieChartLabels.map((label) => {
-          return Math.round((data[0][label] + Number.EPSILON) * 100) / 100;
+      .getWiner("5f7d05a1449b8cdbde0d92bd")
+      .subscribe((response) => {
+        this.linedata.mesas = response[0].listMesas;
+        this.linedata.partidos = this.pieChartLabels.map((label) => {
+          return {
+            name: label,
+            data: response[0][label],
+            type: undefined,
+          };
         });
       });
   }
