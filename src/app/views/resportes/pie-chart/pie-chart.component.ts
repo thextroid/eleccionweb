@@ -1,50 +1,63 @@
 import {
+  AfterContentInit,
+  AfterViewInit,
   Component,
+  ElementRef,
   Input,
   OnChanges,
   OnInit,
   SimpleChanges,
 } from "@angular/core";
-import * as Hightcharts from "highcharts";
+import * as Highcharts from "highcharts";
 import { Options } from "highcharts";
+import { pieChartOptions } from "../templateChartOptions/pieChartOptions";
 @Component({
   selector: "app-pie-chart",
   templateUrl: "./pie-chart.component.html",
   styleUrls: ["./pie-chart.component.css"],
 })
-export class PieChartComponent implements OnChanges {
+export class PieChartComponent implements AfterContentInit {
   @Input() piedata: any[];
-  Highcharts: typeof Hightcharts = Hightcharts;
+  @Input() headerChart: any;
+  Highcharts: typeof Highcharts = Highcharts;
   chartConstructor = "chart";
-  chartOptions: Options;
+  chartOptions: Highcharts.Options;
+  updateButton: any;
+  updateFlag = true;
+  chart: any;
+  chartCallback = this.callBackChart.bind(this);
   constructor() {}
-  ngOnChanges(changes: SimpleChanges): void {
+  ngAfterContentInit() {
+    this.loadOptions();
+  }
+  loadOptions() {
+    // console.log(this.piedata);
     this.chartOptions = {
-      chart: {
-        plotBackgroundColor: null,
-        plotBorderWidth: null,
-        plotShadow: false,
-        type: "pie",
-        styledMode: false,
-      },
-      title: {
-        text: "Presidencial",
-      },
-      tooltip: {
-        pointFormat: "{point.name}: <b>{point.percentage:.1f}%</b>",
-      },
-      plotOptions: {
-        pie: {
-          allowPointSelect: true,
-          cursor: "pointer",
-          dataLabels: {
-            enabled: true,
-            format: "<b>{point.name}</b>: {point.percentage:.1f} %",
-          },
-          showInLegend: true,
+      ...pieChartOptions,
+      series: [
+        {
+          type: "pie",
+          data: this.piedata,
         },
-      },
-      series: [{ type: "pie", data: this.piedata }],
+      ],
     };
+  }
+  updateChart() {
+    console.log("button... ");
+  }
+  callBackChart(chart) {
+    if (this.headerChart) {
+      const { porcentajeActaMesa, election } = this.headerChart;
+      chart.setTitle({ text: `${election} al ${porcentajeActaMesa}%` });
+    }
+    chart.renderer
+      .button("Actualizar", 10, 10, () => {
+        // if (chart.series[0].type == "pie") {
+        //   chart.update({
+        //   });
+        //   // chart.series[0].remove();
+        // }
+      })
+      .add();
   }
 }

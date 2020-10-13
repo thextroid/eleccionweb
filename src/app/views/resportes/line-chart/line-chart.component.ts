@@ -17,9 +17,11 @@ export class LineChartComponent implements OnChanges {
   Highcharts: typeof Hightcharts = Hightcharts;
   chartConstructor = "chart";
   chartOptions: Options;
+
   constructor() {}
+
   ngOnChanges(changes: SimpleChanges): void {
-    console.log(this.linedata.mesas);
+    // console.log(this.linedata.mesas);
     this.chartOptions = {
       chart: {
         type: "line",

@@ -19,11 +19,17 @@ import { CircunscripcionesService } from "../../servicios/circunscripciones.serv
 import { HttpClient, HttpClientModule } from "@angular/common/http";
 import { ChartsModule } from "ng2-charts";
 import { HighchartsChartModule } from "highcharts-angular";
-import { PieChartComponent } from './pie-chart/pie-chart.component';
-import { LineChartComponent } from './line-chart/line-chart.component';
+import { PieChartComponent } from "./pie-chart/pie-chart.component";
+import { LineChartComponent } from "./line-chart/line-chart.component";
+import { BarChartComponent } from "./bar-chart/bar-chart.component";
 
 @NgModule({
-  declarations: [ResportesComponent, PieChartComponent, LineChartComponent],
+  declarations: [
+    ResportesComponent,
+    PieChartComponent,
+    LineChartComponent,
+    BarChartComponent,
+  ],
   imports: [
     CommonModule,
     HttpClientModule,

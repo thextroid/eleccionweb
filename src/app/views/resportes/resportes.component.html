@@ -1,8 +1,43 @@
-<app-pie-chart [piedata]="piedata"> </app-pie-chart>
+<div class="container-chart pie">
+  <app-pie-chart
+    class="container-colum"
+    *ngIf="headerChart && piedata"
+    [headerChart]="headerChart"
+    [piedata]="piedata"
+  >
+  </app-pie-chart>
+  <app-bar-chart
+    *ngIf="bardata"
+    class="container-colum bar"
+    [bardata]="bardata"
+  >
+  </app-bar-chart>
+
+  <app-pie-chart
+    class="container-colum-3 pie-list"
+    *ngIf="headerChart && pieProvinciaData"
+    [headerChart]="headerChart"
+    [piedata]="pieProvinciaData"
+  >
+  </app-pie-chart>
+
+  <app-pie-chart
+    class="container-colum-3 pie-list"
+    *ngIf="headerChart && pieMunicipioData"
+    [headerChart]="headerChart"
+    [piedata]="pieMunicipioData"
+  ></app-pie-chart>
+  <app-pie-chart
+    class="container-colum-3 pie-list"
+    *ngIf="headerChart && pieRecintoData"
+    [headerChart]="headerChart"
+    [piedata]="pieRecintoData"
+  >
+  </app-pie-chart>
+</div>
 <div *ngIf="linedata.mesas">
   <app-line-chart [linedata]="linedata"></app-line-chart>
 </div>
-
 <div>
   <pre>
     {{ dataJson | json }}

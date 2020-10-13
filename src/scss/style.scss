@@ -22,14 +22,74 @@
 *,
 *::before,
 *::after {
-  margin: 0;
   padding: 0;
-  box-sizing: inherit;
+  margin: 0;
 }
 
 html {
   box-sizing: border-box;
 }
-body {
-  height: 100vh;
+
+.container-chart {
+  margin: 0;
+  padding: 0;
+  display: -moz-box-flex;
+  display: -webkit-flex;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  flex-wrap: wrap;
+  box-sizing: border-box;
+}
+
+.container-chart > .container-colum {
+  width: 50%;
+  object-fit: cover;
+}
+.container-chart > .container-colum-3 {
+  width: 33.33%;
+  object-fit: cover;
+}
+.container-colum .pie {
+  flex-grow: 1;
+  flex-shrink: 1;
+  flex-basis: 400px;
+}
+.container-colum .bar {
+  flex-grow: 4;
+  flex-shrink: 1;
+  flex-basis: 420px;
+}
+.container-colum-3 .pie-list {
+  // flex: 1 1 80px,
+  flex-grow: 1;
+  flex-shrink: 1;
+  flex-basis: 360px;
+}
+.column-chart {
+  display: inherit;
+  padding: 5px 10px;
+  place-content: center;
+  margin-top: 10px 2px;
+  border-radius: 10px;
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+  box-sizing: content-box;
+}
+
+@media all and (max-width: 800px) {
+  .container-chart > .container-colum {
+    width: 100%;
+  }
+  .container-chart > .container-colum-3 {
+    width: 100%;
+  }
+  .column-chart {
+    display: inherit;
+    padding: 5px 10px;
+    place-content: center;
+    margin-top: 10px 2px;
+    border-radius: 10px;
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+    box-sizing: content-box;
+  }
 }

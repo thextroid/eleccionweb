@@ -16,6 +16,12 @@ import { CircunscripcionesService } from "../../servicios/circunscripciones.serv
 import { jqxValidatorComponent } from "jqwidgets-ng/jqxvalidator";
 import { jqxDropDownListComponent } from "jqwidgets-ng/jqxdropdownlist";
 import { ReportesService } from "../../servicios/reportes.service";
+import { pieChartOptions } from "./templateChartOptions/pieChartOptions";
+import { piePresidencial } from "./templateChartOptions/piePresidencial";
+import { pieDataProvincia } from "./templateChartOptions/pieDataProvincia";
+import { pieDataMunicipio } from "./templateChartOptions/pieDataMunicipio";
+import { pieDataRecinto } from "./templateChartOptions/pieDataRecinto";
+import { lineDataWiner } from "./templateChartOptions/lineDataWiner";
 
 @Component({
   selector: "app-resportes",
@@ -49,6 +55,15 @@ export class ResportesComponent implements OnInit {
   // ];
   public dataJson: any;
   public piedata: any[];
+  public bardata: any[];
+  public pieProvinciaData: any[];
+  public pieMunicipioData: any[];
+  public pieRecintoData: any[];
+  public methodChartPresidencia = piePresidencial.presidencialData.bind(this);
+  public headerChart: {
+    porcentajeActaMesa: Number;
+    election: String;
+  };
   public linedata: any = {
     mesas: null,
     partidos: [],
@@ -98,43 +113,62 @@ export class ResportesComponent implements OnInit {
     //   }
     //   this.dropRec.source(list);
     // });
-    this.loadDataTest();
+    this.loadDataPresidencialGeneral();
     this.loadDataLineChart();
+    this.loadDataPresidencialProvincia();
+    this.loadDataPresidencialMunicipio();
+    this.loadDataPresidencialRecinto();
   }
   change(event) {
     // this.loadDataTest();
   }
-  loadDataTest() {
-    // console.log(this.dropRec.getSelectedItem().value._id);
+  loadDataPresidencialGeneral() {
     this.reportesService
       .getRecintos("5f7d05a1449b8cdbde0d92bd")
-      .subscribe((response) => {
-        this.dataJson = response;
+      .subscribe(this.loadDataPies(piePresidencial));
+  }
 
-        this.piedata = this.pieChartLabels.map((label) => {
-          return {
-            name: label,
-            y: this.roundEpsion(response[0][label]),
-          };
-        });
-      });
-  }
-  roundEpsion(number) {
-    return Math.round((number + Number.EPSILON) * 100) / 100;
-  }
+  loadDataPies = (functionPies) => {
+    return functionPies.presidencialData.call(
+      this,
+      functionPies.setDataPie.bind(this),
+      functionPies.pieLabel.bind(this),
+      "Presidencial",
+      this.roundEpsion
+    );
+  };
 
   loadDataLineChart() {
     this.reportesService
       .getWiner("5f7d05a1449b8cdbde0d92bd")
-      .subscribe((response) => {
-        this.linedata.mesas = response[0].listMesas;
-        this.linedata.partidos = this.pieChartLabels.map((label) => {
-          return {
-            name: label,
-            data: response[0][label],
-            type: undefined,
-          };
-        });
-      });
+      .subscribe(
+        lineDataWiner.presidencialData.call(
+          this,
+          lineDataWiner.setDataLine.bind(this),
+          lineDataWiner.lineLabel.bind(this),
+          "Presidencial",
+          this.roundEpsion
+        )
+      );
+  }
+
+  loadDataPresidencialProvincia() {
+    // console.log(this.dropRec.getSelectedItem().value._id);
+    this.reportesService
+      .getPresidenteProvincia("5f5ac09ffa74ada37adf107b")
+      .subscribe(this.loadDataPies(pieDataProvincia));
+  }
+  loadDataPresidencialMunicipio() {
+    this.reportesService
+      .getPresidenteMunicipio("5f5ac0e1f770bc79cb72c0b3")
+      .subscribe(this.loadDataPies(pieDataMunicipio));
+  }
+  loadDataPresidencialRecinto() {
+    this.reportesService
+      .getPresidenteRecinto("5f7d05a1449b8cdbde0d92bd")
+      .subscribe(this.loadDataPies(pieDataRecinto));
+  }
+  roundEpsion(number: any) {
+    return Math.round((number + Number.EPSILON) * 100) / 100;
   }
 }
