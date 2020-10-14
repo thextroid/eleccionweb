@@ -51,6 +51,7 @@ export class ResportesComponent implements OnInit {
   @ViewChild("dropMun", { static: false }) dropMun: jqxDropDownListComponent;
   @ViewChild("dropCir", { static: false }) dropCir: jqxDropDownListComponent;
   @ViewChild("dropRec", { static: false }) dropRec: jqxDropDownListComponent;
+  @ViewChild("dropEleccion", { static: false }) dropEleccion: jqxDropDownListComponent;
   constructor(
     protected $prov: ProvinciasService,
     protected $mun: MunicipiosService,
@@ -60,9 +61,20 @@ export class ResportesComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    
     // this.loadDataTest();
   }
   ngAfterViewInit(): void {
+    this.$cir.all().subscribe((response) => {
+      let list = [];
+      for (let i = 0; i < response.length; i++) {
+        list.push({
+          value: response[i],
+          label: response[i].name,
+        });
+      }
+      this.dropCir.source(list);
+    });
     this.$prov.all().subscribe((response) => {
       let list = [];
       for (let i = 0; i < response.length; i++) {
@@ -93,20 +105,71 @@ export class ResportesComponent implements OnInit {
       }
       this.dropRec.source(list);
     });
+    this.dropEleccion.source(['presidente','diputado','diputadoEspecial']);
   }
   change(event) {
-    this.loadDataTest();
+    // this.loadDataTest();
+  }
+  load(){}
+  loadByMun(){
+    let cir =this.dropCir.getSelectedItem();
+    let pro =this.dropProv.getSelectedItem();
+    let mun =this.dropMun.getSelectedItem();
+    let rec =this.dropRec.getSelectedItem();
+    let tipo=this.dropEleccion.getSelectedItem().value;
+    if(cir)cir = cir.value._id;
+    if(pro)pro = pro.value._id;
+    if(mun)mun = mun.value._id;
+    if(rec)rec = rec.value._id;
+    console.log(cir,pro,mun,rec,tipo);
+    // console.log(this.dropRec.getSelectedItem().value._id);
+    if(mun)
+    this.reportesService
+      .getMunicipios(mun,tipo)
+      .subscribe(this.getValuesQuery.bind(this));
+  }
+
+  getValuesQuery(data){
+    console.log(!data.length);
+      if(!data || !data.length) return "No exisite actas validas";
+      this.dataJson = data;
+      this.pieChartData = this.pieChartLabels.map((label) => {
+        return Math.round((data[0][label] + Number.EPSILON) * 100) / 100;
+      });
+  }
+
+  loadByProv(){
+    let prov =this.dropProv.getSelectedItem();
+    let tipo=this.dropEleccion.getSelectedItem().value;
+    if(prov){
+      prov = prov.value._id;
+      this.reportesService
+        .getProvincias(prov,tipo)
+        .subscribe((data) => {
+          this.dataJson = data;
+          this.pieChartData = this.pieChartLabels.map((label) => {
+            return Math.round((data[0][label] + Number.EPSILON) * 100) / 100;
+          });
+        });
+    }
+  }
+  loadByRec(){
+    let rec =this.dropRec.getSelectedItem();
+    let tipo=this.dropEleccion.getSelectedItem().value;
+    if(rec){
+      rec = rec.value._id;
+      this.reportesService
+        .getRecintos(rec,tipo)
+        .subscribe((data) => {
+          this.dataJson = data;
+          this.pieChartData = this.pieChartLabels.map((label) => {
+            return Math.round((data[0][label]) * 100) / 100;
+          });
+        });
+    }
   }
 
   loadDataTest() {
-    console.log(this.dropRec.getSelectedItem().value._id);
-    this.reportesService
-      .getRecintos(this.dropRec.getSelectedItem().value._id)
-      .subscribe((data) => {
-        this.dataJson = data;
-        this.pieChartData = this.pieChartLabels.map((label) => {
-          return Math.round((data[0][label] + Number.EPSILON) * 100) / 100;
-        });
-      });
+    
   }
 }

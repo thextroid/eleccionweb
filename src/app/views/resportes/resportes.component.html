@@ -1,75 +1,102 @@
 <div class="container">
   <div class="animated fadeIn">
     <div class="row">
-      <div class="col-md-6 mb-4">
+      <div class="col-md-12 mb-4">
         <!-- Nav tabs -->
-        <jqxValidator
-          #myValidator
-          [rules]="rulesRecinto"
-          [animationDuration]="0"
-          (onValidationSuccess)="prueba()"
-          [hintType]="'label'"
-        >
+        <jqxValidator #myValidator [rules]="rulesRecinto" [animationDuration]="0" (onValidationSuccess)="prueba()" [hintType]="'label'">
           <form id="form">
             <div class="row">
               <div class="form-group col-sm-4">
                 <label for="postal-code">Provincia:</label>
-                <jqxDropDownList
-                  #dropProv
-                  [filterable]="true"
-                  class="inProv"
-                  (onChange)="change($event)"
-                  [width]="'100%'"
-                  [height]="30"
-                  [autoOpen]="false"
-                >
+                <jqxDropDownList #dropProv [filterable]="true" class="inProv" (onChange)="loadByProv()" [width]="'100%'" [height]="30" [autoOpen]="false">
                 </jqxDropDownList>
               </div>
               <div class="form-group col-sm-4">
                 <label for="postal-code">Municipio:</label>
-                <jqxDropDownList
-                  #dropMun
-                  [filterable]="true"
-                  class="inMun"
-                  (onChange)="change($event)"
-                  [width]="'100%'"
-                  [height]="30"
-                  [autoOpen]="false"
-                >
+                <jqxDropDownList #dropMun  [filterable]="true" class="inMun" (onChange)="loadByMun()" [width]="'100%'" [height]="30" [autoOpen]="false">
                 </jqxDropDownList>
               </div>
               <div class="form-group col-sm-4">
                 <label for="postal-code">Circunscripcion:</label>
-                <jqxDropDownList
-                  #dropCir
-                  [filterable]="true"
-                  class="inCir"
-                  (onChange)="change($event)"
-                  [width]="'100%'"
-                  [height]="30"
-                  [autoOpen]="false"
-                >
+                <jqxDropDownList #dropCir [filterable]="true" class="inCir" (onChange)="load()" [width]="'100%'" [height]="30" [autoOpen]="false">
+                </jqxDropDownList>
+              </div>
+              <div class="form-group col-sm-4">
+                <label for="postal-code">Tipo:</label>
+                <jqxDropDownList #dropEleccion [filterable]="true" class="inEle" (onChange)="load()" [width]="'100%'" [height]="30" [autoOpen]="false">
                 </jqxDropDownList>
               </div>
               <div class="form-group col-sm-12">
                 <label for="postal-code">Recintos:</label>
-                <jqxDropDownList
-                  #dropRec
-                  [filterable]="true"
-                  class="inRec"
-                  [searchMode]="'contains'"
-                  (onChange)="change($event)"
-                  [width]="'100%'"
-                  [height]="30"
-                  [autoOpen]="false"
-                >
+                <jqxDropDownList #dropRec [filterable]="true" class="inRec" [searchMode]="'contains'" (onChange)="loadByRec()" [width]="'100%'" [height]="30" [autoOpen]="false">
                 </jqxDropDownList>
               </div>
             </div>
           </form>
         </jqxValidator>
-
-        <div style="display: block; background-color: white">
+        <div class="card">
+          <div class="card-body">
+              <div class="row">
+                  <div class="col-sm-5">
+                      <h4 class="card-title mb-0">Trafico</h4>
+                      <div class="small text-muted">Septiembre 2020</div>
+                  </div><!--/.col-->
+                  <div class="col-sm-7 d-none d-md-block">
+                      <button type="button" class="btn btn-primary float-right" (click)="load()"><i class="icon-cloud-download"></i></button>
+                      
+                  </div><!--/.col-->
+              </div><!--/.row-->
+              <div class="chart-wrapper" style="margin-top:40px;">
+                <canvas
+                baseChart
+                [data]="pieChartData"
+                [labels]="pieChartLabels"
+                [chartType]="pieChartType"
+                [colors]="donutColors"
+              ></canvas>
+              </div>
+          </div>
+          <div class="card-footer">
+              <div class="row text-center">
+                  <div class="col-sm-12 col-md mb-sm-2 mb-0">
+                      <div class="text-muted">CREEMOS</div>
+                      <strong>29.703 Users (40%)</strong>
+                      <div class="progress progress-xs mt-2">
+                      <div class="progress-bar bg-success" role="progressbar" style="width: 40%" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100"></div>
+                      </div>
+                  </div>
+                  <div class="col-sm-12 col-md mb-sm-2 mb-0">
+                      <div class="text-muted">Unique</div>
+                      <strong>24.093 Users (20%)</strong>
+                      <div class="progress progress-xs mt-2">
+                      <div class="progress-bar bg-info" role="progressbar" style="width: 20%" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100"></div>
+                      </div>
+                  </div>
+                  <div class="col-sm-12 col-md mb-sm-2 mb-0">
+                      <div class="text-muted">Pageviews</div>
+                      <strong>78.706 Views (60%)</strong>
+                      <div class="progress progress-xs mt-2">
+                      <div class="progress-bar bg-warning" role="progressbar" style="width: 60%" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100"></div>
+                      </div>
+                  </div>
+                  <div class="col-sm-12 col-md mb-sm-2 mb-0">
+                      <div class="text-muted">New Users</div>
+                      <strong>22.123 Users (80%)</strong>
+                      <div class="progress progress-xs mt-2">
+                      <div class="progress-bar bg-danger" role="progressbar" style="width: 80%" aria-valuenow="80" aria-valuemin="0" aria-valuemax="100"></div>
+                      </div>
+                  </div>
+                  <div class="col-sm-12 col-md mb-sm-2 mb-0">
+                      <div class="text-muted">Bounce Rate</div>
+                      <strong>40.15%</strong>
+                      <div class="progress progress-xs mt-2">
+                          <div class="progress-bar" role="progressbar" style="width: 40%" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100"></div>
+                      </div>
+                  </div>
+              </div>
+          </div>
+      </div>
+        <!-- <div style="display: block; background-color: white">
           <canvas
             baseChart
             [data]="pieChartData"
@@ -79,7 +106,7 @@
             height="450"
             width="500"
           ></canvas>
-        </div>
+        </div> -->
         <div>
           <pre>
             {{dataJson | json}}
