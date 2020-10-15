@@ -3,7 +3,7 @@ import { Injectable } from "@angular/core";
 import { Observable } from "rxjs";
 import { Recinto } from "../models/recinto";
 
-const api = "http://192.81.217.7/api/recintos";
+const api = "http://192.168.1.5:3000/api/recintos";
 @Injectable({
   providedIn: "root",
 })

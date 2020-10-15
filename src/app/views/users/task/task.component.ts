@@ -6,7 +6,7 @@ import {
   SimpleChanges,
   ViewChild,
 } from "@angular/core";
-import { jqxDropDownListComponent } from "jqwidgets-ng/jqxdropdownlist";
+import { jqxListBoxComponent } from "jqwidgets-ng/jqxlistbox";
 import { RecintosService } from "../../../servicios/recintos.service";
 import { BsModalRef } from "ngx-bootstrap/modal";
 import _ from "lodash";
@@ -17,7 +17,7 @@ import _ from "lodash";
   styleUrls: ["./task.component.css"],
 })
 export class TaskComponent implements OnInit {
-  @ViewChild("dropDownList") recintosDropDownList: jqxDropDownListComponent;
+  @ViewChild("myListBox") myListBox: jqxListBoxComponent;
   public event: EventEmitter<any> = new EventEmitter();
   list: any[] = [];
   source: any = {
@@ -35,7 +35,8 @@ export class TaskComponent implements OnInit {
     id: "_id",
     async: true,
   };
-  recintoList: any[];
+  recintoList = new Map<String, {}>();
+  selectedUser;
   constructor(public modalRef: BsModalRef) {}
 
   dataAdapter: any = new jqx.dataAdapter(this.source);
@@ -53,35 +54,67 @@ export class TaskComponent implements OnInit {
   };
 
   ngOnInit(): void {
+    this.selectedUser = this.list[0];
     this.source.localdata = this.list[1];
     this.loadRecintoListForm();
+    // console.log(this.list[2]);
+  }
+  ngAfterViewInit() {
+    if (!this.list[2]) return;
+    const recintos = this.list[2].recintos;
+    this.myListBox.getItems().forEach((item, index) => {
+      if (recintos.find((recinto) => recinto._id == item.originalItem.uid)) {
+        this.myListBox.checkIndex(item.visibleIndex);
+        this.setRecintoList(item.originalItem, item.visibleIndex);
+      }
+    });
   }
   loadRecintoListForm() {
-    this.recintoList = [];
+    this.recintoList.clear();
   }
-  ngAfterViewInit() {}
+
+  setRecintoList(recinto, index) {
+    if (index < 0) return;
+    const {
+      uid,
+      institucion,
+      localidad,
+      municipio, //
+      provincia,
+      circunscripcion,
+    } = recinto;
+    this.recintoList.set(index, {
+      index: index,
+      id: uid,
+      institucion,
+      localidad,
+      municipio: municipio.name,
+      provincia: provincia.name,
+      circunscripcion: circunscripcion.name,
+    });
+  }
 
   listOnSelect(event: any) {
     if (event.args) {
       let item = event.args.item;
+      const index = item.visibleIndex;
       if (item.checked) {
-        const {
-          _id,
-          institucion,
-          localidad,
-          municipio,
-          provincia,
-          circunscripcion,
-        } = item.originalItem;
-        this.recintoList.push({
-          id: _id,
-          institucion,
-          localidad,
-          municipio: municipio.name,
-          provincia: provincia.name,
-          circunscripcion: circunscripcion.name,
-        });
+        this.setRecintoList(item.originalItem, index);
+      } else if (this.recintoList.has(index)) {
+        this.recintoList.delete(index);
       }
     }
+  }
+  deleteRecinto(index) {
+    if (this.recintoList && this.recintoList.size > 0) {
+      if (this.recintoList.has(index)) {
+        this.myListBox.uncheckItem(this.myListBox.getItem(index));
+        this.recintoList.delete(index);
+      }
+    }
+  }
+  savedata() {
+    if (!this.recintoList.size) return;
+    this.event.emit(this.recintoList);
   }
 }

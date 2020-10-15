@@ -7,6 +7,8 @@ import _ from "lodash";
 import { UserFormComponent } from "./user-form/user-form.component";
 import { TaskComponent } from "./task/task.component";
 import { RecintosService } from "../../servicios/recintos.service";
+import { TaskService } from "../../servicios/task.service";
+import { Task } from "../../models/task";
 
 @Component({
   templateUrl: "./users.component.html",
@@ -19,6 +21,7 @@ export class UsersComponent implements OnInit {
     ignoreBackdropClick: true,
   };
   recintosData: any[];
+  taskUser: Task;
   source: any = {
     localdata: null,
     datafields: [
@@ -67,7 +70,8 @@ export class UsersComponent implements OnInit {
   constructor(
     private userService: UserService,
     private modalService: BsModalService,
-    protected resintosService: RecintosService
+    protected resintosService: RecintosService,
+    protected taskService: TaskService
   ) {}
 
   ngOnInit(): void {
@@ -113,15 +117,22 @@ export class UsersComponent implements OnInit {
     this.modalRef.content.event.subscribe(this.saveUser.bind(this));
   }
 
-  initListRestosModal() {
-    const initialState = {
-      list: [this.selectedUser, this.recintosData],
-    };
-    this.modalRef = this.modalService.show(TaskComponent, {
-      initialState,
-      ignoreBackdropClick: true,
-      class: "gray modal-lg",
-    });
+  async initListResintosModal() {
+    try {
+      if (!this.selectedUser._id) return alert("Selecione un Usuario");
+      this.taskUser = await this.getTaskByUsuario(this.selectedUser._id);
+      const initialState = {
+        list: [this.selectedUser, this.recintosData, this.taskUser],
+      };
+      this.modalRef = this.modalService.show(TaskComponent, {
+        initialState,
+        ignoreBackdropClick: true,
+        class: "gray modal-lg",
+      });
+      this.modalRef.content.event.subscribe(this.saveRecintoUsiario.bind(this));
+    } catch (error) {
+      console.log(error);
+    }
   }
 
   addUserModal() {
@@ -153,11 +164,34 @@ export class UsersComponent implements OnInit {
       });
     } else {
       this.userService.save(user).subscribe((result) => {
-        this.refeshUsers();
+        this.resetSelectedUser();
       });
     }
     this.modalRef.hide();
   }
+
+  getTaskByUsuario(id) {
+    return this.taskService.getTaskByUser(id).toPromise();
+  }
+
+  saveRecintoUsiario(recintos: Map<String, any>) {
+    const idRecintos = Array.from(recintos.values(), (recinto) => recinto.id);
+    const userid = this.selectedUser._id;
+    const task = { userId: userid, recintos: idRecintos };
+    if (userid && !this.taskUser.recintos.length) {
+      this.taskService.save(task).subscribe((result) => {
+        this.resetSelectedUser();
+      });
+    } else if (userid && this.taskUser.recintos.length > 0) {
+      this.taskService
+        .updateTaskByUser(userid, { recintos: idRecintos })
+        .subscribe((result) => {
+          this.resetSelectedUser();
+        });
+    }
+    this.modalRef.hide();
+  }
+
   selectUser(event) {
     this.selectedUser = _.pick(event.args.row, [
       "_id",

@@ -4,7 +4,7 @@
       <div class="col-4">
         <h5 class="card-title">Recintos</h5>
         <jqxListBox
-          #recintosDropDownList
+          #myListBox
           [renderer]="renderer"
           [theme]="'material'"
           [width]="260"
@@ -22,14 +22,25 @@
       <div class="col-8">
         <mat-card>
           <mat-card-header>
-            <mat-card-header> Usuarios por recintos </mat-card-header>
+            <h2>Usuario:{{ selectedUser.fullName }}</h2>
           </mat-card-header>
-          <mat-card-content *ngIf="recintoList.length; else elseblock">
+          <mat-card-content
+            *ngIf="recintoList && recintoList.size > 0; else elseblock"
+          >
             <mat-list>
-              <mat-list-item *ngFor="let recintos of recintoList">
-                <h4 matLine>{{ recintos.institucion }}</h4>
-                <p matLine>{{ recintos.localidad }}</p>
-                <button mat-icon-button color="warn">
+              <mat-list-item *ngFor="let recinto of recintoList | keyvalue">
+                <dt matLine>Recinto: {{ recinto.value.institucion }}</dt>
+                <dd matLine>
+                  <small>localidad: {{ recinto.value.localidad }}</small>
+                </dd>
+                <dd matLine>
+                  <small>Municipio: {{ recinto.value.municipio }}</small>
+                </dd>
+                <button
+                  mat-icon-button
+                  color="warn"
+                  (click)="deleteRecinto(recinto.value.index)"
+                >
                   <mat-icon>delete</mat-icon>
                 </button>
               </mat-list-item>
@@ -38,7 +49,9 @@
           <ng-template #elseblock><h2>Sin Lista de Recintos</h2></ng-template>
         </mat-card>
         <div class="modal-footer">
-          <button type="submit" class="btn btn-success">Aceptar</button>
+          <button type="button" class="btn btn-success" (click)="savedata()">
+            Aceptar
+          </button>
           <button
             type="button"
             class="btn btn-danger"

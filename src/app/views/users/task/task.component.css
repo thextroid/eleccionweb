@@ -1,0 +1,8 @@
+.title-item dt {
+  font-size: 11px;
+}
+.subtitle-item dd {
+  background: none no-repeat left top;
+  padding-left: 50px;
+  font-size: 8px;
+}

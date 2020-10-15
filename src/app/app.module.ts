@@ -15,6 +15,7 @@ import { jqxCheckBoxModule } from "jqwidgets-ng/jqxcheckbox";
 import { PerfectScrollbarModule } from "ngx-perfect-scrollbar";
 import { PERFECT_SCROLLBAR_CONFIG } from "ngx-perfect-scrollbar";
 import { PerfectScrollbarConfigInterface } from "ngx-perfect-scrollbar";
+import { jqxListBoxComponent } from "jqwidgets-ng/jqxlistbox";
 
 const DEFAULT_PERFECT_SCROLLBAR_CONFIG: PerfectScrollbarConfigInterface = {
   suppressScrollX: true,
@@ -54,8 +55,8 @@ import { BsModalService } from "ngx-bootstrap/modal";
 import { AuthGuard } from "./auth/auth.guard";
 import { HTTP_INTERCEPTORS } from "@angular/common/http";
 import { TokenInterceptorService } from "./servicios/token-interceptor.service";
-//import { ChartsModule } from 'ng2-charts';
 
+//import { ChartsModule } from 'ng2-charts';
 @NgModule({
   imports: [
     BrowserModule,
@@ -78,7 +79,7 @@ import { TokenInterceptorService } from "./servicios/token-interceptor.service";
     jqxButtonModule,
     jqxCheckBoxModule,
     //ChartsModule,
-    jqxGridModule,
+    jqxGridModule,    
   ],
   declarations: [
     AppComponent,
