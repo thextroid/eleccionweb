@@ -8,6 +8,10 @@ import { ModalModule } from "ngx-bootstrap/modal";
 import { FormsModule } from "@angular/forms";
 import { UserFormComponent } from "./user-form/user-form.component";
 import { UserService } from "../../servicios/user.service";
+import { TaskComponent } from "./task/task.component";
+import { jqxDropDownListComponent } from "jqwidgets-ng/jqxdropdownlist";
+import { jqxListBoxComponent } from "jqwidgets-ng/jqxlistbox";
+import { MaterialModule } from "./../material.module";
 
 @NgModule({
   imports: [
@@ -16,9 +20,16 @@ import { UserService } from "../../servicios/user.service";
     jqxGridModule,
     ModalModule.forRoot(),
     FormsModule,
+    MaterialModule,
   ],
-  declarations: [UsersComponent, UserFormComponent],
-  entryComponents: [UserFormComponent],
+  declarations: [
+    UsersComponent,
+    UserFormComponent,
+    TaskComponent,
+    jqxDropDownListComponent,
+    jqxListBoxComponent,
+  ],
+  entryComponents: [UserFormComponent, TaskComponent],
   providers: [UserService],
 })
 export class UsersModule {}

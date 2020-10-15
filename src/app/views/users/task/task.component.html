@@ -1,0 +1,53 @@
+<div class="modal-body">
+  <div class="container-fuild">
+    <div class="row">
+      <div class="col-4">
+        <h5 class="card-title">Recintos</h5>
+        <jqxListBox
+          #recintosDropDownList
+          [renderer]="renderer"
+          [theme]="'material'"
+          [width]="260"
+          [height]="420"
+          [source]="dataAdapter"
+          [displayMember]="'institucion'"
+          [valueMember]="'localidad'"
+          [filterable]="true"
+          [checkboxes]="true"
+          [searchMode]="'containsignorecase'"
+          (onSelect)="listOnSelect($event)"
+        >
+        </jqxListBox>
+      </div>
+      <div class="col-8">
+        <mat-card>
+          <mat-card-header>
+            <mat-card-header> Usuarios por recintos </mat-card-header>
+          </mat-card-header>
+          <mat-card-content *ngIf="recintoList.length; else elseblock">
+            <mat-list>
+              <mat-list-item *ngFor="let recintos of recintoList">
+                <h4 matLine>{{ recintos.institucion }}</h4>
+                <p matLine>{{ recintos.localidad }}</p>
+                <button mat-icon-button color="warn">
+                  <mat-icon>delete</mat-icon>
+                </button>
+              </mat-list-item>
+            </mat-list>
+          </mat-card-content>
+          <ng-template #elseblock><h2>Sin Lista de Recintos</h2></ng-template>
+        </mat-card>
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-success">Aceptar</button>
+          <button
+            type="button"
+            class="btn btn-danger"
+            (click)="modalRef.hide()"
+          >
+            Cancelar
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

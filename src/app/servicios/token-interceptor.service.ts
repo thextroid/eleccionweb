@@ -1,5 +1,9 @@
 import { Injectable } from "@angular/core";
-import { HttpInterceptor } from "@angular/common/http";
+import {
+  HttpHandler,
+  HttpInterceptor,
+  HttpRequest,
+} from "@angular/common/http";
 
 @Injectable({
   providedIn: "root",
@@ -7,12 +11,14 @@ import { HttpInterceptor } from "@angular/common/http";
 export class TokenInterceptorService implements HttpInterceptor {
   constructor() {}
 
-  intercept(req, next) {
-    const tokenizeReq = req.clone({
-      setHeaders: {
-        authjwt: `${localStorage.getItem("access_token")}`,
-      },
-    });
-    return next.handle(tokenizeReq);
+  intercept(req: HttpRequest<any>, next: HttpHandler) {
+    const idtoken = localStorage.getItem("access_token");
+    if (idtoken) {
+      const cloned = req.clone({
+        headers: req.headers.set("authjwt", idtoken),
+      });
+      return next.handle(req);
+    }
+    return next.handle(req);
   }
 }

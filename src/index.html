@@ -5,186 +5,191 @@
 * Copyright (c) 2017-2020 creativeLabs Łukasz Holeczek
 * Licensed under MIT (https://coreui.io/license)
 -->
-<!doctype html>
+<!DOCTYPE html>
 <html>
-<head>
-  <base href="./">
-  <meta charset="utf-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <meta name="description" content="Election">
-  <meta name="author" content="Łukasz Holeczek">
-  <meta name="keyword" content="Bootstrap,Admin,Template,Free,Angular,Dashboard,Typescript">
-	<link rel="shortcut icon" href="assets/favicon.ico">
-	<title>Election</title>
-  <!-- Global site tag (gtag.js) - Google Analytics -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-118965717-3"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-    // Shared ID
-    gtag('config', 'UA-118965717-3');
-    // Angular ID
-    gtag('config', 'UA-118965717-4');
-  </script>
-  <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500&display=swap" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-  <style>
-  .snotify{
-    width: 360px !important;
-  }
-  .snotifyToast__title {
-      font-size: 1em !important;
-      font-weight: 700 ;
-      font-style: oblique;
-  }
-  .snotify-icon {
-      width: 50% !important;
-      height:50% !important;
-      background-repeat: no-repeat;
-      right: 3px !important;
-  }
+  <head>
+    <base href="./" />
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
+    <meta name="description" content="Election" />
+    <meta name="author" content="Łukasz Holeczek" />
+    <meta
+      name="keyword"
+      content="Bootstrap,Admin,Template,Free,Angular,Dashboard,Typescript"
+    />
+    <link rel="shortcut icon" href="assets/favicon.ico" />
+    <title>Election</title>
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script
+      async
+      src="https://www.googletagmanager.com/gtag/js?id=UA-118965717-3"
+    ></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() {
+        dataLayer.push(arguments);
+      }
+      gtag("js", new Date());
+      // Shared ID
+      gtag("config", "UA-118965717-3");
+      // Angular ID
+      gtag("config", "UA-118965717-4");
+    </script>
+    <link
+      href="https://fonts.googleapis.com/css?family=Roboto:300,400,500&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/icon?family=Material+Icons"
+      rel="stylesheet"
+    />
+    <style>
+        .snotify{
+          width: 360px !important;
+        }
+        .snotifyToast__title {
+            font-size: 1em !important;
+            font-weight: 700 ;
+            font-style: oblique;
+        }
+        .snotify-icon {
+            width: 50% !important;
+            height:50% !important;
+            background-repeat: no-repeat;
+            right: 3px !important;
+        }
 
-  .jqx-switchbutton-label{
-    background: #1976D2 !important;
-    color:white !important;
-}
-  .jqx-fill-state-normal{
-    z-index: 1050 !important;
+        .jqx-switchbutton-label{
+          background: #1976D2 !important;
+          color:white !important;
+      }
+        .jqx-fill-state-normal{
+          z-index: 1050 !important;
 
-  }
-  .jqx-scrollbar-thumbs-state-normal{
-    z-index: 1050 !important;
+        }
+        .jqx-scrollbar-thumbs-state-normal{
+          z-index: 1050 !important;
 
-  }
-  @media(max-width:575.98px){
-    .sidebar-show .main::before, .aside-menu-show .main::before{
-      z-index:1051 !important;
-    }
-  }
-  @media(max-width:991.98px){
-    .app-header {
-    position: fixed;
-    z-index: 1051;
-    width: 100%;
-    text-align: center;
-    background-color: #fff;
-}
-    .sidebar{
-      z-index:1052 !important;
-    }
-  }
-  .navbar-toggler:nth-last-child(){
-    display: none !important;
-  }
-  .modal{
-    z-index: 1999 !important;
-}
-.app-header{
-    /* border-bottom: 1px solid #b55c1c !important; */
-}
-.navbar-nav .nav-link{
-  /* color:#ffdbb0 !important; */
-}
-.navbar-nav .nav-link:hover{
-  /* color:white !important; */
-}
-@media (max-width:991.98px){
-    .app-header{
-        /* background-color: chocolate !important; */
-    }
-}
-@media (min-width:992px){
-    .app-header{
-        /* background-color: #e47e05 !important; */
-    }
-    
-}
-@media (max-width: 767px) {
-  .hidden-sm{
-    display: none;
-  }
-}
-.upload-box .upload-box-content .upload-item .upload-item-content .filename i:hover{
-  color:#f86c6b;
-}
-.jqx-validator-error-label{
-  font-size: x-small;
-}
-.form-input1,.form-input1 input{
-  width: 100%;
-  font-size: 25px !important;
-  font-weight: 600 !important;
-  color:#3F51B5 !important;
-  font-family: 'Arial' !important;
-  text-align: center;
-}
-.cell-red{
-  height: 100%;
-  background:papayawhip;
-  line-height: 2;
-  color: red;+listvotos[i].CREEMOS+listvotos[i].ADN+listvotos[i].MASIPSP+listvotos[i].FPV+listvotos[i].PANBOL+listvotos[i].LIBRE21+listvotos[i].CC
-}
-.cell-default{
-  height: 100%;
-  background:lavender;
-  line-height: 2;
-  color: darkgreen;
-}
+        }
+        @media(max-width:575.98px){
+          .sidebar-show .main::before, .aside-menu-show .main::before{
+            z-index:1051 !important;
+          }
+        }
+        @media(max-width:991.98px){
+          .app-header {
+          position: fixed;
+          z-index: 1051;
+          width: 100%;
+          text-align: center;
+          background-color: #fff;
+      }
+          .sidebar{
+            z-index:1052 !important;
+          }
+        }
+        .navbar-toggler:nth-last-child(){
+          display: none !important;
+        }
+        .modal{
+          z-index: 1999 !important;
+      }
+      .app-header{
+          /* border-bottom: 1px solid #b55c1c !important; */
+      }
+      .navbar-nav .nav-link{
+        /* color:#ffdbb0 !important; */
+      }
+      .navbar-nav .nav-link:hover{
+        /* color:white !important; */
+      }
+      @media (max-width:991.98px){
+          .app-header{
+              /* background-color: chocolate !important; */
+          }
+      }
+      @media (min-width:992px){
+          .app-header{
+              /* background-color: #e47e05 !important; */
+          }
 
-.hero-body {
-    flex-grow: initial !important;
-    padding: 0px !important;
-}
-.upload-box .help-text {
-    box-shadow: inset 0 20px 20px -20px rgb(0 0 0 / 21%);
-}
-.upload-box .upload-box-header {
-    background: #2e343e;
-}
-.upload-box .upload-box-content .drop-container, .upload-box .upload-box-content .upload-item {
-    box-shadow: inset 0 20px 20px -20px rgb(0 0 0 / 10%) !important;
-}
-.upload-box .upload-box-content .drop-container .upload-button {
-    border: 1px solid #3d444a;
-    color: #93a2a3;
-}
-.upload-box .upload-box-content .drop-container .upload-button:hover {
-    border-color: aquamarine;
-    color: aquamarine;
-    transition-duration: .15s;
-}
-.upload-box .upload-box-header {
-    background: #2f353a;
-}
-.upload-box .upload-box-header .header-title {
-  margin:0px;
-  width: 100%;
-}
-.upload-box .upload-box-header .header-title h2 {
-    color: #b3c0d0;
-}
-.container {
-    padding-right: 15px;
-    padding-left: 15px;
-    margin-right: auto;
-    margin-left: auto;
-}
-  </style>
-  
-  
-</head>
-<script >
+      }
+      @media (max-width: 767px) {
+        .hidden-sm{
+          display: none;
+        }
+      }
+      .upload-box .upload-box-content .upload-item .upload-item-content .filename i:hover{
+        color:#f86c6b;
+      }
+      .jqx-validator-error-label{
+        font-size: x-small;
+      }
+      .form-input1,.form-input1 input{
+        width: 100%;
+        font-size: 25px !important;
+        font-weight: 600 !important;
+        color:#3F51B5 !important;
+        font-family: 'Arial' !important;
+        text-align: center;
+      }
+      .cell-red{
+        height: 100%;
+        background:papayawhip;
+        line-height: 2;
+        color: red;+listvotos[i].CREEMOS+listvotos[i].ADN+listvotos[i].MASIPSP+listvotos[i].FPV+listvotos[i].PANBOL+listvotos[i].LIBRE21+listvotos[i].CC
+      }
+      .cell-default{
+        height: 100%;
+        background:lavender;
+        line-height: 2;
+        color: darkgreen;
+      }
 
-// document.onkeydown = function(e) {
-// if(event.keyCode == 123) {return false;}
-// if(e.ctrlKey && e.shiftKey && e.keyCode == 'I'.charCodeAt(0)){return false;}
-// if(e.ctrlKey && e.shiftKey && e.keyCode == 'J'.charCodeAt(0)){return false;}
-// if(e.ctrlKey && e.keyCode == 'U'.charCodeAt(0)){return false;}
-// }
-</script>
-<body class="app" theme="dark" >
-  <!-- App Loading... -->
-</body>
+      .hero-body {
+          flex-grow: initial !important;
+          padding: 0px !important;
+      }
+      .upload-box .help-text {
+          box-shadow: inset 0 20px 20px -20px rgb(0 0 0 / 21%);
+      }
+      .upload-box .upload-box-header {
+          background: #2e343e;
+      }
+      .upload-box .upload-box-content .drop-container, .upload-box .upload-box-content .upload-item {
+          box-shadow: inset 0 20px 20px -20px rgb(0 0 0 / 10%) !important;
+      }
+      .upload-box .upload-box-content .drop-container .upload-button {
+          border: 1px solid #3d444a;
+          color: #93a2a3;
+      }
+      .upload-box .upload-box-content .drop-container .upload-button:hover {
+          border-color: aquamarine;
+          color: aquamarine;
+          transition-duration: .15s;
+      }
+      .upload-box .upload-box-header {
+          background: #2f353a;
+      }
+      .upload-box .upload-box-header .header-title {
+        margin:0px;
+        width: 100%;
+      }
+      .upload-box .upload-box-header .header-title h2 {
+          color: #b3c0d0;
+      }
+      .container {
+          padding-right: 15px;
+          padding-left: 15px;
+          margin-right: auto;
+          margin-left: auto;
+      }
+    </style>
+  </head>
+
+  <body class="app mat-typography" theme="dark"></body>
 </html>

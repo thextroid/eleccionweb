@@ -5,6 +5,8 @@ import { User } from "../../models/user";
 import { UserService } from "../../servicios/user.service";
 import _ from "lodash";
 import { UserFormComponent } from "./user-form/user-form.component";
+import { TaskComponent } from "./task/task.component";
+import { RecintosService } from "../../servicios/recintos.service";
 
 @Component({
   templateUrl: "./users.component.html",
@@ -16,7 +18,7 @@ export class UsersComponent implements OnInit {
     backdrop: "static",
     ignoreBackdropClick: true,
   };
-
+  recintosData: any[];
   source: any = {
     localdata: null,
     datafields: [
@@ -64,18 +66,26 @@ export class UsersComponent implements OnInit {
   selectedUser = null;
   constructor(
     private userService: UserService,
-    private modalService: BsModalService
+    private modalService: BsModalService,
+    protected resintosService: RecintosService
   ) {}
 
   ngOnInit(): void {
     this.resetSelectedUser();
     this.loadData();
+    this.loadDataRecintos();
   }
 
   loadData() {
     this.userService.getAll().subscribe((data) => {
       this.source.localdata = data;
       this.myGrid.updatebounddata();
+    });
+  }
+
+  loadDataRecintos() {
+    this.resintosService.all().subscribe((data) => {
+      this.recintosData = data;
     });
   }
 
@@ -103,12 +113,28 @@ export class UsersComponent implements OnInit {
     this.modalRef.content.event.subscribe(this.saveUser.bind(this));
   }
 
+  initListRestosModal() {
+    const initialState = {
+      list: [this.selectedUser, this.recintosData],
+    };
+    this.modalRef = this.modalService.show(TaskComponent, {
+      initialState,
+      ignoreBackdropClick: true,
+      class: "gray modal-lg",
+    });
+  }
+
   addUserModal() {
     this.resetSelectedUser();
     this.iniModal();
   }
 
   updateUserModal() {
+    if (!this.selectedUser._id) return alert("Selecione un Usuario");
+    this.iniModal();
+  }
+
+  addRecintosModal() {
     if (!this.selectedUser._id) return alert("Selecione un Usuario");
     this.iniModal();
   }
