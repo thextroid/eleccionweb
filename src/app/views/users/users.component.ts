@@ -130,6 +130,7 @@ export class UsersComponent implements OnInit {
         class: "gray modal-lg",
       });
       this.modalRef.content.event.subscribe(this.saveRecintoUsiario.bind(this));
+      return;
     } catch (error) {
       console.log(error);
     }
@@ -178,7 +179,7 @@ export class UsersComponent implements OnInit {
     const idRecintos = Array.from(recintos.values(), (recinto) => recinto.id);
     const userid = this.selectedUser._id;
     const task = { userId: userid, recintos: idRecintos };
-    if (userid && !this.taskUser.recintos.length) {
+    if (userid && !this.taskUser) {
       this.taskService.save(task).subscribe((result) => {
         this.resetSelectedUser();
       });
