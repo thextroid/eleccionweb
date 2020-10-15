@@ -72,6 +72,7 @@ export class ResportesComponent implements OnInit {
   @ViewChild("dropMun", { static: false }) dropMun: jqxDropDownListComponent;
   @ViewChild("dropCir", { static: false }) dropCir: jqxDropDownListComponent;
   @ViewChild("dropRec", { static: false }) dropRec: jqxDropDownListComponent;
+  @ViewChild("dropEleccion", { static: false }) dropEleccion: jqxDropDownListComponent;
   constructor(
     protected $prov: ProvinciasService,
     protected $mun: MunicipiosService,
@@ -171,4 +172,5 @@ export class ResportesComponent implements OnInit {
   roundEpsion(number: any) {
     return Math.round((number + Number.EPSILON) * 100) / 100;
   }
+
 }

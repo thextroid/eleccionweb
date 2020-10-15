@@ -23,4 +23,13 @@ export class ReportesService {
   getWiner(id): any {
     return this.http.get<any>(`${API}/recinto/${id}`);
   }
+  getProvincias(prov, ele): any {
+    return this.http.get<any>(`${API}?eleccion=${ele}&provincia=${prov}`);
+  }
+  getMunicipios(mun, ele): any {
+    return this.http.get<any>(`${API}?eleccion=${ele}&municipio=${mun}`);
+  }
+  // getCircunscripciones(cir, ele): any {
+  //   return this.http.get<any>(`${API}?eleccion=${ele}&recinto=${rec}`);
+  // }
 }
