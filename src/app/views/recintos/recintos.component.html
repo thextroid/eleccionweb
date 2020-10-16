@@ -1,86 +1,25 @@
-<jqxButton
-  #btnAdd
-  [width]="120"
-  [height]="40"
-  [template]="'success'"
-  (onClick)="open('Adicionar')"
-  ><i class="fa fa-plus"></i> Adicionar</jqxButton
->
-<jqxButton
-  #btnEdit
-  [width]="120"
-  [height]="40"
-  [template]="'warning'"
-  (onClick)="open('Editar')"
-  ><i class="fa fa-pencil"></i> Editar</jqxButton
->
-<jqxButton
-  #btnReload
-  [width]="120"
-  [height]="40"
-  [template]="'primary'"
-  (onClick)="reload($event)"
-  ><i class="fa fa-refresh"></i> Refrescar</jqxButton
+<jqxButton #btnAdd [width]="120" [height]="40" [template]="'success'" (onClick)="open('Adicionar')" ><i class="fa fa-plus"></i> Adicionar</jqxButton>
+<jqxButton #btnEdit [width]="120" [height]="40" [template]="'warning'" (onClick)="open('Editar')" ><i class="fa fa-pencil"></i> Editar</jqxButton>
+<jqxButton #btnReload [width]="120" [height]="40" [template]="'primary'" (onClick)="reload($event)" ><i class="fa fa-refresh"></i> Refrescar</jqxButton
 >
 <div class="row">
   <div class="col-sm-12">
-    <jqxGrid
-      #migrid
-      class="migrid"
-      (onRowselect)="Rowselect($event)"
-      [width]="'100%'"
-      [source]="dataAdapter"
-      [columns]="columns"
-      [localization]="langs"
-      [height]="500"
-      [pageable]="true"
-      [rendergridrows]="rendergridrows"
-      [sortable]="true"
-      [filterable]="true"
-      [showfilterrow]="true"
-      [groupable]="true"
-      [groups]="['municipio']"
-      [pagesize]="500"
-      [pagesizeoptions]="['10', '25', '50', '100','500']"
-      [columnsresize]="true"
-    >
+    <jqxGrid #migrid class="migrid" (onRowselect)="Rowselect($event)" [width]="'100%'" [source]="dataAdapter" [columns]="columns" [localization]="langs" [height]="500" [pageable]="true" [rendergridrows]="rendergridrows" [sortable]="true" [filterable]="true" [showfilterrow]="true" [groupable]="true" [groups]="['municipio']" [pagesize]="500" [pagesizeoptions]="['10', '25', '50', '100','500']" [columnsresize]="true">
     </jqxGrid>
   </div>
 </div>
 
-<div
-  bsModal
-  #myModal="bs-modal"
-  (onHidden)="reset()"
-  class="modal fade"
-  backdrop="false"
-  tabindex="-1"
-  role="dialog"
-  aria-labelledby="myModalLabel"
-  aria-hidden="true"
->
+<div bsModal #myModal="bs-modal" (onHidden)="reset()" class="modal fade" backdrop="false" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
         <h4 class="modal-title">{{ action_text }} Recinto</h4>
-        <button
-          type="button"
-          class="close"
-          (click)="myModal.hide()"
-          aria-label="Close"
-        >
+        <button type="button" class="close" (click)="myModal.hide()" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>
       </div>
       <div class="modal-body">
-        <jqxValidator
-          #myValidator
-          [rules]="rules"
-          [animationDuration]="0"
-          (onValidationError)="invalidValidation()"
-          (onValidationSuccess)="successValidation()"
-          [hintType]="'label'"
-        >
+        <jqxValidator #myValidator [rules]="rules" [animationDuration]="0" (onValidationError)="invalidValidation()" (onValidationSuccess)="successValidation()" [hintType]="'label'">
           <form [formGroup]="formRec" id="form" (ngSubmit)="checkValidation()">
             <div class="row">
               <div class="form-group col-sm-12">
@@ -98,8 +37,7 @@
                   [promptChar]="''"
                   [width]="'100%'"
                   [digits]="3"
-                  [decimalDigits]="6"
-                >
+                  [decimalDigits]="6">
                 </jqxNumberInput>
               </div>
               <div class="form-group col-sm-6">
@@ -110,8 +48,7 @@
                   [promptChar]="''"
                   [width]="'100%'"
                   [digits]="3"
-                  [decimalDigits]="6"
-                >
+                  [decimalDigits]="6">
                 </jqxNumberInput>
               </div>
               <div class="form-group col-sm-6">
@@ -124,8 +61,7 @@
                   (onChange)="prueba()"
                   [width]="'100%'"
                   [height]="30"
-                  [autoOpen]="false"
-                >
+                  [autoOpen]="false">
                 </jqxDropDownList>
               </div>
               <div class="form-group col-sm-6">
@@ -138,42 +74,19 @@
                   (onChange)="prueba()"
                   [width]="'100%'"
                   [height]="30"
-                  [autoOpen]="false"
-                >
+                  [autoOpen]="false"            >
                 </jqxDropDownList>
               </div>
               <div class="form-group col-sm-6">
                 <label for="postal-code">Municipio de:</label>
-                <jqxDropDownList
-                  #dropdownMunicipio
-                  id="inMun"
-                  [filterable]="true"
-                  class="inMun"
-                  (onChange)="prueba()"
-                  [width]="'100%'"
-                  [height]="30"
-                  [source]="sourceMunicipios"
-                  [autoOpen]="false"
-                >
+                <jqxDropDownList #dropdownMunicipio id="inMun" [filterable]="true" class="inMun" (onChange)="prueba()" [width]="'100%'" [height]="30" [source]="sourceMunicipios" [autoOpen]="false">
                 </jqxDropDownList>
               </div>
-              <!--/.row-->
               <div class="form-group col-sm-7">
                 <label for="postal-code">Localidad de:</label>
-                <jqxDropDownList
-                  #dropdownLocalidad
-                  id="inLocal"
-                  [filterable]="true"
-                  class="inLocal"
-                  (onChange)="prueba()"
-                  [width]="'100%'"
-                  [height]="30"
-                  [source]="sourceLocalidades"
-                  [autoOpen]="false"
-                >
+                <jqxDropDownList #dropdownLocalidad id="inLocal" [filterable]="true" class="inLocal" (onChange)="prueba()" [width]="'100%'" [height]="30" [source]="sourceLocalidades" [autoOpen]="false">
                 </jqxDropDownList>
               </div>
-              <!--/.row-->
               <div class="form-group col-sm-5">
                 <label for="postal-code">Tipo:</label>
                 <jqxDropDownList
@@ -185,11 +98,9 @@
                   [width]="'100%'"
                   [height]="30"
                   [source]="sourceTipo"
-                  [autoOpen]="false"
-                >
+                  [autoOpen]="false">
                 </jqxDropDownList>
               </div>
-              <!--/.row-->
               <div class="form-group col-sm-4">
                 <label for="mesa">N° Mesas:</label>
                 <jqxNumberInput
@@ -202,8 +113,7 @@
                   [promptChar]="''"
                   [width]="'100%'"
                   [digits]="3"
-                  [decimalDigits]="0"
-                >
+                  [decimalDigits]="0">
                 </jqxNumberInput>
               </div>
               <div class="form-group col-sm-4">
@@ -211,22 +121,7 @@
                 <button class="btn btn-outline-success btn-sm"><i class="fa fa-plus"></i> </button>
                 <button class="btn btn-outline-danger btn-sm"><i class="fa fa-trash"></i> </button>
 
-                <jqxGrid
-                #gridMesas
-                class="gridMesas"
-                (onRowselect)="Rowselect($event)"
-                [width]="'100%'"
-                [source]="dataAdapter2"
-                [columns]="columns2"
-                [height]="250"
-                [pageable]="true"
-                [editable]="true"
-                [rendergridrows]="rendergridrows"
-                [sortable]="true"
-                [filterable]="true"
-                [pagesizeoptions]="['50', '100']"
-                [columnsresize]="true"
-              >
+                <jqxGrid #gridMesas class="gridMesas" (onRowselect)="Rowselect($event)" [width]="'100%'" [source]="dataAdapter2" [columns]="columns2" [height]="250" [pageable]="true" [editable]="true" [rendergridrows]="rendergridrows" [sortable]="true" [filterable]="true" [pagesizeoptions]="['50', '100']" [columnsresize]="true"             >
               </jqxGrid>
               </div>
       
@@ -240,12 +135,6 @@
         </jqxValidator>
       </div>
     </div>
-    <!-- /.modal-content -->
   </div>
-  <!-- /.modal-dialog -->
 </div>
-
-<!-- <ul>
-	<li *ngFor="let item of  lista;let i=index">{{i}}.- {{item.institucion}}</li>
-</ul> -->
 <ng-snotify></ng-snotify>

@@ -154,7 +154,6 @@
               >
               </jqxNumberInput>
             </div>
-            <!--/.row-->
             <div class="form-group col-sm-6">
               <label for="postal-code">Hora de Apertura:</label>
               <jqxDateTimeInput
@@ -167,7 +166,6 @@
                 class="inApertura text-input form-control"
               ></jqxDateTimeInput>
             </div>
-            <!--/.row-->
             <div class="form-group col-sm-6">
               <label for="postal-code">Hora de Cierre:</label>
               <jqxDateTimeInput
@@ -199,12 +197,8 @@
             </div>
           </div>
         </div>
-        <div class="col-md-6">
-          <div class="row"></div>
-        </div>
       </div>
     </jqxValidator>
-    <!-- (onRowselect)="Rowselect($event)" -->
   </ng-wizard-step>
 
   <ng-wizard-step [title]="'Paso 4'" [description]="'Votacion'">
@@ -260,8 +254,8 @@
     <button class="btn btn-primary btn-lg" (click)="uploadVotos()">
       <i class="fa fa-upload"></i> Subir Votacion
     </button>
-    <!-- <button class="btn btn-primary btn-lg" (click)="uploadFoto()"><i class="fa fa-upload"></i> subir Acta</button> -->
   </ng-wizard-step>
+
   <ng-wizard-step [title]="'Paso 5'" [description]="'Foto'">
     <div class="row">
       <div class="form-group col-md-6">
@@ -399,6 +393,7 @@
             [imageChangedEvent]="imageChangedEvent"
             [maintainAspectRatio]="true"
             [containWithinAspectRatio]="true"
+            [alignImage]="'top'"
             [aspectRatio]="4 / 3"
             [backgroundColor]="'#191916'"
             format="png"
@@ -480,9 +475,8 @@
         </form>
       </div>
     </div>
-    <!-- /.modal-content -->
   </div>
-  <!-- /.modal-dialog -->
+  <!-- /.modal-content -->
 </div>
-
+<!-- /.modal-dialog -->
 <ng-snotify></ng-snotify>
