@@ -10,151 +10,157 @@
     />
     <meta name="description" content="Election" />
     <meta name="author" content="Łukasz Holeczek" />
+    <link rel="stylesheet" />
     <meta
       name="keyword"
       content="Bootstrap,Admin,Template,Free,Angular,Dashboard,Typescript"
     />
     <title>Election</title>
     <style>
-        .snotify{
-          width: 360px !important;
-        }
-        .snotifyToast__title {
-            font-size: 1em !important;
-            font-weight: 700 ;
-            font-style: oblique;
-        }
-        .snotify-icon {
-            width: 50% !important;
-            height:50% !important;
-            background-repeat: no-repeat;
-            right: 3px !important;
-        }
-
-        .jqx-switchbutton-label{
-          background: #1976D2 !important;
-          color:white !important;
+      .snotify {
+        width: 360px !important;
       }
-        .jqx-fill-state-normal{
-          z-index: 1050 !important;
+      .snotifyToast__title {
+        font-size: 1em !important;
+        font-weight: 700;
+        font-style: oblique;
+      }
+      .snotify-icon {
+        width: 50% !important;
+        height: 50% !important;
+        background-repeat: no-repeat;
+        right: 3px !important;
+      }
 
+      .jqx-switchbutton-label {
+        background: #1976d2 !important;
+        color: white !important;
+      }
+      .jqx-fill-state-normal {
+        z-index: 1050 !important;
+      }
+      .jqx-scrollbar-thumbs-state-normal {
+        z-index: 1050 !important;
+      }
+      @media (max-width: 575.98px) {
+        .sidebar-show .main::before,
+        .aside-menu-show .main::before {
+          z-index: 1051 !important;
         }
-        .jqx-scrollbar-thumbs-state-normal{
-          z-index: 1050 !important;
-
-        }
-        @media(max-width:575.98px){
-          .sidebar-show .main::before, .aside-menu-show .main::before{
-            z-index:1051 !important;
-          }
-        }
-        @media(max-width:991.98px){
-          .app-header {
+      }
+      @media (max-width: 991.98px) {
+        .app-header {
           position: fixed;
           z-index: 1051;
           width: 100%;
           text-align: center;
           background-color: #fff;
-      }
-          .sidebar{
-            z-index:1052 !important;
-          }
         }
-        .navbar-toggler:nth-last-child(){
-          display: none !important;
+        .sidebar {
+          z-index: 1052 !important;
         }
-        .modal{
-          z-index: 1999 !important;
       }
-      .app-header{
-          /* border-bottom: 1px solid #b55c1c !important; */
+      .navbar-toggler:nth-last-child() {
+        display: none !important;
       }
-      .navbar-nav .nav-link{
+      .modal {
+        z-index: 1999 !important;
+      }
+      .app-header {
+        /* border-bottom: 1px solid #b55c1c !important; */
+      }
+      .navbar-nav .nav-link {
         /* color:#ffdbb0 !important; */
       }
-      .navbar-nav .nav-link:hover{
+      .navbar-nav .nav-link:hover {
         /* color:white !important; */
       }
-      @media (max-width:991.98px){
-          .app-header{
-              /* background-color: chocolate !important; */
-          }
+      @media (max-width: 991.98px) {
+        .app-header {
+          /* background-color: chocolate !important; */
+        }
       }
-      @media (min-width:992px){
-          .app-header{
-              /* background-color: #e47e05 !important; */
-          }
-
+      @media (min-width: 992px) {
+        .app-header {
+          /* background-color: #e47e05 !important; */
+        }
       }
       @media (max-width: 767px) {
-        .hidden-sm{
+        .hidden-sm {
           display: none;
         }
       }
-      .upload-box .upload-box-content .upload-item .upload-item-content .filename i:hover{
-        color:#f86c6b;
+      .upload-box
+        .upload-box-content
+        .upload-item
+        .upload-item-content
+        .filename
+        i:hover {
+        color: #f86c6b;
       }
-      .jqx-validator-error-label{
+      .jqx-validator-error-label {
         font-size: x-small;
       }
-      .form-input1,.form-input1 input{
+      .form-input1,
+      .form-input1 input {
         width: 100%;
         font-size: 25px !important;
         font-weight: 600 !important;
-        color:#3F51B5 !important;
-        font-family: 'Arial' !important;
+        color: #3f51b5 !important;
+        font-family: "Arial" !important;
         text-align: center;
       }
-      .cell-red{
+      .cell-red {
         height: 100%;
-        background:papayawhip;
+        background: papayawhip;
         line-height: 2;
-        color: red;+listvotos[i].CREEMOS+listvotos[i].ADN+listvotos[i].MASIPSP+listvotos[i].FPV+listvotos[i].PANBOL+listvotos[i].LIBRE21+listvotos[i].CC
+        color: red;
       }
-      .cell-default{
+      .cell-default {
         height: 100%;
-        background:lavender;
+        background: lavender;
         line-height: 2;
         color: darkgreen;
       }
 
       .hero-body {
-          flex-grow: initial !important;
-          padding: 0px !important;
+        flex-grow: initial !important;
+        padding: 0px !important;
       }
       .upload-box .help-text {
-          box-shadow: inset 0 20px 20px -20px rgb(0 0 0 / 21%);
+        box-shadow: inset 0 20px 20px -20px rgb(0 0 0 / 21%);
       }
       .upload-box .upload-box-header {
-          background: #2e343e;
+        background: #2e343e;
       }
-      .upload-box .upload-box-content .drop-container, .upload-box .upload-box-content .upload-item {
-          box-shadow: inset 0 20px 20px -20px rgb(0 0 0 / 10%) !important;
+      .upload-box .upload-box-content .drop-container,
+      .upload-box .upload-box-content .upload-item {
+        box-shadow: inset 0 20px 20px -20px rgb(0 0 0 / 10%) !important;
       }
       .upload-box .upload-box-content .drop-container .upload-button {
-          border: 1px solid #3d444a;
-          color: #93a2a3;
+        border: 1px solid #3d444a;
+        color: #93a2a3;
       }
       .upload-box .upload-box-content .drop-container .upload-button:hover {
-          border-color: aquamarine;
-          color: aquamarine;
-          transition-duration: .15s;
+        border-color: aquamarine;
+        color: aquamarine;
+        transition-duration: 0.15s;
       }
       .upload-box .upload-box-header {
-          background: #2f353a;
+        background: #2f353a;
       }
       .upload-box .upload-box-header .header-title {
-        margin:0px;
+        margin: 0px;
         width: 100%;
       }
       .upload-box .upload-box-header .header-title h2 {
-          color: #b3c0d0;
+        color: #b3c0d0;
       }
       .container {
-          padding-right: 15px;
-          padding-left: 15px;
-          margin-right: auto;
-          margin-left: auto;
+        padding-right: 15px;
+        padding-left: 15px;
+        margin-right: auto;
+        margin-left: auto;
       }
     </style>
   </head>
