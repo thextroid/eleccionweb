@@ -71,7 +71,7 @@
 
           <button *ngIf="!iterator.disabled"
           class="btn btn-light"
-          (click)="checkStep(iterator.nro)" disabled
+          (click)="checkApertura(iterator.nro)" disabled
           style="width: 100%; margin: 4px">
           <h5 style="margin-bottom:0px">Mesa {{iterator.nro}}</h5>
           <img src="assets/img/brand/urna.png" style="width:50px" alt="">
@@ -82,7 +82,7 @@
           
           <button *ngIf="iterator.disabled"
           class="btn btn-warning"
-          (click)="checkStep(iterator.nro)" 
+          (click)="checkApertura(iterator.nro)" 
           style="width: 100%; margin: 4px">
           <h5 style="margin-bottom:0px">Mesa {{iterator.nro}}</h5>
           <img src="assets/img/brand/urna.png" style="width:50px" alt="">
@@ -193,6 +193,7 @@
     <h2 for="" class="control-label h2 text-center">{{info.rec.institucion}}</h2>
     <jqxGrid
     #migrid
+    (onCellvaluechanged)="Cellvaluechanged($event)"
     [width]="'100%'"
     [source]="dataAdapter"
     [columns]="columns"
@@ -308,5 +309,39 @@
 
 </ng-wizard>
 <jqxButton #btnBack [height]='40' [template]="'primary'" (onClick)="showPreviousStep($event)"><i class="fa fa-backward"></i> Atras</jqxButton>
+
+
+
+<div bsModal #modalAperturar="bs-modal" class="modal fade" (onHidden)="resetAperturar()" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title">Aperturar Mesa</h4>
+          <button type="button" class="close" (click)="modalApertura.hide()" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <h5 class="">Esta seguro de apertuar la mesas? </h5>
+            <form #form="ngForm" (ngSubmit)="aperturarAction()" >
+              <div class="row">
+                <div class="form-group col-sm-12">
+                  <label for="city">Delegado:</label>
+                  <jqxInput #inputDelegado class="inDelegado txt-input form-control" ></jqxInput>
+                </div>
+                <div class="form-group col-sm-4">
+                  <button type="button" class="btn btn-light btn-block" id="cancelar" (click)="modalApertura.hide()">Cancelar</button>
+                </div>
+                <div class="form-group col-sm-4">
+                  <button type="submit" class="btn btn-primary btn-block"  id="aperturar">Si</button>
+                </div>
+              </div>
+            </form>
+        </div>
+      </div>
+      <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+  </div>
 
 <ng-snotify></ng-snotify>

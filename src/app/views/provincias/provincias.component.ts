@@ -219,7 +219,10 @@ export class ProvinciasComponent implements OnInit {
 		this.myValidator.hideHint('.inCir');
 		this.myValidator.hide();
 	}
-
+	prueba(){
+		this.myValidator.validateInput('.inCir');
+		this.myValidator.validate();
+	}
 	mensaje(content:string,title:string,tipo){
 		var op={
 			timeout: 2000,
