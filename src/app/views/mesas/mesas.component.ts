@@ -11,12 +11,11 @@ import { LocalidadesService } from "../../servicios/localidades.service";
 import { Recinto } from "../../models/recinto";
 import { RecintosService } from "../../servicios/recintos.service";
 import { ProvinciasService } from "../../servicios/provincias.service";
-import { CircunscripcionesComponent } from "../circunscripciones/circunscripciones.component";
 import { CircunscripcionesService } from "../../servicios/circunscripciones.service";
 import { jqxValidatorComponent } from "jqwidgets-ng/jqxvalidator";
 import { jqxSwitchButtonComponent } from 'jqwidgets-ng/jqxswitchbutton';
 import { VotacionService } from '../../servicios/votacion.service';
-import { NgWizardService } from 'ng-wizard';
+import { NgWizardConfig, NgWizardService, THEME } from 'ng-wizard';
 import { SnotifyPosition, SnotifyService } from 'ng-snotify';
 import { jqxNumberInputComponent } from 'jqwidgets-ng/jqxnumberinput';
 import { jqxTextAreaComponent } from 'jqwidgets-ng/jqxtextarea';
@@ -47,7 +46,6 @@ export class MesasComponent implements OnInit {
   @ViewChild("inputActa") inacta: jqxInputComponent;
   @ViewChild("myTextArea") inobser: jqxTextAreaComponent;
   @ViewChild("validatorVotos", { static: false }) myValidator: jqxValidatorComponent;
-  // @ViewChild("inputEmpadronados") inemp: jqxInputComponent;
 
   constructor(
     protected $rec: RecintosService,
@@ -69,6 +67,19 @@ export class MesasComponent implements OnInit {
   action_text = "";
   modelRecinto: Recinto = new Recinto();
   langs:any=langes;
+  config: NgWizardConfig = {
+		selected:0,
+		theme: THEME.dots,
+		lang:{
+			next:'Continuar',
+			previous:'Volver'
+		},
+		keyNavigation:false,
+		toolbarSettings: {
+			showNextButton: false, showPreviousButton: false,
+		}
+	};
+
   ngOnInit() {
   }
 

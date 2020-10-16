@@ -1,32 +1,10 @@
 <ng-wizard [config]="config" >
   <ng-wizard-step [title]="'Paso 1'" [description]="'Recintos'">
     <div class="row">
-      <!-- <div class="col-sm-2">
-        <div class="form-group">
-          <label for="name">Circunscripcion:</label>
-          <jqxDropDownList #dropCir [filterable]="true" (onChange)="cirCambiando($event)" [width]="'100%'" [height]="30" [selectedIndex]="1" [autoOpen]="false">
-          </jqxDropDownList>
-        </div>
-      </div>
-      <div class="col-sm-2">
-        <div class="form-group">
-          <label for="name">Provincia:</label>
-          <jqxDropDownList
-            #dropProv
-            [filterable]="true"
-            (onChange)="provCambiando($event)"
-            [width]="'100%'"
-            [height]="30"
-            [disabled]="true"
-            [autoOpen]="false"
-          >
-          </jqxDropDownList>
-        </div>
-      </div> -->
       <div class="col-sm-3">
         <div class="form-group">
-          <jqxButton  [height]='40' [template]="'primary'" (onClick)="next($event)"><i class="fa fa-forward"></i>Votación</jqxButton>
-      </div>
+          <jqxButton  [height]='40' [template]="'primary'" ><i class="fa fa-forward"></i>Votación</jqxButton>
+        </div>
       </div>
       <div class="col-sm-2">
         <div class="form-group">
