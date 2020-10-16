@@ -22,4 +22,7 @@ export class RecintosService {
   update(id, data) {
     return this.http.put<Recinto>(api + "/" + id, data);
   }
+  aperturarMesa(idrec,data){
+    return this.http.put<any>(`http://192.81.217.7/api/recintos/${idrec}/mesa`,data);
+  }
 }

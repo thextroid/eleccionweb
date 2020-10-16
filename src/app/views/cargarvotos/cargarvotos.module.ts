@@ -27,12 +27,14 @@ import { jqxInputModule } from "jqwidgets-ng/jqxinput";
 import { VotacionService } from "../../servicios/votacion.service";
 import { ImageCropperModule } from 'ngx-image-cropper';
 import { NgxUploaderModule } from 'ngx-uploader';
+import { ModalModule } from 'ngx-bootstrap/modal';
 const ngWizardConfig: NgWizardConfig = {
   theme: THEME.default,
 };
 @NgModule({
   declarations: [CargarvotosComponent],
   imports: [
+    ModalModule.forRoot(),
     CommonModule,
     HttpClientModule,
     CargarvotosRoutingModule,

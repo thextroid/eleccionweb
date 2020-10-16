@@ -21,7 +21,7 @@ import { SnotifyPosition, SnotifyService } from 'ng-snotify';
 import { jqxNumberInputComponent } from 'jqwidgets-ng/jqxnumberinput';
 import { jqxTextAreaComponent } from 'jqwidgets-ng/jqxtextarea';
 import { NgxSpinnerService } from 'ngx-spinner';
-
+import { langes } from  "../../models/utils";
 @Component({
   selector: "app-mesas",
   templateUrl: "./mesas.component.html",
@@ -68,7 +68,7 @@ export class MesasComponent implements OnInit {
 
   action_text = "";
   modelRecinto: Recinto = new Recinto();
-
+  langs:any=langes;
   ngOnInit() {
   }
 
@@ -251,8 +251,6 @@ export class MesasComponent implements OnInit {
   };
   cellrender2 = (row: number, column: any, value: any): any => {
     let rowdata = this.gridvot.getrowdata(row);
-    // console.log(rowdata);
-    // console.log(rowdata[column]);
     console.log(this.inemp.val());
     let sumvotos = rowdata.CREEMOS+
     rowdata.ADN+
@@ -263,7 +261,6 @@ export class MesasComponent implements OnInit {
     rowdata.CC+
     rowdata.votosBlancos+
     rowdata.votosNullos;
-    // sumvotos+this.acta.emp;
     console.log(value,sumvotos,this.inemp.val());
     
     if(sumvotos==0 || value==0 || sumvotos<=this.inemp.val())
@@ -286,14 +283,13 @@ export class MesasComponent implements OnInit {
   dataAdapter2: any = new jqx.dataAdapter(this.source2);
 
   linkrender = (row: number, column: any, value: any): any => {
-    
     return "<button class='btn btn-primary'>"+value+"</button>";
   }
   estadorender = (row: number, column: any, value: any): any => {
     if(value=="Verificado")
       return "<h6 style='height:100%;line-height:1.5;text-align:center;vertical-align:middle;'><span class='badge badge-success'>"+value+"</span></h6>";
     else if(value=="Anulado")
-      return "<h6 style='height:100%;line-height:1.5;text-align:center;vertical-align:middle;'><span class='badge badge-danger'>"+value+"</span></h6>";
+      return "<h6 style='height:100%;line-height:1.5;text-align:center;vertical-align:middle;'><span class='badge badge-warning'>"+value+"</span></h6>";
     else
       return "<h6 style='height:100%;line-height:1.5;text-align:center;vertical-align:middle;'><span class='badge badge-secondary'>"+value+"</span></h6>";
   }
@@ -302,15 +298,15 @@ export class MesasComponent implements OnInit {
     { datafield: "_id", text: "ID", width: 30, hidden: true },
     { datafield: "id", text: "#", width: 45 },
     { datafield: "recinto", text: "Recinto electoral", width: 250 },
-    { datafield: "mesa", text: "N° de Mesa", width: 80 },
-    { datafield: "estado", text: "estado", width: 60,cellsrenderer:this.estadorender },
-    { datafield: "circunscripcion", text: "Circuns.", width: 50 ,filtertype: 'checkedlist'},
+    { datafield: "mesa", text: "Mesa", width: 80 },
+    { datafield: "estado", text: "estado", width: 110,cellsrenderer:this.estadorender },
+    { datafield: "circunscripcion", text: "Circuns.", width: 100 ,filtertype: 'checkedlist'},
     { datafield: "provincia", text: "Provincia", width: 150 ,filtertype: 'checkedlist'},
     { datafield: "municipio", text: "Municipio", width: 150 ,filtertype: 'checkedlist'},
     { datafield: "localidad", text: "Localidad", width: 100 },
-    { datafield: "delegado", text: "Usuario", width: 150 },
+    { datafield: "delegado", text: "Usuario", width: 150 ,hidden:true},
     { datafield: "tipo", text: "Tipo", width: 100 ,filtertype: 'checkedlist'},
-    { datafield: "habilitados", text: "N°. Habiltados", width: 60 }
+    { datafield: "habilitados", text: "Habiltados", width: 110 }
   ];
 
   rendergridrows = (params: any): any => {
@@ -320,7 +316,6 @@ export class MesasComponent implements OnInit {
   Rowselect(event: any): void {}
 
   hideModal() {
-
   }
   
   cirCambiando(event: any): void {
@@ -543,81 +538,7 @@ export class MesasComponent implements OnInit {
     return (message!=='')? "Los votos en las Filas:  "+message+" deben ser menores a los empadronados.":null;
   }
 
-  langs=       {
-    // separator of parts of a date (e.g. '/' in 11/05/1955)
-    '/': "-",
-    // separator of parts of a time (e.g. ':' in 05:44 PM)
-    ':': ":",
-    // the first day of the week (0 = Sunday, 1 = Monday, etc)
-    firstDay: 0,
-    days: {
-        // full day names
-        names: ["Domingo", "Lunes", "Martes", "Miercoles", "Jueves", "Viernes", "Sabado"],
-        // abbreviated day names
-        namesAbbr: ["Do", "Lu", "Ma", "Mi", "Ju", "Vi", "Sa"],
-        // shortest day names
-        namesShort: ["Do", "Lu", "Ma", "Mi", "Ju", "Vi", "Sa"],
-    },
-    months: {
-        // full month names (13 months for lunar calendards -- 13th month should be "" if not lunar)
-        names: ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre", ""],
-        // abbreviated month names
-        namesAbbr: ["Ene", "Feb", "Mar", "Abr", "May", "Jun", "Jul", "Ago", "Sep", "Oct", "Nov", "Dic", ""]
-    },
-    AM: ["AM", "am", "AM"],
-    PM: ["PM", "pm", "PM"],
-    eras: [
-    {"name": "A.D.", "start": null, "offset": 0 }
-],
-    twoDigitYearMax: 2029,
-    patterns: {
-        d: "M/d/yyyy",
-        D: "dddd, MMMM dd, yyyy",
-        t: "h:mm tt",
-        T: "h:mm:ss tt",
-        f: "dddd, MMMM dd, yyyy h:mm tt",
-        F: "dddd, MMMM dd, yyyy h:mm:ss tt",
-        M: "MMMM dd",
-        Y: "yyyy MMMM",
-        S: "yyyy\u0027-\u0027MM\u0027-\u0027dd\u0027T\u0027HH\u0027:\u0027mm\u0027:\u0027ss"
-    },
-    percentsymbol: "%",
-    currencysymbol: "$",
-    currencysymbolposition: "before",
-    decimalseparator: '.',
-    thousandsseparator: ',',
-    pagergotopagestring: "Ir a pagina:",
-    pagershowrowsstring: "Ver filas:",
-    pagerrangestring: " de ",
-    pagerpreviousbuttonstring: "anterior",
-    pagernextbuttonstring: "siguiente",
-    groupsheaderstring: "Drag a column and drop it here to group by that column",
-    sortascendingstring: "Ascendente",
-    sortdescendingstring: "Descendente",
-    sortremovestring: "Resetear",
-    groupbystring: "Agrupar por esta columna",
-    groupremovestring: "Eliminar desde Grupos",
-    filterclearstring: "Limpiar",
-    filterstring: "Filtrar",
-    filtershowrowstring: "Ver filas where:",
-    filtershowrowdatestring: "Ver filas where date:",
-    filterorconditionstring: "o",
-    filterandconditionstring: "y",
-    filterselectallstring: "(Seleccionar todo)",
-    filterchoosestring: "Seleccione:",
-    filterstringcomparisonoperators: ['vacio', 'no vacío', 'contiene', 'contiene(coincidencias)',
-        'no contiene', 'no contiene(coinc.)', 'empieza con', 'empieza con(coinc.)',
-        'termina con', 'termina con(coinc.)', 'igual', 'igual(coinc.)', 'nulos', 'no nulos'],
-    filternumericcomparisonoperators: ['igual', 'no iguale', 'menor que', 'menor igual', 'mayor', 'mayor igual', 'null', 'not null'],
-    filterdatecomparisonoperators: ['igual', 'no iguale', 'menor que', 'menor o igual', 'greater than', 'greater than or equal', 'null', 'not null'],
-    filterbooleancomparisonoperators: ['igual', 'no es iguale'],
-    validationstring: "Valor ingresado no se valido",
-    emptydatastring: "No hay datos para mostrar",
-    filterselectstring: "Seleccione filtro",
-    loadtext: "Cargando...",
-    clearstring: "Limpiar",
-    todaystring: "Hoy"          
-};
+ 
 mensaje(content: string, title: string, tipo) {
   const op = {
     timeout: 3500,

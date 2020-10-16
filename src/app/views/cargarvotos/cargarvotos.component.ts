@@ -15,6 +15,7 @@ import {
 	StepChangedArgs,
 	NgWizardService,
 } from "ng-wizard";
+import { ModalDirective } from 'ngx-bootstrap/modal';
 import { ImageCroppedEvent } from 'ngx-image-cropper';
 import { UploaderOptions, UploadFile, UploadInput, UploadOutput, UploadStatus } from 'ngx-uploader';
 import { Circunscripcion } from "../../models/circunscripcion";
@@ -46,6 +47,8 @@ export class CargarvotosComponent implements OnInit {
 	@ViewChild("inputFoto", { static: false }) foto: jqxFileUploadComponent;
 	@ViewChild('myValidator', { static: false }) myValidator: jqxValidatorComponent;
 	@ViewChild('valacta', { static: false }) validatorActa: jqxValidatorComponent;
+	@ViewChild('modalAperturar') public modalAperturar: ModalDirective;
+	@ViewChild("inputDelegado", { static: false }) inDelegado: jqxInputComponent;
 	@ViewChild('myTextArea') obser: jqxTextAreaComponent; 
 	url = 'http://192.81.217.7:/api/actas/image/';
 	formData: FormData;
@@ -153,6 +156,16 @@ export class CargarvotosComponent implements OnInit {
 			map: "nulos",
 			type: "number",
 		},
+		{
+			name: "validos",
+			map: "validos",
+			type: "number",
+		},
+		{
+			name: "total",
+			map: "total",
+			type: "number",
+		},
 	];
 	source: any = {
 		datafields: this.datafields,
@@ -168,6 +181,8 @@ export class CargarvotosComponent implements OnInit {
 				CC: 0,
 				blancos: 0,
 				nulos: 0,
+				validos: 0,
+				total: 0,
 			},
 			{
 				candidatura: "Diputado Uninominal",
@@ -180,6 +195,8 @@ export class CargarvotosComponent implements OnInit {
 				CC: 0,
 				blancos: 0,
 				nulos: 0,
+				validos: 0,
+				total: 0,
 			},
 			{
 				candidatura: "Diputado Especial",
@@ -192,24 +209,39 @@ export class CargarvotosComponent implements OnInit {
 				CC: 0,
 				blancos: 0,
 				nulos: 0,
+				validos: 0,
+				total: 0,
 			},
 		],
 		beforeprocessing: (data: any) => {
 			this.source.totalrecords = data.TotalRows;
 		},
 	};
-	
+	flag=0;
+	totalcellrender = (row: number, column: any, value: any): any => {
+		if(this.flag>0)this.flag--;
+		if(value>=0 && value<=this.acta.emp)
+    return "<h6 style='height:100%;text-align:center;vertical-align:middle;'><div class='cell-default'>"+value+"</div></h6>";
+    else
+    return "<h6 style='height:100%;text-align:center;vertical-align:middle;'><div class='cell-red'>"+value+"</div></h6>";
+	}
+	cellChange=(indexrow: number, datafield: string, columntype: string, oldvalue: any, newvalue: any): any => {
+		
+		
+	}
 	columns: any[] = [
 		{ datafield: "candidatura", text: "", width: "19%" ,editable:false},
 		{ datafield: "CREEMOS", text: "CREEMOS", width: "9%" ,editable:true},
-		{ datafield: "ADN", text: "ADN", width: "9%" ,editable:true},
+		{ datafield: "ADN", text: "ADN", width: "0%" ,editable:true, hidden:true},
 		{ datafield: "MAS", text: "MAS-IPSP", width: "9%" ,editable:true},
 		{ datafield: "FPV", text: "FPV", width: "9%" ,editable:true},
-		{ datafield: "PANBOL", text: "PANBOL", width: "9%" ,editable:true},
+		{ datafield: "PANBOL", text: "PANBOL", width: "0%" ,editable:true, hidden:true},
 		{ datafield: "LIBRE21", text: "LIBRE21", width: "9%" ,editable:true},
 		{ datafield: "CC", text: "CC", width: "9%" ,editable:true},
 		{ datafield: "blancos", text: "Blancos", width: "9%" ,editable:true},
 		{ datafield: "nulos", text: "Nulos", width: "9%" ,editable:true},
+		{ datafield: "validos", text: "Validos", width: "9%" ,editable:false},
+		{ datafield: "total", text: "Total", width: "9%" ,editable:false,cellsrenderer:this.totalcellrender},
 	];
 	dataAdapter: any = new jqx.dataAdapter(this.source);
 	numberrenderer = (row: number, column: any, value: any): string => {
@@ -251,7 +283,7 @@ export class CargarvotosComponent implements OnInit {
 	circuns: Circunscripcion[] = [];
 	provs: Provincia[] = [];
 	muns: Municipio[] = [];
-	recs: Recinto[] = [];
+	recs: any[] = [];
 	acta:any={codigo:'',emp:0,apertura:'',cierre:'',foto:null,id:''};
 	info:any={cir:'',prov:'',mun:'',rec:'',loc:'',mesa:-1};
 	ngOnInit() {}
@@ -296,7 +328,31 @@ export class CargarvotosComponent implements OnInit {
 		
 		
 	}
-
+	
+	Cellvaluechanged($event){
+		this.flag++;
+		const indexrow=$event.args.rowindex;
+		const newvalue=$event.args.newvalue;
+		const oldvalue=$event.args.oldvalue;
+		const datafield=$event.args.datafield;
+		if(datafield=="validos" || datafield=="total")return;
+		if(newvalue<0 || newvalue>100){
+			this.migrid.setcellvalue(indexrow,datafield,oldvalue);
+		}
+		else{
+			let row =this.migrid.getrowdata(indexrow);
+			let votosvalidos=
+			(row.CREEMOS?row.CREEMOS:0)+
+			(row.MAS?row.MAS:0)+
+			(row.FPV?row.FPV:0)+
+			(row.LIBRE21?row.LIBRE21:0)+
+			(row.CC?row.CC:0);
+			const blancos = (row.blancos?row.blancos:0);
+			const nulos = (row.nulos?row.nulos:0);
+			this.migrid.setcellvalue(indexrow,'validos',votosvalidos);
+			this.migrid.setcellvalue(indexrow,'total',votosvalidos+blancos+nulos);
+		}
+	}
 	showPreviousStep(event?: Event) {
 		this.ngWizardService.previous();
 	}
@@ -372,13 +428,16 @@ export class CargarvotosComponent implements OnInit {
 		this.dropRec.clearSelection();
 		this.myValidator.validateInput('inMun');
 		const munSelect = this.dropMun.getSelectedItem();
+		const proSelect = this.dropProv.getSelectedItem();
+		const cirSelect = this.dropCir.getSelectedItem();
 		this.info.mun=munSelect.value;
-		console.log(munSelect)
+		console.log(munSelect,proSelect,cirSelect);
+
 		let list = [];
 		for (let i = 0; i < this.recs.length; i++) {
-			if (
-				"municipio" in this.recs[i] &&
-				this.recs[i].municipio._id === munSelect.value._id
+			if ("municipio" in this.recs[i] && this.recs[i].municipio._id === munSelect.value._id 
+			&& this.recs[i].provincia._id === proSelect.value._id
+			&& this.recs[i].circunscripcion._id === cirSelect.value._id
 			) {
 				list.push({
 					value: this.recs[i],
@@ -563,6 +622,38 @@ export class CargarvotosComponent implements OnInit {
 	}
  
 	prueba(){		this.ngWizardService.next();	}
+	checkApertura(mesa?:any){
+		let aperturado;
+		this.info.mesa=mesa;
+		
+		for (let i = 0; i < this.info.rec.mesas.length; i++) {
+			if(this.info.rec.mesas[i].mesa==mesa){
+				aperturado=this.info.rec.mesas[i].estado;
+				break;
+			}
+		}
+		if(aperturado==="Sin Aperturar"){
+			this.modalAperturar.show();
+		}
+	}
+	aperturarAction(){
+		const renderdata=this.inDelegado.val().replace(/( )+/g,' ').trim();
+		this.$rec.aperturarMesa(this.info.rec._id,{
+			estado:"Aperturado",
+			delegado:(renderdata.length>0?"true":"false"),
+			mesa:this.info.mesa
+		}).subscribe(
+			(res)=>{
+				console.log("aperturado",res);
+				this.mensaje('Aperturacion correcta',"Mesa "+this.info.mesa,0);
+				this.checkStep(this.info.mesa);
+			},
+			(error)=>{
+			console.log(error);
+			}
+		)
+		this.modalAperturar.hide();
+	}
 	checkStep(mesa?:any){
 		console.log(this.$ev);
 		if(this.$ev==undefined || this.$ev.step.index==0){
@@ -578,10 +669,8 @@ export class CargarvotosComponent implements OnInit {
 				}
 			}
 			console.log(mesa);
-			// if(this.checkmesa!=-1){
-				this.resetActa();
-				this.ngWizardService.next();
-			// }
+			this.resetActa();
+			this.ngWizardService.next();
 		}
 		else if(this.$ev.step.index==2){
 			
@@ -595,23 +684,27 @@ export class CargarvotosComponent implements OnInit {
 	archivo:File;
 	imagefile:File=null;
 
-resetActa(){
-	for (let i = 0; i < this.info.rec.mesas.length; i++) {
-		if(this.info.rec.mesas[i].mesa==this.Mesa){
-			this.info.mesaHabilitados=this.info.rec.mesas[i].habilitados;
-			this.empadronados.val(this.info.rec.mesas[i].habilitados);
-			break;
-		}
+	resetAperturar(){
+		this.modalAperturar.hide();
+		this.inDelegado.val('');
 	}
-	 this.numberMesa.val('');
-	 this.apertura.setDate(new Date());
-	 this.cierre.setDate(new Date());
-	 this.archivo= null;
-	 this.imagefile= null;
-	 this.croppedImage='';
-	 this.imageChangedEvent='';
-	 this.validatorActa.hide();
-}
+	resetActa(){
+		for (let i = 0; i < this.info.rec.mesas.length; i++) {
+			if(this.info.rec.mesas[i].mesa==this.Mesa){
+				this.info.mesaHabilitados=this.info.rec.mesas[i].habilitados;
+				this.empadronados.val(this.info.rec.mesas[i].habilitados);
+				break;
+			}
+		}
+		this.numberMesa.val('');
+		this.apertura.setDate(new Date());
+		this.cierre.setDate(new Date());
+		this.archivo= null;
+		this.imagefile= null;
+		this.croppedImage='';
+		this.imageChangedEvent='';
+		this.validatorActa.hide();
+	}
 
 
 	rulesRecinto=[

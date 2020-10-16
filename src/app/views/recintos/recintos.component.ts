@@ -16,6 +16,7 @@ import { SnotifyComponent, SnotifyPosition, SnotifyService } from "ng-snotify";
 import { Municipio } from "../../models/municipio";
 import { Localidad } from "../../models/localidad";
 import { Recinto } from "../../models/recinto";
+import { langes } from  "../../models/utils";
 
 @Component({
   selector: "app-recintos",
@@ -51,6 +52,7 @@ export class RecintosComponent implements OnInit {
   formRec: FormGroup = new FormGroup({
     institucion: new FormControl(""),
   });
+  langs:any=langes;
   rules = [
     {
       input: ".inInstitucion",
@@ -210,12 +212,12 @@ export class RecintosComponent implements OnInit {
   ];
   columns: any[] = [
     { datafield: "_id", text: "ID", hidden: true },
-    { datafield: "id", text: "#", width: 40 },
+    { datafield: "id", text: "#", width: 40 ,filterable:false},
     { datafield: "institucion", text: "Institucion", width: 250 },
-    { datafield: "municipio", text: "Municipio", width: 120 },
+    { datafield: "municipio", text: "Municipio", width: 120,filtertype: 'checkedlist' },
     { datafield: "localidad", text: "Localidad", width: 120 },
     { datafield: "recinto", text: "InfoJson", hidden: true },
-    { datafield: "tipo", text: "Tipo", width: 150 },
+    { datafield: "tipo", text: "Tipo", width: 150 ,filtertype: 'list'},
   ];
   lista: any[];
   refresh() {
@@ -230,7 +232,7 @@ export class RecintosComponent implements OnInit {
           municipio: "municipio" in data[i] ? data[i].municipio.name : "",
           localidad: "localidad" in data[i] ? data[i].localidad : "",
           recinto: data[i],
-          tipo: data[i].tipo,
+          tipo: ((data[i].tipo.length==2)?data[i].tipo[0]+"/"+data[i].tipo[1]:data[i].tipo[0] )
         });
       }
       this.migrid.addrow(null, temp);
