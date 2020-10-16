@@ -22,6 +22,7 @@ import { HighchartsChartModule } from "highcharts-angular";
 import { PieChartComponent } from "./pie-chart/pie-chart.component";
 import { LineChartComponent } from "./line-chart/line-chart.component";
 import { BarChartComponent } from "./bar-chart/bar-chart.component";
+import { DropdowndataComponent } from './dropdowndata/dropdowndata.component';
 
 @NgModule({
   declarations: [
@@ -29,6 +30,7 @@ import { BarChartComponent } from "./bar-chart/bar-chart.component";
     PieChartComponent,
     LineChartComponent,
     BarChartComponent,
+    DropdowndataComponent,
   ],
   imports: [
     CommonModule,

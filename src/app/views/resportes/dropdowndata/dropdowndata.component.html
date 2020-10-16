@@ -1,0 +1,12 @@
+<jqxDropDownList
+  #dropCircunscripcion
+  [theme]="'material'"
+  [width]="260"
+  [height]="30"
+  [source]="dataAdapter"
+  [filterable]="true"
+  [displayMember]="tagNameFiled"
+  [searchMode]="'containsignorecase'"
+  (onSelect)="listOnSelect.emit($event)"
+>
+</jqxDropDownList>

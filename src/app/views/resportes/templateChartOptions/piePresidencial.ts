@@ -18,6 +18,7 @@ export const piePresidencial = {
     mathRoud
   ) {
     return (response) => {
+      if (!response || !response.length) return "Datos vacios";
       this.headerChart = {
         porcentajeActaMesa: mathRoud(
           response[0].actasValidas / response[0].mesas

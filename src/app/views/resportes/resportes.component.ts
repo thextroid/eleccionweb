@@ -53,12 +53,42 @@ export class ResportesComponent implements OnInit {
   //     ],
   //   },
   // ];
+
   public dataJson: any;
   public piedata: any[];
   public bardata: any[];
   public pieProvinciaData: any[];
   public pieMunicipioData: any[];
   public pieRecintoData: any[];
+
+  public provinciasDataDropDown: any[];
+  public tableNameProvincia = {
+    tableName: "provincias",
+    displayMember: "name",
+    datafields: [
+      { name: "_id", type: "string" },
+      { name: "name", type: "string" },
+    ],
+  };
+  public municipiosDataDropDown: any[];
+  public tableNameMunicipio = {
+    tableName: "municipios",
+    displayMember: "name",
+    datafields: [
+      { name: "_id", type: "string" },
+      { name: "name", type: "string" },
+    ],
+  };
+  public recintosDataDropDown: any[];
+  public tableNameRecinto = {
+    tableName: "recintos",
+    displayMember: "institucion",
+    datafields: [
+      { name: "_id", type: "string" },
+      { name: "institucion", type: "string" },
+    ],
+  };
+
   public methodChartPresidencia = piePresidencial.presidencialData.bind(this);
   public headerChart: {
     porcentajeActaMesa: Number;
@@ -68,58 +98,47 @@ export class ResportesComponent implements OnInit {
     mesas: null,
     partidos: [],
   };
-  @ViewChild("dropProv", { static: false }) dropProv: jqxDropDownListComponent;
-  @ViewChild("dropMun", { static: false }) dropMun: jqxDropDownListComponent;
-  @ViewChild("dropCir", { static: false }) dropCir: jqxDropDownListComponent;
-  @ViewChild("dropRec", { static: false }) dropRec: jqxDropDownListComponent;
-  @ViewChild("dropEleccion", { static: false }) dropEleccion: jqxDropDownListComponent;
+
   constructor(
-    protected $prov: ProvinciasService,
-    protected $mun: MunicipiosService,
-    protected $cir: CircunscripcionesService,
-    protected $rec: RecintosService,
+    protected circunscripcionService: CircunscripcionesService,
+    protected provinciaService: ProvinciasService,
+    protected municipioService: MunicipiosService,
+    protected recintoService: RecintosService,
     private reportesService: ReportesService
   ) {}
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.loadDataProvincias();
+    this.loadDataMunicipios();
+    this.loadDataRecintos();
+  }
 
   ngAfterViewInit(): void {
-    // this.$prov.all().subscribe((response) => {
-    //   let list = [];
-    //   for (let i = 0; i < response.length; i++) {
-    //     list.push({
-    //       value: response[i],
-    //       label: response[i].name,
-    //     });
-    //   }
-    //   this.dropProv.source(list);
-    // });
-    // this.$mun.all().subscribe((response) => {
-    //   let list = [];
-    //   for (let i = 0; i < response.length; i++) {
-    //     list.push({
-    //       value: response[i],
-    //       label: response[i].name,
-    //     });
-    //   }
-    //   this.dropMun.source(list);
-    // });
-    // this.$rec.all().subscribe((response) => {
-    //   let list = [];
-    //   for (let i = 0; i < response.length; i++) {
-    //     list.push({
-    //       value: response[i],
-    //       label: response[i].institucion + "/" + response[i].localidad,
-    //     });
-    //   }
-    //   this.dropRec.source(list);
-    // });
     this.loadDataPresidencialGeneral();
     this.loadDataLineChart();
-    this.loadDataPresidencialProvincia();
-    this.loadDataPresidencialMunicipio();
-    this.loadDataPresidencialRecinto();
+    this.loadDataPresidencialProvincia("5f5ac09ffa74ada37adf107b");
+    this.loadDataPresidencialMunicipio("5f5ac0e1f770bc79cb72c0b3");
+    this.loadDataPresidencialRecinto("5f7d05a1449b8cdbde0d92bd");
   }
+
+  loadDataProvincias() {
+    this.provinciaService.all().subscribe((response) => {
+      this.provinciasDataDropDown = response;
+    });
+  }
+
+  loadDataMunicipios() {
+    this.municipioService.all().subscribe((response) => {
+      this.municipiosDataDropDown = response;
+    });
+  }
+
+  loadDataRecintos() {
+    this.recintoService.all().subscribe((response) => {
+      this.recintosDataDropDown = response;
+    });
+  }
+
   change(event) {
     // this.loadDataTest();
   }
@@ -129,12 +148,12 @@ export class ResportesComponent implements OnInit {
       .subscribe(this.loadDataPies(piePresidencial));
   }
 
-  loadDataPies = (functionPies) => {
+  loadDataPies = (functionPies, title = "Presidencial") => {
     return functionPies.presidencialData.call(
       this,
       functionPies.setDataPie.bind(this),
       functionPies.pieLabel.bind(this),
-      "Presidencial",
+      title,
       this.roundEpsion
     );
   };
@@ -153,24 +172,45 @@ export class ResportesComponent implements OnInit {
       );
   }
 
-  loadDataPresidencialProvincia() {
-    // console.log(this.dropRec.getSelectedItem().value._id);
+  loadDataPresidencialProvincia(provinciaId: string) {
+    console.log(provinciaId);
     this.reportesService
-      .getPresidenteProvincia("5f5ac09ffa74ada37adf107b")
-      .subscribe(this.loadDataPies(pieDataProvincia));
+      .getPresidenteProvincia(provinciaId)
+      .subscribe(this.loadDataPies(pieDataProvincia, "Provincias"));
   }
-  loadDataPresidencialMunicipio() {
+  loadDataPresidencialMunicipio(municipioId: string) {
     this.reportesService
-      .getPresidenteMunicipio("5f5ac0e1f770bc79cb72c0b3")
-      .subscribe(this.loadDataPies(pieDataMunicipio));
+      .getPresidenteMunicipio(municipioId)
+      .subscribe(this.loadDataPies(pieDataMunicipio, "Municipio"));
   }
-  loadDataPresidencialRecinto() {
+  loadDataPresidencialRecinto(recintoId) {
     this.reportesService
-      .getPresidenteRecinto("5f7d05a1449b8cdbde0d92bd")
-      .subscribe(this.loadDataPies(pieDataRecinto));
+      .getPresidenteRecinto(recintoId)
+      .subscribe(this.loadDataPies(pieDataRecinto, "Recinto"));
+  }
+
+  selectedProvinciaItem({ event }) {
+    const {
+      item: { originalItem: provincia },
+    } = event.args;
+
+    this.loadDataPresidencialProvincia(provincia.uid);
+  }
+
+  selectedMunicipioItem(event) {
+    const {
+      item: { originalItem: municipio },
+    } = event.args;
+    this.loadDataPresidencialMunicipio(municipio.uid);
+  }
+
+  selectedRecintoItem(event) {
+    const {
+      item: { originalItem: recinto },
+    } = event.args;
+    this.loadDataPresidencialRecinto(recinto.uid);
   }
   roundEpsion(number: any) {
     return Math.round((number + Number.EPSILON) * 100) / 100;
   }
-
 }

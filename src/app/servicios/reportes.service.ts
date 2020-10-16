@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
 
-const API = "http://192.168.1.4:3000/api/reportes";
+const API = "http://192.168.1.5:3000/api/reportes";
 @Injectable({
   providedIn: "root",
 })

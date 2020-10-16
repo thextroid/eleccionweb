@@ -6,12 +6,38 @@
     [piedata]="piedata"
   >
   </app-pie-chart>
+
   <app-bar-chart
     *ngIf="bardata"
     class="container-colum bar"
     [bardata]="bardata"
   >
   </app-bar-chart>
+
+  <app-dropdowndata
+    class="container-colum-3 pie-list"
+    *ngIf="provinciasDataDropDown"
+    [fieldsTable]="tableNameProvincia"
+    [dropdownData]="provinciasDataDropDown"
+    (listOnSelect)="selectedProvinciaItem($event)"
+  >
+  </app-dropdowndata>
+  <app-dropdowndata
+    class="container-colum-3 pie-list"
+    *ngIf="municipiosDataDropDown"
+    [fieldsTable]="tableNameMunicipio"
+    [dropdownData]="municipiosDataDropDown"
+    (listOnSelect)="selectedMunicipioItem($event)"
+  >
+  </app-dropdowndata>
+  <app-dropdowndata
+    class="container-colum-3 pie-list"
+    *ngIf="recintosDataDropDown"
+    [fieldsTable]="tableNameRecinto"
+    [dropdownData]="recintosDataDropDown"
+    (listOnSelect)="selectedRecintoItem($event)"
+  >
+  </app-dropdowndata>
 
   <app-pie-chart
     class="container-colum-3 pie-list"
