@@ -1,7 +1,6 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { Router } from "@angular/router";
-
 const API = "http://192.81.217.7/api/auth";
 
 @Injectable({
@@ -19,6 +18,7 @@ export class AuthService {
   }
 
   loggIn(): boolean {
+
     return localStorage.getItem("access_token") !== null;
   }
 }

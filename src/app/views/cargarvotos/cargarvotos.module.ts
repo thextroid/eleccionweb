@@ -28,6 +28,7 @@ import { VotacionService } from "../../servicios/votacion.service";
 import { ImageCropperModule } from 'ngx-image-cropper';
 import { NgxUploaderModule } from 'ngx-uploader';
 import { ModalModule } from 'ngx-bootstrap/modal';
+import { NgxSpinnerModule } from 'ngx-spinner';
 const ngWizardConfig: NgWizardConfig = {
   theme: THEME.default,
 };
@@ -54,6 +55,7 @@ const ngWizardConfig: NgWizardConfig = {
     jqxValidatorModule,
     jqxNumberInputModule,
     NgxUploaderModule,
+    NgxSpinnerModule,
     NgWizardModule.forRoot(ngWizardConfig),
   ],
   providers: [

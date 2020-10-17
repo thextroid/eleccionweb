@@ -11,6 +11,8 @@ import { UserService } from "../../servicios/user.service";
 import { TaskComponent } from "./task/task.component";
 import { MaterialModule } from "./../material.module";
 import { jqxListBoxModule } from "jqwidgets-ng/jqxlistbox";
+import { NgxSpinnerModule } from "ngx-spinner";
+import { SnotifyModule, SnotifyService, ToastDefaults } from "ng-snotify";
 
 @NgModule({
   imports: [
@@ -21,9 +23,14 @@ import { jqxListBoxModule } from "jqwidgets-ng/jqxlistbox";
     FormsModule,
     MaterialModule,
     jqxListBoxModule,
+    SnotifyModule,
   ],
   declarations: [UsersComponent, UserFormComponent, TaskComponent],
   entryComponents: [UserFormComponent, TaskComponent],
-  providers: [UserService],
+  providers: [
+    UserService,
+    { provide: "SnotifyToastConfig", useValue: ToastDefaults },
+    SnotifyService,
+  ],
 })
 export class UsersModule {}

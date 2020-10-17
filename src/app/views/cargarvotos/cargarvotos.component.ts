@@ -17,6 +17,7 @@ import {
 } from "ng-wizard";
 import { ModalDirective } from 'ngx-bootstrap/modal';
 import { ImageCroppedEvent } from 'ngx-image-cropper';
+import { NgxSpinnerService } from 'ngx-spinner';
 import { UploaderOptions, UploadFile, UploadInput, UploadOutput, UploadStatus } from 'ngx-uploader';
 import { Circunscripcion } from "../../models/circunscripcion";
 import { Municipio } from "../../models/municipio";
@@ -272,6 +273,7 @@ export class CargarvotosComponent implements OnInit {
 		private $prov: ProvinciasService,
 		private $mun: MunicipiosService,
 		private $rec: RecintosService,
+		private $spinner: NgxSpinnerService,
 		private $notifier: SnotifyService
 	) {
 		this.options = { concurrency: 1, maxUploads: 100, maxFileSize: (1<<23) };
@@ -449,30 +451,31 @@ export class CargarvotosComponent implements OnInit {
 	}
 	generarMesas() {
 		const recSelect = this.dropRec.getSelectedItem();
+		this.modelRec = recSelect.value;
 		this.info.rec=recSelect.value;
 		this.info.loc=recSelect.value.localidad;
-		console.log(recSelect.value);
 		this.myValidator.validateInput('inRec');
 		this.checkmesa=-1;
 		this.mess=[];
-		
-		for (let i = 0; i < this.recs.length; i++) {
-			if (this.recs[i]._id === recSelect.value._id) {
-				this.modelRec = this.recs[i];
-				break;
-			}
-		}
+		console.log(recSelect.value);
+		// for (let i = 0; i < this.recs.length; i++) {
+		// 	if (this.recs[i]._id === recSelect.value._id) {
+		// 		this.modelRec = this.recs[i];
+		// 		break;
+		// 	}
+		// }
 		this.$vot.getMesas(recSelect.value._id).subscribe(
 			(data)=>{
 				console.log(data);
 				let match;
 				for (let i = 0; i < this.info.rec.totalMesas; i++) {
 					match=null;
+					const xm=this.info.rec.mesas[i];
 					for (let j = 0; match==null && j < data.length; j++)
 						if(data[j].numeroMesa===("Mesa "+(i+1)))
 							match= data[j].estado;
 					
-					this.mess.push({nro:this.info.rec.mesas[i].mesa,disabled:(match==null),estado:(match!=null)?match:'Habilitado'});
+					this.mess.push({nro:xm.mesa,disabled:(match==null),estado:(match!=null)?match:xm.estado,estadoApertura:xm.estado,delegado:xm.delegado});
 				}
 				console.log(this.mess)
 			},
@@ -594,6 +597,7 @@ export class CargarvotosComponent implements OnInit {
 		// this.uploadActa();
 		this.ngWizardService.next();
 	}
+	
 	uploadFoto(){
 		console.log(this.imageChangedEvent.target.files[0]);
 		const form = new FormData();
@@ -610,7 +614,7 @@ export class CargarvotosComponent implements OnInit {
 		// };
 		this.$vot.file(this.acta.id,form).subscribe(
 			(res)=>{
-				this.mensaje('la imagen del acta se cargó!','Foto',0)
+				this.mensaje('La imagen del acta se cargó!','Foto',0)
 				this.ngWizardService.reset();
 				console.log(res);
 			},
@@ -623,17 +627,20 @@ export class CargarvotosComponent implements OnInit {
  
 	prueba(){		this.ngWizardService.next();	}
 	checkApertura(mesa?:any){
-		let aperturado;
+		let flag;
 		this.info.mesa=mesa;
 		
 		for (let i = 0; i < this.info.rec.mesas.length; i++) {
 			if(this.info.rec.mesas[i].mesa==mesa){
-				aperturado=this.info.rec.mesas[i].estado;
+				flag=this.info.rec.mesas[i].estado;
 				break;
 			}
 		}
-		if(aperturado==="Sin Aperturar"){
+		if(flag==="Sin Aperturar"){
 			this.modalAperturar.show();
+		}
+		else{
+			this.checkStep(this.info.mesa);
 		}
 	}
 	aperturarAction(){
@@ -646,10 +653,17 @@ export class CargarvotosComponent implements OnInit {
 			(res)=>{
 				console.log("aperturado",res);
 				this.mensaje('Aperturacion correcta',"Mesa "+this.info.mesa,0);
-				this.checkStep(this.info.mesa);
+				this.mess[this.info.mesa-1].estado="Aperturado";
+				this.info.rec.mesas[this.info.mesa-1].estado="Aperturado";
+				for (let i = 0; i < this.recs.length; i++)
+					if(this.recs[i]._id===this.info.rec._id){
+						this.recs[i].mesas[this.info.mesa-1].estado="Aperturado";
+						break;
+					}
+				this.mensaje('Se realizó la apertura','Mesa '+this.info.mesa,0);
 			},
 			(error)=>{
-			console.log(error);
+				this.mensaje('no se pudo aperturar, actualice la pagina','Mesa '+this.info.mesa,2);
 			}
 		)
 		this.modalAperturar.hide();
@@ -665,6 +679,7 @@ export class CargarvotosComponent implements OnInit {
 			for (let i = 0; i < this.info.rec.mesas.length; i++) {
 				if(this.info.rec.mesas[i].mesa==mesa){
 					this.info.mesaHabilitados=this.info.rec.mesas[i].habilitados;
+					this.info.xmesa=this.info.rec.mesas[i];
 					break;
 				}
 			}
@@ -692,6 +707,7 @@ export class CargarvotosComponent implements OnInit {
 		for (let i = 0; i < this.info.rec.mesas.length; i++) {
 			if(this.info.rec.mesas[i].mesa==this.Mesa){
 				this.info.mesaHabilitados=this.info.rec.mesas[i].habilitados;
+				this.info.xmesa=this.info.rec.mesas[i];
 				this.empadronados.val(this.info.rec.mesas[i].habilitados);
 				break;
 			}
@@ -714,31 +730,31 @@ export class CargarvotosComponent implements OnInit {
 			}
 		},
 		{ 	input: '.inProv', message: 'Seleccione una provincia', action: 'keyup, blur', 
-				rule: (input:any, commit:any):boolean=>{
-					return this.dropProv.getSelectedIndex()!=-1;
-				}
+			rule: (input:any, commit:any):boolean=>{
+				return this.dropProv.getSelectedIndex()!=-1;
+			}
 		},
 		{ 	input: '.inMun', message: 'Seleccione una municipio', action: 'keyup, blur', 
-		rule: (input:any, commit:any):boolean=>{
-			return this.dropMun.getSelectedIndex()!=-1;
+			rule: (input:any, commit:any):boolean=>{
+				return this.dropMun.getSelectedIndex()!=-1;
+			}
+		},
+		{ 	input: '.inRec', message: 'Seleccione un Recinto', action: 'keyup, blur', 
+			rule: (input:any, commit:any):boolean=>{
+				return this.dropRec.getSelectedIndex()!=-1;
+			}
 		}
-	},
-{ 	input: '.inRec', message: 'Seleccione un Recinto', action: 'keyup, blur', 
-		rule: (input:any, commit:any):boolean=>{
-			return this.dropRec.getSelectedIndex()!=-1;
-		}
-	}
 	];
 	rulesActa=[
 		{ 	input: '.inMesa', message: 'Codigo mesa requerido!', action: 'keyup, blur', rule: 'required' },
 		{ 	input: '.inMesa', message: 'Mínimo de 4 caracteres', action: 'keyup, blur', rule: 'minLength=4' },
 		{ 	input: '.inMesa', message: 'Máximo de 255 caracteres', action: 'keyup, blur', rule: 'maxLength=255' },
 		{ 	input: '.inEmp', message: 'debe estar entre 1 y 1024', action: 'keyup, blur',
-		rule: (input: any, commit: any): boolean => {
-			const lat = input.val();
-			return lat>=1 && lat<=1024;
+			rule: (input: any, commit: any): boolean => {
+				const lat = input.val();
+				return lat>=1 && lat<=1024;
+			}
 		}
-	}
 	];
 
 	mensaje(content: string, title: string, tipo) {
@@ -771,6 +787,7 @@ export class CargarvotosComponent implements OnInit {
 		} else if (output.type === 'addedToQueue' && typeof output.file !== 'undefined') {
 		  this.files.push(output.file);
 		} else if (output.type === 'uploading' && typeof output.file !== 'undefined') {
+			this.$spinner.show('Guardando Foto');
 		  const index = this.files.findIndex(file => typeof output.file !== 'undefined' && file.id === output.file.id);
 		  this.files[index] = output.file;
 		} else if (output.type === 'cancelled' || output.type === 'removed') {
@@ -783,9 +800,11 @@ export class CargarvotosComponent implements OnInit {
 		  this.dragOver = false;
 		} else if (output.type === 'rejected' && typeof output.file !== 'undefined') {
 			this.mensaje('No se pudo cargar la imagen','Foto',3);
+			this.$spinner.hide();
 		  console.log(output.file.name + ' rejected');
 		}
 		else if( output.type==='done'){
+			this
 			this.mensaje('Imagen de acta cargada correctamente!','Foto',0);
 			this.ngWizardService.reset();
 			this.generarMesas();

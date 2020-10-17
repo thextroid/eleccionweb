@@ -1,5 +1,5 @@
 import { Component } from "@angular/core";
-import { navItems } from "../../_nav";
+import { navItems,navItemsOperador,navItemsControl } from "../../_nav";
 import { AuthService } from "../../servicios/auth.service";
 @Component({
   selector: "app-dashboard",
@@ -7,10 +7,25 @@ import { AuthService } from "../../servicios/auth.service";
 })
 export class DefaultLayoutComponent {
   public sidebarMinimized = false;
-  public navItems = navItems;
+  public navItems;
+  
+  public role;
+  constructor(private authService: AuthService) {
 
-  constructor(private authService: AuthService) {}
+    localStorage.getItem("access_token");
+    console.log(localStorage.getItem("user-role"));
+    this.role = localStorage.getItem("user-role");
+    if(this.role=='Admin')
+      this.navItems=navItems
+    
+    if(this.role=='Operador')
+      this.navItems=navItemsOperador
+    
+    if(this.role=='Control')
+      this.navItems=navItemsControl
+  }
   toggleMinimize(e) {
+    
     this.sidebarMinimized = e;
   }
   logOut() {

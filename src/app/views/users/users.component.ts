@@ -1,5 +1,6 @@
 import { Component, OnInit, TemplateRef, ViewChild } from "@angular/core";
 import { jqxGridComponent } from "jqwidgets-ng/jqxgrid";
+import { NgxSpinnerService } from "ngx-spinner";
 import { BsModalRef, BsModalService } from "ngx-bootstrap/modal";
 import { User } from "../../models/user";
 import { UserService } from "../../servicios/user.service";
@@ -9,7 +10,7 @@ import { TaskComponent } from "./task/task.component";
 import { RecintosService } from "../../servicios/recintos.service";
 import { TaskService } from "../../servicios/task.service";
 import { Task } from "../../models/task";
-
+import { SnotifyPosition, SnotifyService } from 'ng-snotify';
 @Component({
   templateUrl: "./users.component.html",
   styleUrls: ["./users.component.css"],
@@ -76,16 +77,16 @@ export class UsersComponent implements OnInit {
   constructor(
     private userService: UserService,
     private modalService: BsModalService,
+    private $notifier: SnotifyService,
+    private $spinner: NgxSpinnerService,
+    protected taskService: TaskService,
     protected resintosService: RecintosService,
-    protected taskService: TaskService
   ) {}
 
   ngOnInit(): void {
     this.resetSelectedUser();
     this.loadData();
-    this.loadDataRecintos();
-  }
-
+    this.loadDataRecintos();refeshUsers
   loadData() {
     this.userService.getAll().subscribe((data) => {
       this.source.localdata = data;
@@ -167,24 +168,26 @@ export class UsersComponent implements OnInit {
     user.telefono = user.telefono + "";
     if (id) {
       this.userService.update(id, user).subscribe((result) => {
+        this.mensaje('Se Actualizó correctamente el Usuario','Usuario',0);
         this.refeshUsers();
+      },(error)=>{
+        this.mensaje('Se Actualizó correctamente el Usuario','Usuario',0);
       });
     } else {
       this.userService.save(user).subscribe((result) => {
+        this.mensaje('Se Actualizó correctamente el Usuario','Usuario',0);
         this.refeshUsers();
-      });
+      },
+      (error)=>{
+        this.mensaje(error.message,'',0);
+      }
+      );
     }
     this.modalRef.hide();
   }
 
   getTaskByUsuario(id) {
-    return this.taskService.getTaskByUser(id).toPromise();
-  }
-
-  saveRecintoUsiario(recintos: Map<String, any>) {
-    const idRecintos = Array.from(recintos.values(), (recinto) => recinto.id);
-    const userid = this.selectedUser._id;
-    const task = { userId: userid, recintos: idRecintos };
+    return this.taskService.getTaskByUser(id).toPromise();accessRoles
     if (userid && !this.taskUser) {
       this.taskService.save(task).subscribe((result) => {
         this.resetSelectedUser();
@@ -211,5 +214,19 @@ export class UsersComponent implements OnInit {
   }
   cancel() {
     this.resetSelectedUser();
+  }
+  mensaje(content: string, title: string, tipo) {
+    const op = {
+      timeout: 3000,
+      titleMaxLength: 22,
+      showProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      position: SnotifyPosition.rightTop,
+    };
+    if (tipo == 0) this.$notifier.success(content, title, op);
+    if (tipo == 1) this.$notifier.warning(content, title, op);
+    if (tipo == 2) this.$notifier.info(content, title, op);
+    if (tipo == 3) this.$notifier.error(content, title, op);
   }
 }
