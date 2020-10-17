@@ -5,6 +5,7 @@ import {
   HashLocationStrategy,
   CommonModule,
 } from "@angular/common";
+
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
 // jqxGRID
 import { jqxGridModule } from "jqwidgets-ng/jqxgrid";
@@ -50,10 +51,9 @@ import { TabsModule } from "ngx-bootstrap/tabs";
 import { SwitchesComponent } from "./views/base/switches.component";
 import { FormsModule } from "@angular/forms";
 import { UserService } from "./servicios/user.service";
-import { HttpClientModule } from "@angular/common/http";
 import { BsModalService } from "ngx-bootstrap/modal";
 import { AuthGuard } from "./auth/auth.guard";
-import { HTTP_INTERCEPTORS } from "@angular/common/http";
+import { HttpClientModule, HTTP_INTERCEPTORS } from "@angular/common/http";
 import { TokenInterceptorService } from "./servicios/token-interceptor.service";
 
 //import { ChartsModule } from 'ng2-charts';
@@ -79,7 +79,7 @@ import { TokenInterceptorService } from "./servicios/token-interceptor.service";
     jqxButtonModule,
     jqxCheckBoxModule,
     //ChartsModule,
-    jqxGridModule,    
+    jqxGridModule,
   ],
   declarations: [
     AppComponent,
