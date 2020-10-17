@@ -38,7 +38,7 @@
         <div *ngFor="let iterator of mess; let row = index" class="col-md-3 text-center">
 
           <button *ngIf="!iterator.disabled"
-          class="btn btn-light"
+          class="btn btn-primary"
           (click)="checkApertura(iterator.nro)" disabled
           style="width: 100%; margin: 4px">
           <h5 style="margin-bottom:0px">Mesa {{iterator.nro}}</h5>
@@ -48,8 +48,18 @@
             </p>
           </button>
           
-          <button *ngIf="iterator.disabled"
-          class="btn btn-warning"
+          <button *ngIf="iterator.disabled && iterator.estado==='Sin Aperturar'"
+          class="btn btn-info"
+          (click)="checkApertura(iterator.nro)" 
+          style="width: 100%; margin: 4px">
+          <h5 style="margin-bottom:0px">Mesa {{iterator.nro}}</h5>
+          <img src="assets/img/brand/urna.png" style="width:50px" alt="">
+          <p style="margin-bottom:0px">
+              {{iterator.estado}}
+            </p>
+          </button>
+          <button *ngIf="iterator.disabled && iterator.estado==='Aperturado'"
+          class="btn btn-primary"
           (click)="checkApertura(iterator.nro)" 
           style="width: 100%; margin: 4px">
           <h5 style="margin-bottom:0px">Mesa {{iterator.nro}}</h5>
@@ -107,7 +117,7 @@
             </jqxTextArea>
           </div>
           <div class="form-group col-sm-6">
-            <button class="btn btn-primary btn-lg" (click)="_Acta()"><i class="fa fa-file"></i> Subir datos de acta</button>
+            <button class="btn btn-primary btn-lg" (click)="_Acta()"><i class="fa fa-file"></i> Continuar</button>
           </div>
         </div>
       </div>
@@ -155,8 +165,7 @@
                         <div class="row">
                           
                           <div class="col-6 col-md-4">
-                            <button type="button" class="btn btn-primary btn-sm" (click)="subir()"><i class="fa fa-upload"></i> </button>
-                            <button type="button" class="btn btn-danger btn-sm" (click)="cancelAllUpload()"><i class="fa fa-trash" style=""></i> </button>
+                            
                           </div>
                           <div class="col-md-4 header-title text-center hidden-sm">
                             <h2>Fotos</h2>
@@ -209,6 +218,7 @@
                         </div>
                       </div>
                     </div>
+                    <button type="button" class="btn btn-primary btn-sm btn-block" (click)="subir()"><i class="fa fa-upload"></i> Subir Foto</button>
                   </div>
                 </div>
               </div>
@@ -237,6 +247,7 @@
               (loadImageFailed)="loadImageFailed()"></image-cropper>
         </div>
       </div>
+      <ngx-spinner [fullScreen]="false"></ngx-spinner>
     </div>
   </ng-wizard-step>
 
@@ -247,17 +258,18 @@
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <div class="modal-header">
-          <h4 class="modal-title">Aperturar Mesa</h4>
+          <h4 class="modal-title">Aperturar Mesa {{info.mesa}}</h4>
           <button type="button" class="close" (click)="modalAperturar.hide()" aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>
         </div>
         <div class="modal-body">
-          <h5 class="">Esta seguro de apertuar la mesas? </h5>
+          <h5 class="modal-title text-center">Recinto: {{info.rec.institucion}}</h5>
+          <p class="text-center">¿Esta seguro de aperturar la mesa? </p>
             <form #form="ngForm" (ngSubmit)="aperturarAction()" >
               <div class="row">
                 <div class="form-group col-sm-12">
-                  <label for="city">Delegado:</label>
+                  <label for="city">Delegado:(opcional)</label>
                   <jqxInput #inputDelegado class="inDelegado txt-input form-control" ></jqxInput>
                 </div>
                 <div class="form-group col-sm-4">

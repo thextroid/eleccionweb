@@ -8,6 +8,8 @@ import { ModalModule } from "ngx-bootstrap/modal";
 import { FormsModule } from "@angular/forms";
 import { UserFormComponent } from "./user-form/user-form.component";
 import { UserService } from "../../servicios/user.service";
+import { NgxSpinnerModule } from 'ngx-spinner';
+import { SnotifyModule, SnotifyService, ToastDefaults } from 'ng-snotify';
 
 @NgModule({
   imports: [
@@ -16,9 +18,15 @@ import { UserService } from "../../servicios/user.service";
     jqxGridModule,
     ModalModule.forRoot(),
     FormsModule,
+    SnotifyModule,
+    NgxSpinnerModule
   ],
   declarations: [UsersComponent, UserFormComponent],
   entryComponents: [UserFormComponent],
-  providers: [UserService],
+  providers: [
+    { provide: 'SnotifyToastConfig', useValue: ToastDefaults},
+    SnotifyService,
+    UserService],
+  
 })
 export class UsersModule {}

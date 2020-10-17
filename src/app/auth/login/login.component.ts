@@ -3,6 +3,7 @@ import { NgForm } from "@angular/forms";
 import { AuthService } from "../../servicios/auth.service";
 import { jqxValidatorComponent } from "jqwidgets-ng/jqxvalidator";
 import { jqxPasswordInputComponent } from "jqwidgets-ng/jqxpasswordinput";
+import jwt_decode from "jwt-decode";
 
 import { Router } from "@angular/router";
 @Component({
@@ -24,7 +25,16 @@ export class LoginComponent implements OnInit {
       this.authService.validLogin(user.value).subscribe(
         (res: any) => {
           localStorage.setItem("access_token", res.token);
-          this.router.navigate(["/usuarios"]);
+          const decoded = jwt_decode(res.token);
+          localStorage.setItem('user-role',decoded.rol);
+          console.log(decoded.rol);
+          const role=decoded.rol;
+              if(role=="Admin")
+              this.router.navigate(["/usuarios"]);
+              if(role=="Control")
+              this.router.navigate(["/mesas"]);
+              if(role=="Operador")
+              this.router.navigate(["/votos"]);
         },
         ({ error }) => {
           this.messageUser = error;
