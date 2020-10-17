@@ -26,9 +26,9 @@
   },
   "private": true,
   "dependencies": {
+    "@angula                                                                                                                                                                                                                                                                                                                                                                                                                                                          r/common": "^9.1.1",
     "@angular/animations": "^9.1.1",
     "@angular/cdk": "^10.2.5",
-    "@angula                                                                                                                                                                                                                                                                                                                                                                                                                                                          r/common": "^9.1.1",
     "@angular/compiler": "^9.1.1",
     "@angular/core": "^9.1.1",
     "@angular/forms": "^9.1.1",

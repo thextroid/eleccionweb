@@ -171,7 +171,7 @@ export class UsersComponent implements OnInit {
           this.refeshUsers();
         },
         (error) => {
-          this.mensaje("Se Actualizó correctamente el Usuario", "Usuario", 0);
+          this.mensaje(error.message, "", 0);
         }
       );
     } else {
@@ -197,14 +197,19 @@ export class UsersComponent implements OnInit {
     const userid = this.selectedUser._id;
     const task = { userId: userid, recintos: idRecintos };
     if (userid && !this.taskUser) {
-      this.taskService.save(task).subscribe((result) => {
-        this.mensaje(
-          "Se Actualizó correctamente el Usuario Tareas",
-          "Usuario",
-          0
-        );
-        this.resetSelectedUser();
-      });
+      this.taskService.save(task).subscribe(
+        (result) => {
+          this.mensaje(
+            "Se Actualizó correctamente el Usuario Tareas",
+            "Usuario",
+            0
+          );
+          this.resetSelectedUser();
+        },
+        (error) => {
+          this.mensaje(error.message, "", 0);
+        }
+      );
     } else if (userid && this.taskUser.recintos.length > 0) {
       this.taskService
         .updateTaskByUser(userid, { recintos: idRecintos })
