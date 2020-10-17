@@ -7,11 +7,13 @@
       <div class="card-body">
         <jqxGrid
           #myGrid
-          [width]="800"
+          [width]="820"
           [source]="dataAdapter"
           [pageable]="true"
           [columns]="columns"
           [sortable]="true"
+          [filterable]="true"
+          [showfilterbar]="true"
           (onRowselect)="selectUser($event)"
         >
         </jqxGrid>

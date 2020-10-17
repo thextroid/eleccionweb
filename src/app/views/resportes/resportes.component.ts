@@ -42,7 +42,7 @@ export class ResportesComponent implements OnInit {
   // public pieChartType = "pie";
   // public donutColors = [
   //   {
-  //     backgroundColor: [
+  //     backgroundColor: [angular material
   //       "#C3DFE0",
   //       "#904E55AA",
   //       "#1C5D99AA",

@@ -9,11 +9,10 @@
   },
   "contributors": [
     {
-      "name": "Andrzej Kopański",
-      "url": "https://github.com/xidedix"
+      "name": "Andrzej Kopański"
     }
   ],
-  "homepage": "https://coreui.io/angular",
+  "homepage": "https://conrtetarijacc.oc/",
   "copyright": "Copyright 2020 creativeLabs marino",
   "license": "MIT",
   "scripts": {
@@ -29,7 +28,7 @@
   "dependencies": {
     "@angular/animations": "^9.1.1",
     "@angular/cdk": "^10.2.5",
-    "@angular/common": "^9.1.1",
+    "@angula                                                                                                                                                                                                                                                                                                                                                                                                                                                          r/common": "^9.1.1",
     "@angular/compiler": "^9.1.1",
     "@angular/core": "^9.1.1",
     "@angular/forms": "^9.1.1",

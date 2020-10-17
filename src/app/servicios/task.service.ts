@@ -3,7 +3,7 @@ import { Injectable } from "@angular/core";
 import { Observable } from "rxjs";
 import { Task } from "../models/task";
 
-const API = "http://localhost:3000/api/tasks/";
+const API = "http://192.81.217.7/api/tasks/";
 
 @Injectable({
   providedIn: "root",

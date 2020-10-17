@@ -53,15 +53,21 @@ export class UsersComponent implements OnInit {
         return "<div style='margin:4px;'>" + (value + 1) + "</div>";
       },
     },
-    { text: "Usuario", datafield: "name", width: 250 },
-    { text: "Nombre Completo", datafield: "fullName", width: 250 },
-    { text: "Telefono", datafield: "telefono", width: 120 },
-    { text: "Rol", datafield: "rol", width: 80 },
+    { text: "Usuario", datafield: "name", width: 250, filterable: false },
+    {
+      text: "Nombre Completo",
+      datafield: "fullName",
+      width: 250,
+      filterable: true,
+    },
+    { text: "Telefono", datafield: "telefono", width: 120, filterable: false },
+    { text: "Rol", datafield: "rol", width: 80, filterable: false },
     {
       text: "Estado",
       datafield: "state",
       minwidth: 60,
       columntype: "checkbox",
+      filterable: false,
     },
   ];
 
@@ -165,7 +171,7 @@ export class UsersComponent implements OnInit {
       });
     } else {
       this.userService.save(user).subscribe((result) => {
-        this.resetSelectedUser();
+        this.refeshUsers();
       });
     }
     this.modalRef.hide();
