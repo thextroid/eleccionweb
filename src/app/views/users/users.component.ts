@@ -10,7 +10,7 @@ import { TaskComponent } from "./task/task.component";
 import { RecintosService } from "../../servicios/recintos.service";
 import { TaskService } from "../../servicios/task.service";
 import { Task } from "../../models/task";
-import { SnotifyPosition, SnotifyService } from 'ng-snotify';
+import { SnotifyPosition, SnotifyService } from "ng-snotify";
 @Component({
   templateUrl: "./users.component.html",
   styleUrls: ["./users.component.css"],
@@ -42,9 +42,6 @@ export class UsersComponent implements OnInit {
     {
       text: "#",
       sortable: false,
-      filterable: false,
-      editable: false,
-      groupable: false,
       draggable: false,
       resizable: false,
       datafield: "",
@@ -80,13 +77,14 @@ export class UsersComponent implements OnInit {
     private $notifier: SnotifyService,
     private $spinner: NgxSpinnerService,
     protected taskService: TaskService,
-    protected resintosService: RecintosService,
+    protected resintosService: RecintosService
   ) {}
 
   ngOnInit(): void {
     this.resetSelectedUser();
     this.loadData();
-    this.loadDataRecintos();refeshUsers
+    this.loadDataRecintos();
+  }
   loadData() {
     this.userService.getAll().subscribe((data) => {
       this.source.localdata = data;
@@ -167,35 +165,55 @@ export class UsersComponent implements OnInit {
     const id = this.selectedUser._id;
     user.telefono = user.telefono + "";
     if (id) {
-      this.userService.update(id, user).subscribe((result) => {
-        this.mensaje('Se Actualizó correctamente el Usuario','Usuario',0);
-        this.refeshUsers();
-      },(error)=>{
-        this.mensaje('Se Actualizó correctamente el Usuario','Usuario',0);
-      });
+      this.userService.update(id, user).subscribe(
+        (result) => {
+          this.mensaje("Se Actualizó correctamente el Usuario", "Usuario", 0);
+          this.refeshUsers();
+        },
+        (error) => {
+          this.mensaje("Se Actualizó correctamente el Usuario", "Usuario", 0);
+        }
+      );
     } else {
-      this.userService.save(user).subscribe((result) => {
-        this.mensaje('Se Actualizó correctamente el Usuario','Usuario',0);
-        this.refeshUsers();
-      },
-      (error)=>{
-        this.mensaje(error.message,'',0);
-      }
+      this.userService.save(user).subscribe(
+        (result) => {
+          this.mensaje("Se Actualizó correctamente el Usuario", "Usuario", 0);
+          this.refeshUsers();
+        },
+        (error) => {
+          this.mensaje(error.message, "", 0);
+        }
       );
     }
     this.modalRef.hide();
   }
 
   getTaskByUsuario(id) {
-    return this.taskService.getTaskByUser(id).toPromise();accessRoles
+    return this.taskService.getTaskByUser(id).toPromise();
+  }
+
+  saveRecintoUsiario(recintos: Map<String, any>) {
+    const idRecintos = Array.from(recintos.values(), (recinto) => recinto.id);
+    const userid = this.selectedUser._id;
+    const task = { userId: userid, recintos: idRecintos };
     if (userid && !this.taskUser) {
       this.taskService.save(task).subscribe((result) => {
+        this.mensaje(
+          "Se Actualizó correctamente el Usuario Tareas",
+          "Usuario",
+          0
+        );
         this.resetSelectedUser();
       });
     } else if (userid && this.taskUser.recintos.length > 0) {
       this.taskService
         .updateTaskByUser(userid, { recintos: idRecintos })
         .subscribe((result) => {
+          this.mensaje(
+            "Se Actualizó correctamente el Usuario Tareas",
+            "Usuario",
+            0
+          );
           this.resetSelectedUser();
         });
     }
