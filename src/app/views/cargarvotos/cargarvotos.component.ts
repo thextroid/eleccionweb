@@ -434,11 +434,13 @@ export class CargarvotosComponent implements OnInit {
 		console.log(munSelect,proSelect,cirSelect);
 
 		let list = [];
+		console.log(this.recs);
 		for (let i = 0; i < this.recs.length; i++) {
 			if ("municipio" in this.recs[i] && this.recs[i].municipio._id === munSelect.value._id 
 			&& this.recs[i].provincia._id === proSelect.value._id
 			&& this.recs[i].circunscripcion._id === cirSelect.value._id
 			) {
+				console.log(">> ",this.recs[i]);
 				list.push({
 					value: this.recs[i],
 					label: this.recs[i].institucion+"/"+this.recs[i].localidad
@@ -455,7 +457,7 @@ export class CargarvotosComponent implements OnInit {
 		this.myValidator.validateInput('inRec');
 		this.checkmesa=-1;
 		this.mess=[];
-		
+
 		for (let i = 0; i < this.recs.length; i++) {
 			if (this.recs[i]._id === recSelect.value._id) {
 				this.modelRec = this.recs[i];

@@ -64,18 +64,3 @@
 <div *ngIf="linedata.mesas">
   <app-line-chart [linedata]="linedata"></app-line-chart>
 </div>
-<app-dropdowndata
-    class="container-colum-3 pie-list"
-    *ngIf="circunscripcionDataDropDown"
-    [fieldsTable]="tableNameCircunscripcion"
-    [dropdownData]="circunscripcionDataDropDown"
-    (listOnSelect)="selectedCircunscripcionItem($event)"
-  >
-  <app-pie-chart
-  class="container-colum-3 pie-list"
-  *ngIf="headerChart && pieRecintoData"
-  [headerChart]="headerChart"
-  [piedata]="pieRecintoData"
->
-</app-pie-chart>
-</app-dropdowndata>
