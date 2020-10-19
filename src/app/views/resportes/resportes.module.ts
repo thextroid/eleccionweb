@@ -22,6 +22,7 @@ import { PieChartComponent } from "./pie-chart/pie-chart.component";
 import { LineChartComponent } from "./line-chart/line-chart.component";
 import { BarChartComponent } from "./bar-chart/bar-chart.component";
 import { DropdowndataComponent } from './dropdowndata/dropdowndata.component';
+import { DiputadosComponent } from './diputados/diputados.component';
 
 @NgModule({
   declarations: [
@@ -30,6 +31,7 @@ import { DropdowndataComponent } from './dropdowndata/dropdowndata.component';
     LineChartComponent,
     BarChartComponent,
     DropdowndataComponent,
+    DiputadosComponent,
   ],
   imports: [
     CommonModule,

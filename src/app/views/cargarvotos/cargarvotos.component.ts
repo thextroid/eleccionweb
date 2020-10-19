@@ -336,7 +336,7 @@ export class CargarvotosComponent implements OnInit {
 		const oldvalue=$event.args.oldvalue;
 		const datafield=$event.args.datafield;
 		if(datafield=="validos" || datafield=="total")return;
-		if(newvalue<0 || newvalue>100){
+		if(newvalue<0 || newvalue>699){
 			this.migrid.setcellvalue(indexrow,datafield,oldvalue);
 		}
 		else{

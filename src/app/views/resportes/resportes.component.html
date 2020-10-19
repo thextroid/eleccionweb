@@ -64,8 +64,11 @@
 <div *ngIf="linedata.mesas">
   <app-line-chart [linedata]="linedata"></app-line-chart>
 </div>
-<div>
-  <pre>
-    {{ dataJson | json }}
-  </pre>
-</div>
+<app-dropdowndata
+    class="container-colum-3 pie-list"
+    *ngIf="provinciasDataDropDown"
+    [fieldsTable]="tableNameProvincia"
+    [dropdownData]="provinciasDataDropDown"
+    (listOnSelect)="selectedProvinciaItem($event)"
+  >
+</app-dropdowndata>
