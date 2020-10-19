@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 
 import { Departamento} from '../models/departamento';
 import { Observable } from 'rxjs';
-const api="http://192.81.217.7/api/departamentos";
+const api="https://www.controlelectoralcctarija.com/api/departamentos";
 @Injectable({
   providedIn: 'root'
 })

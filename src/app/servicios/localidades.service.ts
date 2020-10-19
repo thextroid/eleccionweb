@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Localidad } from '../models/localidad';
-const api="http://192.81.217.7/api/localidades";
+const api="https://www.controlelectoralcctarija.com/api/localidades";
 @Injectable({
   providedIn: 'root'
 })

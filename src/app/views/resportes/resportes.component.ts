@@ -42,7 +42,7 @@ export class ResportesComponent implements OnInit {
   // public pieChartType = "pie";
   // public donutColors = [
   //   {
-  //     backgroundColor: [
+  //     backgroundColor: [angular material
   //       "#C3DFE0",
   //       "#904E55AA",
   //       "#1C5D99AA",
@@ -114,11 +114,11 @@ export class ResportesComponent implements OnInit {
   }
 
   ngAfterViewInit(): void {
-    this.loadDataPresidencialGeneral();
-    this.loadDataLineChart();
-    this.loadDataPresidencialProvincia("5f5ac09ffa74ada37adf107b");
-    this.loadDataPresidencialMunicipio("5f5ac0e1f770bc79cb72c0b3");
-    this.loadDataPresidencialRecinto("5f7d05a1449b8cdbde0d92bd");
+    // this.loadDataPresidencialGeneral();
+    // this.loadDataLineChart("5f5ac09ffa74ada37adf107b");
+    // this.loadDataPresidencialProvincia("5f5ac09ffa74ada37adf107b");
+    // this.loadDataPresidencialMunicipio("5f5ac0e1f770bc79cb72c0b3");
+    // this.loadDataPresidencialRecinto("5f7d05a1449b8cdbde0d92bd");
   }
 
   loadDataProvincias() {
@@ -158,9 +158,9 @@ export class ResportesComponent implements OnInit {
     );
   };
 
-  loadDataLineChart() {
+  loadDataLineChart(uid) {
     this.reportesService
-      .getWiner("5f7d05a1449b8cdbde0d92bd")
+      .getWiner(uid)
       .subscribe(
         lineDataWiner.presidencialData.call(
           this,
@@ -189,11 +189,12 @@ export class ResportesComponent implements OnInit {
       .subscribe(this.loadDataPies(pieDataRecinto, "Recinto"));
   }
 
-  selectedProvinciaItem({ event }) {
+  selectedProvinciaItem( event ) {
+    // console.log(event);
     const {
       item: { originalItem: provincia },
     } = event.args;
-
+    console.log(provincia);
     this.loadDataPresidencialProvincia(provincia.uid);
   }
 
@@ -208,8 +209,10 @@ export class ResportesComponent implements OnInit {
     const {
       item: { originalItem: recinto },
     } = event.args;
+    console.log(recinto);
     this.loadDataPresidencialRecinto(recinto.uid);
-  }
+    this.loadDataLineChart(recinto.uid);
+  };
   roundEpsion(number: any) {
     return Math.round((number + Number.EPSILON) * 100) / 100;
   }

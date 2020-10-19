@@ -3,7 +3,7 @@ import { Injectable } from "@angular/core";
 import { Observable } from "rxjs";
 import { Recinto } from "../models/recinto";
 
-const api = "http://localhost:3000/api/recintos";
+const api = "https://www.controlelectoralcctarija.com/api/recintos";
 @Injectable({
   providedIn: "root",
 })
@@ -23,6 +23,6 @@ export class RecintosService {
     return this.http.put<Recinto>(api + "/" + id, data);
   }
   aperturarMesa(idrec,data){
-    return this.http.put<any>(`http://192.81.217.7/api/recintos/${idrec}/mesa`,data);
+    return this.http.put<any>(`https://www.controlelectoralcctarija.com/api/recintos/${idrec}/mesa`,data);
   }
 }
